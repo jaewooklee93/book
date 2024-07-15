@@ -1,118 +1,64 @@
-# Generic Types, Traits, and Lifetimes
+## 제네릭 타입, 트레이트, 및 라이프타임
 
-Every programming language has tools for effectively handling the duplication
-of concepts. In Rust, one such tool is *generics*: abstract stand-ins for
-concrete types or other properties. We can express the behavior of generics or
-how they relate to other generics without knowing what will be in their place
-when compiling and running the code.
+모든 프로그래밍 언어는 개념의 중복을 효과적으로 처리하기 위한 도구를 제공합니다. Rust에서 그러한 도구 중 하나는 *제네릭 타입*입니다. 제네릭 타입은 구체적인 타입이나 다른 속성에 대한 추상적인 대체 표현입니다. 코드를 컴파일하고 실행할 때 어떤 것이 들어갈지 알지 못하더라도 제네릭 타입의 동작이나 다른 제네릭 타입과의 관계를 표현할 수 있습니다.
 
-Functions can take parameters of some generic type, instead of a concrete type
-like `i32` or `String`, in the same way they take parameters with unknown
-values to run the same code on multiple concrete values. In fact, we’ve already
-used generics in Chapter 6 with `Option<T>`, in Chapter 8 with `Vec<T>` and
-`HashMap<K, V>`, and in Chapter 9 with `Result<T, E>`. In this chapter, you’ll
-explore how to define your own types, functions, and methods with generics!
+함수는 `i32` 또는 `String`과 같은 구체적인 타입 대신 어떤 제네릭 타입의 매개변수를 받을 수 있습니다. 마치 알 수 없는 값을 가진 매개변수를 받아 여러 구체적인 값에 대해 동일한 코드를 실행하는 것과 같습니다. 실제로는 6장에서 `Option<T>`, 8장에서 `Vec<T>`와 `HashMap<K, V>`, 9장에서 `Result<T, E>`에서 이미 제네릭 타입을 사용했습니다. 이 장에서는 자신의 타입, 함수, 및 메서드에 제네릭 타입을 정의하는 방법을 탐구할 것입니다!
 
-First we’ll review how to extract a function to reduce code duplication. We’ll
-then use the same technique to make a generic function from two functions that
-differ only in the types of their parameters. We’ll also explain how to use
-generic types in struct and enum definitions.
+먼저 함수를 추출하여 코드 중복을 줄이는 방법을 복습해 보겠습니다. 다음으로 두 개의 함수에서 매개변수의 타입만 다르기 때문에 제네릭 함수를 만드는 데 동일한 기술을 사용할 것입니다. 또한 구조체 및 열거형 정의에 제네릭 타입을 사용하는 방법을 설명할 것입니다.
 
-Then you’ll learn how to use *traits* to define behavior in a generic way. You
-can combine traits with generic types to constrain a generic type to accept
-only those types that have a particular behavior, as opposed to just any type.
+그런 다음 *트레이트*를 사용하여 제네릭 방식으로 동작을 정의하는 방법을 배울 것입니다. 트레이트를 제네릭 타입과 함께 사용하면 특정 동작을 가진 유일한 타입만 허용하도록 제네릭 타입을 제한할 수 있습니다. 즉, 단순히 모든 타입을 허용하는 것이 아니라 특정 동작을 수행하는 타입만 허용합니다.
 
-Finally, we’ll discuss *lifetimes*: a variety of generics that give the
-compiler information about how references relate to each other. Lifetimes allow
-us to give the compiler enough information about borrowed values so that it can
-ensure references will be valid in more situations than it could without our
-help.
+마지막으로 *라이프타임*에 대해 논의할 것입니다. 라이프타임은 참조 간의 관계에 대한 정보를 컴파일러에 제공하는 제네릭 타입의 종류입니다. 라이프타임은 빌려준 값에 대한 충분한 정보를 컴파일러에게 제공하여 참조가 예상보다 더 많은 상황에서 유효하도록 보장할 수 있도록 합니다.
 
-## Removing Duplication by Extracting a Function
+## 코드 중복 제거를 위한 함수 추출
 
-Generics allow us to replace specific types with a placeholder that represents
-multiple types to remove code duplication. Before diving into generics syntax,
-let’s first look at how to remove duplication in a way that doesn’t involve
-generic types by extracting a function that replaces specific values with a
-placeholder that represents multiple values. Then we’ll apply the same
-technique to extract a generic function! By looking at how to recognize
-duplicated code you can extract into a function, you’ll start to recognize
-duplicated code that can use generics.
+제네릭 타입은 특정 타입을 대체하여 여러 타입을 나타내는 플레이스홀더로 사용하여 코드 중복을 제거할 수 있습니다. 제네릭 타입 문법에 뛰어들기 전에, 특정 값을 플레이스홀더로 대체하여 여러 값을 나타내는 함수를 추출하여 코드 중복을 제거하는 방법을 살펴보겠습니다. 이후 동일한 기술을 사용하여 제네릭 함수를 추출하는 방법을 알아보겠습니다. 특정 값을 함수로 추출할 수 있는 코드를 인식하는 방법을 통해 제네릭을 사용하여 코드를 추출할 수 있는지 파악할 수 있습니다.
 
-We’ll begin with the short program in Listing 10-1 that finds the largest
-number in a list.
+10-1번 목록에 나와 있는 짧은 프로그램으로 시작하여 숫자 목록에서 가장 큰 숫자를 찾는 방법을 살펴보겠습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-01/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 10-1: Finding the largest number in a list of
-numbers</span>
+<span class=\"caption\">10-1번 목록: 숫자 목록에서 가장 큰 숫자 찾기</span>
 
-We store a list of integers in the variable `number_list` and place a reference
-to the first number in the list in a variable named `largest`. We then iterate
-through all the numbers in the list, and if the current number is greater than
-the number stored in `largest`, we replace the reference in that variable.
-However, if the current number is less than or equal to the largest number seen
-so far, the variable doesn’t change, and the code moves on to the next number
-in the list. After considering all the numbers in the list, `largest` should
-refer to the largest number, which in this case is 100.
+`number_list` 변수에 숫자 목록을 저장하고 `largest` 변수에 목록의 첫 번째 숫자를 가리키는 참조를 할당합니다. 그런 다음 목록의 모든 숫자를 반복하여 현재 숫자가 `largest`에 저장된 숫자보다 크면 해당 변수의 참조를 업데이트합니다. 그러나 현재 숫자가 가장 큰 숫자보다 작거나 같으면 변수는 변경되지 않고 코드는 목록의 다음 숫자로 이동합니다. 목록의 모든 숫자를 고려한 후 `largest`는 가장 큰 숫자를 가리키게 됩니다. 이 경우 100입니다.
 
-We’ve now been tasked with finding the largest number in two different lists of
-numbers. To do so, we can choose to duplicate the code in Listing 10-1 and use
-the same logic at two different places in the program, as shown in Listing 10-2.
+이제 두 개의 다른 숫자 목록에서 가장 큰 숫자를 찾아야 합니다. 이를 위해 10-2번 목록과 같이 10-1번 목록의 코드를 복제할 수 있습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-02/src/main.rs}}
 ```
 
-<span class="caption">Listing 10-2: Code to find the largest number in *two*
-lists of numbers</span>
+<span class=\"caption\">10-2번 목록: 두 개의 숫자 목록에서 가장 큰 숫자 찾기</span>
 
-Although this code works, duplicating code is tedious and error prone. We also
-have to remember to update the code in multiple places when we want to change
-it.
+이 코드는 작동하지만, 코드를 복제하는 것은 번거롭고 오류 발생 가능성이 높습니다. 또한 코드를 변경할 때는 여러 곳에서 업데이트해야 합니다.
 
-To eliminate this duplication, we’ll create an abstraction by defining a
-function that operates on any list of integers passed in as a parameter. This
-solution makes our code clearer and lets us express the concept of finding the
-largest number in a list abstractly.
+이 중복을 제거하려면 매개변수로 전달된 모든 숫자 목록에 대해 작동하는 함수를 정의하여 추상화를 만들 수 있습니다. 이러한 해결책은 코드를 명확하게 만들고 숫자 목록에서 가장 큰 숫자를 찾는 개념을 추상적으로 표현할 수 있도록 합니다.
 
-In Listing 10-3, we extract the code that finds the largest number into a
-function named `largest`. Then we call the function to find the largest number
-in the two lists from Listing 10-2. We could also use the function on any other
-list of `i32` values we might have in the future.
+10-3번 목록에서 가장 큰 숫자를 찾는 코드를 `largest`라는 함수로 추출합니다.
+그런 다음 두 목록에서 가장 큰 숫자를 찾기 위해 함수를 호출합니다. 10-2번 목록에서 보았던 것처럼, 이 함수를 앞으로 우리가 가질 수 있는 다른 `i32` 값 목록에도 사용할 수 있습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-03/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 10-3: Abstracted code to find the largest number
-in two lists</span>
+<span class=\"caption\">10-3번 목록: 두 목록에서 가장 큰 숫자를 찾는 추상화된 코드</span>
 
-The `largest` function has a parameter called `list`, which represents any
-concrete slice of `i32` values we might pass into the function. As a result,
-when we call the function, the code runs on the specific values that we pass
-in.
+`largest` 함수에는 `list`라는 매개변수가 있으며, 이는 함수에 전달할 수 있는 임의의 `i32` 값의 구체적인 슬라이스를 나타냅니다. 그 결과, 함수를 호출할 때 코드는 우리가 전달한 구체적인 값에 대해 실행됩니다.
 
-In summary, here are the steps we took to change the code from Listing 10-2 to
-Listing 10-3:
+요약하자면, 10-2번 목록에서 10-3번 목록으로 코드를 변경하는 과정은 다음과 같습니다.
 
-1. Identify duplicate code.
-1. Extract the duplicate code into the body of the function, and specify the
-   inputs and return values of that code in the function signature.
-1. Update the two instances of duplicated code to call the function instead.
+1. 중복 코드를 식별합니다.
+1. 중복 코드를 함수의 몸체로 추출하고, 함수의 서명에서 해당 코드의 입력과 출력 값을 지정합니다.
+1. 중복된 코드의 두 인스턴스를 함수 호출로 업데이트합니다.
 
-Next, we’ll use these same steps with generics to reduce code duplication. In
-the same way that the function body can operate on an abstract `list` instead
-of specific values, generics allow code to operate on abstract types.
+다음으로, 일반화를 사용하여 코드 중복을 줄이는 데 동일한 단계를 사용할 것입니다. 함수 몸체가 구체적인 값 대신 추상적인 `list`를 처리하는 것처럼, 일반화는 추상적인 유형에 대해 코드를 처리하도록 허용합니다.
 
-For example, say we had two functions: one that finds the largest item in a
-slice of `i32` values and one that finds the largest item in a slice of `char`
-values. How would we eliminate that duplication? Let’s find out!
+예를 들어, `i32` 값의 슬라이스에서 가장 큰 항목을 찾는 함수와 `char` 값의 슬라이스에서 가장 큰 항목을 찾는 함수가 있다고 가정해 보겠습니다. 이 중복을 제거하는 방법은 무엇일까요? 알아보겠습니다!

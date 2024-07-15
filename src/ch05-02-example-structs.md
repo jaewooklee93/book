@@ -1,246 +1,155 @@
-## An Example Program Using Structs
+## 구조체를 사용하는 예제 프로그램
 
-To understand when we might want to use structs, let’s write a program that
-calculates the area of a rectangle. We’ll start by using single variables, and
-then refactor the program until we’re using structs instead.
+구조체를 언제 사용해야 하는지 이해하기 위해 직사각형의 면적을 계산하는 프로그램을 작성해 보겠습니다. 먼저 단일 변수를 사용하여 시작하고, 구조체를 사용하여 프로그램을 재작성할 것입니다.
 
-Let’s make a new binary project with Cargo called *rectangles* that will take
-the width and height of a rectangle specified in pixels and calculate the area
-of the rectangle. Listing 5-8 shows a short program with one way of doing
-exactly that in our project’s *src/main.rs*.
+Cargo로 *rectangles*라는 새로운 이진 프로젝트를 만들고, 픽셀로 지정된 직사각형의 너비와 높이를 입력받아 직사각형의 면적을 계산하도록 하겠습니다. 5-8번 표에 우리 프로젝트의 *src/main.rs*에 있는 방법을 보여줍니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/src/main.rs:all}}
 ```
 
-<span class="caption">Listing 5-8: Calculating the area of a rectangle
-specified by separate width and height variables</span>
+<span class=\"caption\">Listing 5-8: 별도의 너비와 높이 변수로 지정된 직사각형의 면적 계산</span>
 
-Now, run this program using `cargo run`:
+이제 `cargo run`을 사용하여 이 프로그램을 실행합니다.
 
 ```console
 {{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/output.txt}}
 ```
 
-This code succeeds in figuring out the area of the rectangle by calling the
-`area` function with each dimension, but we can do more to make this code clear
-and readable.
+이 코드는 `area` 함수에 각 치수를 전달하여 직사각형의 면적을 계산하는 데 성공하지만, 코드를 더 명확하고 읽기 쉽게 만들 수 있습니다.
 
-The issue with this code is evident in the signature of `area`:
+이 코드의 문제점은 `area` 함수의 서명에서 명확합니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/src/main.rs:here}}
 ```
 
-The `area` function is supposed to calculate the area of one rectangle, but the
-function we wrote has two parameters, and it’s not clear anywhere in our
-program that the parameters are related. It would be more readable and more
-manageable to group width and height together. We’ve already discussed one way
-we might do that in [“The Tuple Type”][the-tuple-type]<!-- ignore --> section
-of Chapter 3: by using tuples.
+`area` 함수는 하나의 직사각형의 면적을 계산해야 하지만, 우리가 작성한 함수에는 두 개의 매개변수가 있고, 어디에도 매개변수가 관련되어 있음이 명확하지 않습니다. 너비와 높이를 함께 그룹화하여 코드를 더 읽기 쉽고 관리하기 쉽게 만들 수 있습니다. 이미 3장의 "튜플 유형"<!-- ignore --> 섹션에서 그 방법을 논의했습니다.
 
-### Refactoring with Tuples
+### 튜플을 사용한 재작성
 
-Listing 5-9 shows another version of our program that uses tuples.
+5-9번 표는 튜플을 사용하는 프로그램의 다른 버전을 보여줍니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-09/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-9: Specifying the width and height of the
-rectangle with a tuple</span>
+<span class=\"caption\">Listing 5-9: 튜플로 직사각형의 너비와 높이를 지정</span>
 
-In one way, this program is better. Tuples let us add a bit of structure, and
-we’re now passing just one argument. But in another way, this version is less
-clear: tuples don’t name their elements, so we have to index into the parts of
-the tuple, making our calculation less obvious.
+어떤 면에서 이 프로그램은 더 나은 것입니다. 튜플은 약간의 구조를 제공하며, 하나의 인수만 전달하고 있습니다. 그러나 다른 면에서 이 버전은 덜 명확합니다. 튜플은 요소에 이름을 붙이지 않으므로 튜플의 부분에 인덱싱해야 하며, 계산이 덜 명확해집니다.
 
-Mixing up the width and height wouldn’t matter for the area calculation, but if
-we want to draw the rectangle on the screen, it would matter! We would have to
-keep in mind that `width` is the tuple index `0` and `height` is the tuple
-index `1`. This would be even harder for someone else to figure out and keep in
-mind if they were to use our code. Because we haven’t conveyed the meaning of
-our data in our code, it’s now easier to introduce errors.
+너비와 높이를 섞으면 면적 계산에는 문제가 되지 않지만, 직사각형을 화면에 그리려면 문제가 발생합니다! 너비가 튜플 인덱스 `0`이고 높이가 튜플 인덱스 `1`임을 기억해야 합니다. 다른 사람이 코드를 사용하고 이해하려고 할 때 이를 기억하는 것이 더욱 어려워지고, 오류를 쉽게 만들 수 있습니다. 우리가 코드에 데이터의 의미를 전달하지 않았기 때문에, 오류를 쉽게 만들 수 있습니다.
 
-### Refactoring with Structs: Adding More Meaning
+### 구조체를 사용한 재작성: 더 많은 의미 추가
 
-We use structs to add meaning by labeling the data. We can transform the tuple
-we’re using into a struct with a name for the whole as well as names for the
-parts, as shown in Listing 5-10.
+구조체를 사용하여 데이터에 이름을 붙여 의미를 추가합니다. 우리가 사용하는 튜플을 `Rectangle`이라는 이름의 구조체로 변환하고, 전체에 대한 이름과 부분에 대한 이름을 정의할 수 있습니다. 5-10번 표를 참조하세요.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-10/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-10: Defining a `Rectangle` struct</span>
+<span class=\"caption\">Listing 5-10: `Rectangle` 구조체 정의</span>
 
-Here we’ve defined a struct and named it `Rectangle`. Inside the curly
-brackets, we defined the fields as `width` and `height`, both of which have
-type `u32`. Then, in `main`, we created a particular instance of `Rectangle`
-that has a width of `30` and a height of `50`.
+여기서는 `Rectangle`이라는 구조체를 정의했습니다. 괄호 안에는 `width`와 `height`라는 필드를 정의했으며, 두 필드 모두 `u32` 유형입니다. 그런 다음 `main`에서 `Rectangle`의 특정 인스턴스를 생성하여 너비가 `30`이고 높이가 `50`인 직사각형을 만듭니다.
 
-Our `area` function is now defined with one parameter, which we’ve named
-`rectangle`, whose type is an immutable borrow of a struct `Rectangle`
-instance. As mentioned in Chapter 4, we want to borrow the struct rather than
-take ownership of it. This way, `main` retains its ownership and can continue
-using `rect1`, which is the reason we use the `&` in the function signature and
-where we call the function.
+이제 `area` 함수는 하나의 매개변수로 정의되며, 이를 `Rectangle`이라고 이름 지었습니다.
+ `rectangle` 이라는 변수를 선언합니다. 이 변수의 타입은 `Rectangle` 구조체의 불변 참조입니다. 4장에서 언급했듯이, 구조체를 빌려서 소유권을 넘기지 않고 싶습니다. 이렇게 하면 `main` 함수는 여전히 소유권을 가지고 `rect1`을 계속 사용할 수 있습니다. 따라서 함수 선언과 함수 호출에서 `&`를 사용합니다.
 
-The `area` function accesses the `width` and `height` fields of the `Rectangle`
-instance (note that accessing fields of a borrowed struct instance does not
-move the field values, which is why you often see borrows of structs). Our
-function signature for `area` now says exactly what we mean: calculate the area
-of `Rectangle`, using its `width` and `height` fields. This conveys that the
-width and height are related to each other, and it gives descriptive names to
-the values rather than using the tuple index values of `0` and `1`. This is a
-win for clarity.
+`area` 함수는 `Rectangle` 인스턴스의 `width`와 `height` 필드에 접근합니다. (빌려진 구조체 인스턴스의 필드에 접근하는 것은 필드 값을 이동시키지 않기 때문에 자주 볼 수 있습니다). `area` 함수의 함수 선언은 이제 정확히 무엇을 의미하는지 명시합니다: `Rectangle`의 면적을 계산하고, `width`와 `height` 필드를 사용합니다. 이는 `width`와 `height`가 서로 관련되어 있음을 나타내며, 값에 설명적인 이름을 사용하여 튜플 인덱스 값 `0`과 `1`을 사용하는 것보다 명확합니다.
 
-### Adding Useful Functionality with Derived Traits
+### 유용한 기능 추가: 파생된 트레이트
 
-It’d be useful to be able to print an instance of `Rectangle` while we’re
-debugging our program and see the values for all its fields. Listing 5-11 tries
-using the [`println!` macro][println]<!-- ignore --> as we have used in
-previous chapters. This won’t work, however.
+`Rectangle` 인스턴스를 출력하여 프로그램을 디버깅하는 동안 값을 확인하는 것이 유용할 것입니다. 5-11번 목록은 이전 장에서 사용했던 `println!` 매크로를 사용하려고 시도합니다. 그러나 이것은 작동하지 않습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-11: Attempting to print a `Rectangle`
-instance</span>
+<span class=\"caption\">Listing 5-11: `Rectangle` 인스턴스를 출력하려는 시도</span>
 
-When we compile this code, we get an error with this core message:
+이 코드를 컴파일하면 다음과 같은 오류 메시지가 나타납니다.
 
 ```text
 {{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/output.txt:3}}
 ```
 
-The `println!` macro can do many kinds of formatting, and by default, the curly
-brackets tell `println!` to use formatting known as `Display`: output intended
-for direct end user consumption. The primitive types we’ve seen so far
-implement `Display` by default because there’s only one way you’d want to show
-a `1` or any other primitive type to a user. But with structs, the way
-`println!` should format the output is less clear because there are more
-display possibilities: Do you want commas or not? Do you want to print the
-curly brackets? Should all the fields be shown? Due to this ambiguity, Rust
-doesn’t try to guess what we want, and structs don’t have a provided
-implementation of `Display` to use with `println!` and the `{}` placeholder.
+`println!` 매크로는 다양한 형식을 지원하며, 기본적으로 중괄호는 `Display` 형식이라고 하는 형식을 사용하도록 지시합니다. `Display` 형식은 직접 사용자에게 보여줄 출력을 의미합니다. 우리가 지금까지 본 기본형은 `1`이나 다른 기본형을 사용자가 볼 때 원하는 유일한 방식으로 표시되기 때문에 기본적으로 `Display`를 구현합니다. 하지만 구조체의 경우 `println!`이 출력을 어떻게 형식화해야 하는지 불분명합니다. 쉼표를 사용할지, 중괄호를 사용할지, 모든 필드를 표시할지 등 여러 가지 가능성이 있습니다. 이러한 모호성 때문에 Rust는 무엇을 원하는지 추측하지 않으며, `println!`과 `{}` 플레이스홀더를 사용하여 구조체에 기본 `Display` 구현이 없습니다.
 
-If we continue reading the errors, we’ll find this helpful note:
+오류 메시지를 계속 읽으면 다음과 같은 유용한 메시지가 있습니다.
 
 ```text
 {{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/output.txt:9:10}}
 ```
 
-Let’s try it! The `println!` macro call will now look like `println!("rect1 is
-{rect1:?}");`. Putting the specifier `:?` inside the curly brackets tells
-`println!` we want to use an output format called `Debug`. The `Debug` trait
-enables us to print our struct in a way that is useful for developers so we can
-see its value while we’re debugging our code.
+이를 시도해 보겠습니다! `println!` 매크로 호출은 이제 `println!(\"rect1 is
+{rect1:?}\");`와 같이 보입니다. `:?`을 중괄호 안에 넣으면 `println!`에 `Debug` 형식이라고 하는 형식을 사용하도록 지시합니다. `Debug` 트레이트는 개발자가 코드를 디버깅하는 동안 구조체의 값을 볼 수 있도록 출력하는 데 사용됩니다.
 
-Compile the code with this change. Drat! We still get an error:
+이 변경 사항으로 코드를 컴파일해 보세요. 아직 오류가 발생합니다.
 
 ```text
 {{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-01-debug/output.txt:3}}
 ```
 
-But again, the compiler gives us a helpful note:
+하지만 컴파일러는 다시 도움이 되는 메시지를 제공합니다.
 
 ```text
 {{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-01-debug/output.txt:9:10}}
 ```
 
-Rust *does* include functionality to print out debugging information, but we
-have to explicitly opt in to make that functionality available for our struct.
-To do that, we add the outer attribute `#[derive(Debug)]` just before the
-struct definition, as shown in Listing 5-12.
+Rust는 디버깅 정보를 출력하는 기능을 포함하고 있지만, 이 기능을 구조체에 명시적으로 적용해야 합니다. 구조체 정의 바로 앞에 `#[derive(Debug)]`라는 외부 속성을 추가하면 이를 수행할 수 있습니다. 5-12번 목록에서 보여주는 것처럼.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-12/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-12: Adding the attribute to derive the `Debug`
-trait and printing the `Rectangle` instance using debug formatting</span>
+<span class=\"caption\">Listing 5-12: `Debug` 트레이트를 추가하여 `Rectangle` 인스턴스를 디버그 형식으로 출력</span>
 
-Now when we run the program, we won’t get any errors, and we’ll see the
-following output:
+이제 프로그램을 실행하면 오류가 발생하지 않고 다음과 같은 출력을 볼 수 있습니다.
 
 ```console
 {{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-12/output.txt}}
 ```
 
-Nice! It’s not the prettiest output, but it shows the values of all the fields
-for this instance, which would definitely help during debugging. When we have
-larger structs, it’s useful to have output that’s a bit easier to read; in
-those cases, we can use `{:#?}` instead of `{:?}` in the `println!` string. In
-this example, using the `{:#?}` style will output the following:
+좋습니다! 가장 아름다운 출력은 아니지만, 이 인스턴스의 모든 필드 값이 표시되어 디버깅에 도움이 될 것입니다. 더 큰 구조체를 사용하는 경우 출력이 읽기 쉽도록 하는 것이 유용합니다. 그러한 경우 `println!` 문자열에서 `{:#?}` 대신 `{:?}`을 사용할 수 있습니다. 이 예제에서 `{:#?}` 스타일을 사용하면 다음과 같은 출력이 생성됩니다.
 
 ```console
 {{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-02-pretty-debug/output.txt}}
 ```
 
-Another way to print out a value using the `Debug` format is to use the [`dbg!`
-macro][dbg]<!-- ignore -->, which takes ownership of an expression (as opposed
-to `println!`, which takes a reference), prints the file and line number of
-where that `dbg!` macro call occurs in your code along with the resultant value
-of that expression, and returns ownership of the value.
+`Debug` 형식을 사용하여 값을 출력하는 또 다른 방법은 [`dbg!` 매크로][dbg]<!-- ignore -->를 사용하는 것입니다. `dbg!` 매크로는 표현식의 소유권을 가져와서 ( `println!`과 달리 참조를 가져옵니다), 코드에서 해당 `dbg!` 매크로 호출이 발생하는 파일과 줄 번호와 함께 그 표현식의 결과 값을 출력하고, 표현식의 소유권을 반환합니다.
 
-> Note: Calling the `dbg!` macro prints to the standard error console stream
-> (`stderr`), as opposed to `println!`, which prints to the standard output
-> console stream (`stdout`). We’ll talk more about `stderr` and `stdout` in the
-> [“Writing Error Messages to Standard Error Instead of Standard Output”
-> section in Chapter 12][err]<!-- ignore -->.
+> 주의: `dbg!` 매크로는 표준 오류 콘솔 스트림 (`stderr`)에 출력합니다. `println!`은 표준 출력 콘솔 스트림 (`stdout`)에 출력합니다. `stderr`와 `stdout`에 대해서는 제12장의 \u201cWriting Error Messages to Standard Error Instead of Standard Output\u201d 섹션에서 자세히 설명합니다.[err]<!-- ignore -->.
 
-Here’s an example where we’re interested in the value that gets assigned to the
-`width` field, as well as the value of the whole struct in `rect1`:
+`width` 필드에 할당되는 값과 `rect1` 전체 구조체의 값에 관심이 있는 경우 다음과 같은 예제를 살펴보겠습니다.
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-05-dbg-macro/src/main.rs}}
 ```
 
-We can put `dbg!` around the expression `30 * scale` and, because `dbg!`
-returns ownership of the expression’s value, the `width` field will get the
-same value as if we didn’t have the `dbg!` call there. We don’t want `dbg!` to
-take ownership of `rect1`, so we use a reference to `rect1` in the next call.
-Here’s what the output of this example looks like:
+`dbg!`를 `30 * scale` 표현식 주변에 둘 수 있으며, `dbg!`가 표현식의 소유권을 가져오기 때문에 `width` 필드는 `dbg!` 호출이 없었다면과 같은 값을 가져옵니다. `dbg!`가 `rect1`의 소유권을 가져가지 않으려면 다음 호출에서 `rect1`의 참조를 사용해야 합니다. 이 예제의 출력은 다음과 같습니다.
 
 ```console
 {{#include ../listings/ch05-using-structs-to-structure-related-data/no-listing-05-dbg-macro/output.txt}}
 ```
 
-We can see the first bit of output came from *src/main.rs* line 10 where we’re
-debugging the expression `30 * scale`, and its resultant value is `60` (the
-`Debug` formatting implemented for integers is to print only their value). The
-`dbg!` call on line 14 of *src/main.rs* outputs the value of `&rect1`, which is
-the `Rectangle` struct. This output uses the pretty `Debug` formatting of the
-`Rectangle` type. The `dbg!` macro can be really helpful when you’re trying to
-figure out what your code is doing!
+첫 번째 출력은 *src/main.rs*의 10번째 줄에서 `dbg!`를 사용하여 `30 * scale` 표현식을 디버깅했기 때문에 나타났습니다. 그 결과 값은 `60`입니다. (정수에 대한 `Debug` 형식은 값만 출력하도록 구현되었습니다). `rect1`의 값을 출력하는 `dbg!` 호출은 *src/main.rs*의 14번째 줄에서 발생합니다. 이 출력은 `Rectangle` 유형의 예쁘게 포맷된 `Debug` 형식을 사용합니다. `dbg!` 매크로는 코드가 무엇을 하는지 파악하려고 할 때 매우 유용할 수 있습니다!
 
-In addition to the `Debug` trait, Rust has provided a number of traits for us
-to use with the `derive` attribute that can add useful behavior to our custom
-types. Those traits and their behaviors are listed in [Appendix C][app-c]<!--
-ignore -->. We’ll cover how to implement these traits with custom behavior as
-well as how to create your own traits in Chapter 10. There are also many
-attributes other than `derive`; for more information, see [the “Attributes”
-section of the Rust Reference][attributes].
+`Debug` 트레이트 외에도 Rust는 `derive` 속성을 사용하여 사용자 정의 유형에 유용한 동작을 추가할 수 있는 여러 트레이트를 제공합니다. 이러한 트레이트와 그 동작은 [부록 C][app-c]<!-- ignore -->에 나와 있습니다. 사용자 정의 동작으로 이러한 트레이트를 구현하는 방법과 자신의 트레이트를 만드는 방법은 제10장에서 다룹니다. `derive` 외에도 많은 속성이 있습니다. 자세한 내용은 Rust 참조의 \u201cAttributes\u201d 섹션을 참조하십시오.[attributes]
 
-Our `area` function is very specific: it only computes the area of rectangles.
-It would be helpful to tie this behavior more closely to our `Rectangle` struct
-because it won’t work with any other type. Let’s look at how we can continue to
-refactor this code by turning the `area` function into an `area` *method*
-defined on our `Rectangle` type.
+우리의 `area` 함수는 매우 특수합니다. 즉, 직사각형의 면적만 계산합니다. 이 동작을 `Rectangle` 구조체에 더욱 밀접하게 연결하는 것이 도움이 될 것입니다. 다른 유형과 함께 작동하지 않기 때문입니다. `Rectangle` 구조체와 더 밀접하게 연결하여 이 동작을 구현하는 방법을 살펴보겠습니다.
 
-[the-tuple-type]: ch03-02-data-types.html#the-tuple-type
+구현된 `area` 함수를 `Rectangle` 유형에 정의된 `area` *메서드*로 변경하여 코드를 재정의합니다.
+
+[tuple-type]: ch03-02-data-types.html#the-tuple-type
 [app-c]: appendix-03-derivable-traits.md
 [println]: ../std/macro.println.html
 [dbg]: ../std/macro.dbg.html

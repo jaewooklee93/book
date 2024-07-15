@@ -1,24 +1,15 @@
-# Functional Language Features: Iterators and Closures
+## 함수형 언어 기능: 이터레이터와 클로저
 
-Rust’s design has taken inspiration from many existing languages and
-techniques, and one significant influence is *functional programming*.
-Programming in a functional style often includes using functions as values by
-passing them in arguments, returning them from other functions, assigning them
-to variables for later execution, and so forth.
+Rust는 많은 기존 언어와 기술에서 영감을 받아 설계되었으며, 그 중 하나는 *함수형 프로그래밍*입니다.
+함수형 스타일로 프로그래밍하는 것은 일반적으로 함수를 값으로 사용하여 인수로 전달하고, 다른 함수에서 반환하고, 변수에 할당하여 나중에 실행하는 등의 작업을 포함합니다.
 
-In this chapter, we won’t debate the issue of what functional programming is or
-isn’t but will instead discuss some features of Rust that are similar to
-features in many languages often referred to as functional.
+이 장에서는 함수형 프로그래밍이 무엇인지 여부에 대한 논쟁은 하지 않고, Rust의 특징 중에서 많은 언어에서 함수형으로 간주되는 특징들을 살펴보겠습니다.
 
-More specifically, we’ll cover:
+구체적으로, 다음을 다룰 것입니다.
 
-* *Closures*, a function-like construct you can store in a variable
-* *Iterators*, a way of processing a series of elements
-* How to use closures and iterators to improve the I/O project in Chapter 12
-* The performance of closures and iterators (Spoiler alert: they’re faster than
-  you might think!)
+* *클로저*, 변수에 저장할 수 있는 함수와 유사한 구조
+* *이터레이터*, 일련의 요소를 처리하는 방법
+* 클로저와 이터레이터를 사용하여 12장의 I/O 프로젝트를 개선하는 방법
+* 클로저와 이터레이터의 성능 (스포일러 경고: 예상보다 빠릅니다!)
 
-We’ve already covered some other Rust features, such as pattern matching and
-enums, that are also influenced by the functional style. Because mastering
-closures and iterators is an important part of writing idiomatic, fast Rust
-code, we’ll devote this entire chapter to them.
+패턴 매칭과 열거형과 같은 다른 Rust 기능은 이미 다루었는데, 이러한 기능 또한 함수형 스타일로부터 영향을 받았습니다. 클로저와 이터레이터를 숙달하는 것은 고유하고 빠른 Rust 코드를 작성하는 데 중요하기 때문에 이 장 전체를 이 두 가지 주제에 할애하겠습니다.

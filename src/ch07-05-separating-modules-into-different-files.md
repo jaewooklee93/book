@@ -1,127 +1,82 @@
-## Separating Modules into Different Files
+## 모듈을 다른 파일로 분리하기
 
-So far, all the examples in this chapter defined multiple modules in one file.
-When modules get large, you might want to move their definitions to a separate
-file to make the code easier to navigate.
+지금까지 이 장의 모든 예제는 하나의 파일에서 여러 모듈을 정의했습니다.
+모듈이 커지면 코드를 탐색하기 쉽게 하기 위해 정의를 별도의 파일에 이동하는 것이 좋습니다.
 
-For example, let’s start from the code in Listing 7-17 that had multiple
-restaurant modules. We’ll extract modules into files instead of having all the
-modules defined in the crate root file. In this case, the crate root file is
-*src/lib.rs*, but this procedure also works with binary crates whose crate root
-file is *src/main.rs*.
+예를 들어, 7-17번 목록의 여러 레스토랑 모듈을 가진 코드에서 시작해 보겠습니다. 우리는 모든 모듈이 크레이트 루트 파일에서 정의되는 대신 파일로 모듈을 추출할 것입니다. 이 경우 크레이트 루트 파일은 *src/lib.rs* 이지만, *src/main.rs* 가 크레이트 루트 파일인 이진 크레이트에도 이 절차가 적용됩니다.
 
-First we’ll extract the `front_of_house` module to its own file. Remove the
-code inside the curly brackets for the `front_of_house` module, leaving only
-the `mod front_of_house;` declaration, so that *src/lib.rs* contains the code
-shown in Listing 7-21. Note that this won’t compile until we create the
-*src/front_of_house.rs* file in Listing 7-22.
+먼저 `front_of_house` 모듈을 자신의 파일에 추출합니다. `front_of_house` 모듈의 중괄호 안의 코드를 제거하고, *src/lib.rs* 에 7-21번 목록에 나와 있는 코드만 남겨둡니다. 이때, *src/front_of_house.rs* 파일을 만들기 전까지는 컴파일되지 않습니다.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class=\"filename\">Filename: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-21-and-22/src/lib.rs}}
 ```
 
-<span class="caption">Listing 7-21: Declaring the `front_of_house` module whose
-body will be in *src/front_of_house.rs*</span>
+<span class=\"caption\">Listing 7-21: `front_of_house` 모듈을 선언하는데, 본문은 *src/front_of_house.rs* 에 있을 것입니다.</span>
 
-Next, place the code that was in the curly brackets into a new file named
-*src/front_of_house.rs*, as shown in Listing 7-22. The compiler knows to look
-in this file because it came across the module declaration in the crate root
-with the name `front_of_house`.
+다음으로, 중괄호 안에 있던 코드를 *src/front_of_house.rs* 라는 새 파일로 옮깁니다. 7-22번 목록에 나와 있습니다. 컴파일러는 크레이트 루트에서 `front_of_house` 라는 이름의 모듈 선언을 발견했기 때문에 해당 파일을 찾을 수 있습니다.
 
-<span class="filename">Filename: src/front_of_house.rs</span>
+<span class=\"filename\">Filename: src/front_of_house.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-21-and-22/src/front_of_house.rs}}
 ```
 
-<span class="caption">Listing 7-22: Definitions inside the `front_of_house`
-module in *src/front_of_house.rs*</span>
+<span class=\"caption\">Listing 7-22: `front_of_house` 모듈 내부의 정의가 *src/front_of_house.rs* 에 있습니다.</span>
 
-Note that you only need to load a file using a `mod` declaration *once* in your
-module tree. Once the compiler knows the file is part of the project (and knows
-where in the module tree the code resides because of where you’ve put the `mod`
-statement), other files in your project should refer to the loaded file’s code
-using a path to where it was declared, as covered in the [“Paths for Referring
-to an Item in the Module Tree”][paths]<!-- ignore --> section. In other words,
-`mod` is *not* an “include” operation that you may have seen in other
-programming languages.
+모듈 트리에서 `mod` 선언을 사용하여 파일을 로드해야 하는 것은 한 번만입니다. 컴파일러가 프로젝트에 해당 파일이 포함되어 있고 (모듈 트리에서 코드가 어디에 있는지 `mod` 문을 사용하여 선언한 위치를 알기 때문에) 프로젝트의 다른 파일은 해당 파일의 코드를 `mod` 문에서 선언된 경로를 사용하여 참조해야 합니다. 이는 [\u201c모듈 트리에서 항목을 참조하는 경로\u201d][paths]<!-- ignore --> 섹션에서 설명된 내용과 같습니다. 즉, `mod` 는 다른 프로그래밍 언어에서 볼 수 있는 \u201cinclude\u201d 연산이 아닙니다.
 
-Next, we’ll extract the `hosting` module to its own file. The process is a bit
-different because `hosting` is a child module of `front_of_house`, not of the
-root module. We’ll place the file for `hosting` in a new directory that will be
-named for its ancestors in the module tree, in this case *src/front_of_house*.
+다음으로 `hosting` 모듈을 자신의 파일에 추출합니다. `hosting` 이 루트 모듈의 자식 모듈이 아니라 `front_of_house` 의 자식 모듈이기 때문에 이 과정은 조금 다릅니다. `hosting` 에 대한 파일을 모듈 트리의 조상 이름으로 지정된 새 디렉토리에 배치할 것입니다. 이 경우 *src/front_of_house* 입니다.
 
-To start moving `hosting`, we change *src/front_of_house.rs* to contain only
-the declaration of the `hosting` module:
+`hosting` 을 옮기기 시작하려면 *src/front_of_house.rs* 를 `hosting` 모듈의 선언만 포함하도록 변경합니다.
 
-<span class="filename">Filename: src/front_of_house.rs</span>
+<span class=\"filename\">Filename: src/front_of_house.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/no-listing-02-extracting-hosting/src/front_of_house.rs}}
 ```
 
-Then we create a *src/front_of_house* directory and a *hosting.rs* file to
-contain the definitions made in the `hosting` module:
+그런 다음 *src/front_of_house* 디렉토리와 *hosting.rs* 파일을 만들어 `hosting` 모듈에서 정의된 코드를 포함합니다.
 
-<span class="filename">Filename: src/front_of_house/hosting.rs</span>
+<span class=\"filename\">Filename: src/front_of_house/hosting.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/no-listing-02-extracting-hosting/src/front_of_house/hosting.rs}}
 ```
 
-If we instead put *hosting.rs* in the *src* directory, the compiler would
-expect the *hosting.rs* code to be in a `hosting` module declared in the crate
-root, and not declared as a child of the `front_of_house` module. The
-compiler’s rules for which files to check for which modules’ code mean the
-directories and files more closely match the module tree.
+만약 *hosting.rs* 를 *src* 디렉토리에 넣었다면, 컴파일러는 *hosting.rs* 코드가 크레이트 루트에서 선언된 `hosting` 모듈에 속한다고 기대할 것입니다.
+## 모듈을 여러 파일로 분리하기
 
-> ### Alternate File Paths
->
-> So far we’ve covered the most idiomatic file paths the Rust compiler uses,
-> but Rust also supports an older style of file path. For a module named
-> `front_of_house` declared in the crate root, the compiler will look for the
-> module’s code in:
->
-> * *src/front_of_house.rs* (what we covered)
-> * *src/front_of_house/mod.rs* (older style, still supported path)
->
-> For a module named `hosting` that is a submodule of `front_of_house`, the
-> compiler will look for the module’s code in:
->
-> * *src/front_of_house/hosting.rs* (what we covered)
-> * *src/front_of_house/hosting/mod.rs* (older style, still supported path)
->
-> If you use both styles for the same module, you’ll get a compiler error.
-> Using a mix of both styles for different modules in the same project is
-> allowed, but might be confusing for people navigating your project.
->
-> The main downside to the style that uses files named *mod.rs* is that your
-> project can end up with many files named *mod.rs*, which can get confusing
-> when you have them open in your editor at the same time.
+이전 챕터에서 우리는 `front_of_house` 모듈 내부에 `hosting` 모듈을 정의했습니다. 이제 이 모듈들을 여러 파일로 분리하여 코드를 더욱 조직적으로 관리해 보겠습니다.
 
-We’ve moved each module’s code to a separate file, and the module tree remains
-the same. The function calls in `eat_at_restaurant` will work without any
-modification, even though the definitions live in different files. This
-technique lets you move modules to new files as they grow in size.
+### 파일 구조
 
-Note that the `pub use crate::front_of_house::hosting` statement in
-*src/lib.rs* also hasn’t changed, nor does `use` have any impact on what files
-are compiled as part of the crate. The `mod` keyword declares modules, and Rust
-looks in a file with the same name as the module for the code that goes into
-that module.
+모듈의 코드를 담당하는 파일은 모듈 이름과 동일하거나, `mod.rs` 파일을 사용하여 모듈을 정의할 수 있습니다. 예를 들어, `front_of_house` 모듈의 코드는 `src/front_of_house.rs` 또는 `src/front_of_house/mod.rs` 파일에서 찾을 수 있습니다. `hosting` 모듈의 코드는 `src/front_of_house/hosting.rs` 또는 `src/front_of_house/hosting/mod.rs` 파일에서 찾을 수 있습니다.
 
-## Summary
+이러한 파일 구조는 Rust 컴파일러가 모듈의 코드를 찾는 방식을 결정합니다. 컴파일러는 일반적으로 모듈 이름과 일치하는 파일을 찾습니다. 예를 들어, `front_of_house` 모듈의 코드는 `src/front_of_house.rs` 파일에서 찾을 수 있습니다.
 
-Rust lets you split a package into multiple crates and a crate into modules so
-you can refer to items defined in one module from another module. You can do
-this by specifying absolute or relative paths. These paths can be brought into
-scope with a `use` statement so you can use a shorter path for multiple uses of
-the item in that scope. Module code is private by default, but you can make
-definitions public by adding the `pub` keyword.
+### 모듈 분리
 
-In the next chapter, we’ll look at some collection data structures in the
-standard library that you can use in your neatly organized code.
+모듈을 여러 파일로 분리하면 코드를 더욱 관리하기 쉽습니다. 예를 들어, `front_of_house` 모듈의 코드를 `src/front_of_house.rs` 파일로, `hosting` 모듈의 코드를 `src/front_of_house/hosting.rs` 파일로 분리할 수 있습니다.
 
-[paths]: ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html
+이렇게 하면 `eat_at_restaurant` 함수에서 `front_of_house` 모듈의 `hosting` 모듈을 사용할 때, 코드가 더욱 명확하고 읽기 쉽습니다.
+
+### `use` 문
+
+`use` 문은 모듈 내부의 항목을 다른 모듈에서 사용할 때 사용됩니다. 예를 들어, `front_of_house` 모듈의 `hosting` 모듈에서 `take_order` 함수를 사용하려면 다음과 같이 `use` 문을 사용할 수 있습니다.
+
+```rust
+use front_of_house::hosting; 
+
+fn eat_at_restaurant() { 
+    hosting::take_order(); 
+}
+```
+
+### 요약
+
+Rust는 여러 파일로 분리된 모듈을 사용하여 코드를 조직적으로 관리할 수 있도록 합니다. `use` 문을 사용하여 모듈 내부의 항목을 다른 모듈에서 사용할 수 있습니다. 모듈의 코드는 `mod.rs` 파일 또는 모듈 이름과 동일한 파일에서 찾을 수 있습니다.
+
+다음 챕터에서는 Rust 표준 라이브러리에서 제공하는 다양한 자료구조를 살펴보겠습니다.
+

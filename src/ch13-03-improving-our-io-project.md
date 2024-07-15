@@ -1,19 +1,12 @@
-## Improving Our I/O Project
+## I/O 프로젝트 개선
 
-With this new knowledge about iterators, we can improve the I/O project in
-Chapter 12 by using iterators to make places in the code clearer and more
-concise. Let’s look at how iterators can improve our implementation of the
-`Config::build` function and the `search` function.
+이제 이터레이터에 대한 새로운 지식을 갖고 있으므로, 12장에서 소개된 I/O 프로젝트를 이터레이터를 사용하여 코드를 더 명확하고 간결하게 만들어 개선할 수 있습니다. `Config::build` 함수와 `search` 함수의 구현을 이터레이터가 개선하는 방식을 살펴보겠습니다.
 
-### Removing a `clone` Using an Iterator
+### 이터레이터를 사용하여 `clone` 제거
 
-In Listing 12-6, we added code that took a slice of `String` values and created
-an instance of the `Config` struct by indexing into the slice and cloning the
-values, allowing the `Config` struct to own those values. In Listing 13-17,
-we’ve reproduced the implementation of the `Config::build` function as it was
-in Listing 12-23:
+12-6번 목록에서, `String` 값의 슬라이스를 가져와 `Config` 구조체의 인스턴스를 생성하는 코드를 추가했습니다. 이 코드는 슬라이스를 인덱싱하고 값을 복사하여 `Config` 구조체가 이 값들을 소유하도록 했습니다. 13-17번 목록에서는 12-23번 목록에서 `Config::build` 함수의 구현을 다시 작성했습니다.
 
-<Listing number="13-17" file-name="src/lib.rs" caption="Reproduction of the `Config::build` function from Listing 12-23">
+<Listing number=\"13-17\" file-name=\"src/lib.rs\" caption=\"12-23번 목록에서 재현된 `Config::build` 함수\">
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch13-functional-features/listing-12-23-reproduced/src/lib.rs:ch13}}
@@ -21,39 +14,27 @@ in Listing 12-23:
 
 </Listing>
 
-At the time, we said not to worry about the inefficient `clone` calls because
-we would remove them in the future. Well, that time is now!
+당시에는 `clone` 호출이 비효율적이지만, 나중에 제거할 것이라고 말했습니다. 이제 그 시간이 왔습니다!
 
-We needed `clone` here because we have a slice with `String` elements in the
-parameter `args`, but the `build` function doesn’t own `args`. To return
-ownership of a `Config` instance, we had to clone the values from the `query`
-and `file_path` fields of `Config` so the `Config` instance can own its values.
+`build` 함수는 `args`라는 매개변수로 슬라이스를 받지만, `build` 함수는 `args`를 소유하지 않습니다. `Config` 인스턴스를 반환하기 위해서는 `query`와 `file_path` 필드의 값을 복사해야 합니다. 이렇게 하면 `Config` 인스턴스가 값을 소유할 수 있습니다.
 
-With our new knowledge about iterators, we can change the `build` function to
-take ownership of an iterator as its argument instead of borrowing a slice.
-We’ll use the iterator functionality instead of the code that checks the length
-of the slice and indexes into specific locations. This will clarify what the
-`Config::build` function is doing because the iterator will access the values.
+이터레이터에 대한 새로운 지식을 사용하면 `build` 함수를 이터레이터를 인자로 받도록 변경할 수 있습니다. 이터레이터 기능을 사용하여 슬라이스의 길이를 확인하고 특정 위치에 인덱싱하는 코드를 대체할 수 있습니다. 이렇게 하면 `Config::build` 함수가 무엇을 하는지 명확해집니다. 왜냐하면 이터레이터가 값에 액세스하기 때문입니다.
 
-Once `Config::build` takes ownership of the iterator and stops using indexing
-operations that borrow, we can move the `String` values from the iterator into
-`Config` rather than calling `clone` and making a new allocation.
+`Config::build` 함수가 이터레이터를 소유하게 되고 인덱싱 작업을 사용하지 않게 되면, 이터레이터에서 `String` 값을 `Config`로 이동시킬 수 있습니다. 이때 `clone`을 호출하고 새로운 할당을 생성하지 않아도 됩니다.
 
-#### Using the Returned Iterator Directly
+#### 반환된 이터레이터를 직접 사용하기
 
-Open your I/O project’s *src/main.rs* file, which should look like this:
+I/O 프로젝트의 *src/main.rs* 파일을 열고, 다음과 같이 보이는지 확인하십시오.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch13-functional-features/listing-12-24-reproduced/src/main.rs:ch13}}
 ```
 
-We’ll first change the start of the `main` function that we had in Listing
-12-24 to the code in Listing 13-18, which this time uses an iterator. This
-won’t compile until we update `Config::build` as well.
+이제 12-24번 목록에서 사용했던 코드를 13-18번 목록의 코드로 변경합니다. 이 코드는 이터레이터를 사용합니다. `Config::build` 함수를 업데이트할 때까지는 컴파일되지 않습니다.
 
-<Listing number="13-18" file-name="src/main.rs" caption="Passing the return value of `env::args` to `Config::build`">
+<Listing number=\"13-18\" file-name=\"src/main.rs\" caption=\"`env::args`의 반환값을 `Config::build`에 전달하기\">
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-18/src/main.rs:here}}
@@ -61,17 +42,11 @@ won’t compile until we update `Config::build` as well.
 
 </Listing>
 
-The `env::args` function returns an iterator! Rather than collecting the
-iterator values into a vector and then passing a slice to `Config::build`, now
-we’re passing ownership of the iterator returned from `env::args` to
-`Config::build` directly.
+`env::args` 함수는 이터레이터를 반환합니다! `env::args` 함수에서 반환되는 이터레이터 값을 벡터로 수집한 후 슬라이스를 `Config::build`에 전달하는 대신, 이제 `env::args`에서 반환되는 이터레이터의 소유권을 `Config::build`에 직접 전달합니다.
 
-Next, we need to update the definition of `Config::build`. In your I/O
-project’s *src/lib.rs* file, let’s change the signature of `Config::build` to
-look like Listing 13-19. This still won’t compile because we need to update the
-function body.
+다음으로 `Config::build` 함수의 정의를 업데이트해야 합니다. I/O 프로젝트의 *src/lib.rs* 파일에서 `Config::build` 함수의 서명을 13-19번 목록과 같이 변경합니다. 이 또한 컴파일되지 않을 것입니다. 왜냐하면 함수 본문을 업데이트해야 하기 때문입니다.
 
-<Listing number="13-19" file-name="src/lib.rs" caption="Updating the signature of `Config::build` to expect an iterator">
+<Listing number=\"13-19\" file-name=\"src/lib.rs\" caption=\"`Config::build` 함수의 서명을 이터레이터를 기대하도록 업데이트하기\">
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-19/src/lib.rs:here}}
@@ -79,28 +54,18 @@ function body.
 
 </Listing>
 
-The standard library documentation for the `env::args` function shows that the
-type of the iterator it returns is `std::env::Args`, and that type implements
-the `Iterator` trait and returns `String` values.
+`env::args` 함수의 표준 라이브러리 문서는 이 함수가 반환하는 이터레이터의 유형이 `std::env::Args`이며, 이 유형이 이터레이터 인터페이스를 구현한다고 표시합니다.
+ `Iterator` 트레이트를 사용하여 `String` 값을 반환합니다.
 
-We’ve updated the signature of the `Config::build` function so the parameter
-`args` has a generic type with the trait bounds `impl Iterator<Item = String>`
-instead of `&[String]`. This usage of the `impl Trait` syntax we discussed in
-the [“Traits as Parameters”][impl-trait]<!-- ignore --> section of Chapter 10
-means that `args` can be any type that implements the `Iterator` trait and
-returns `String` items.
+`Config::build` 함수의 서명을 업데이트하여 매개변수 `args`가 `impl Iterator<Item = String>`과 같은 트레이트 경계를 가진 일반 유형이 되도록 했습니다. 이 `impl Trait` 구문은 제10장의 "트레이트를 매개변수로 사용하기"<!-- ignore --> 섹션에서 논의한 것처럼 `args`가 `Iterator` 트레이트를 구현하고 `String` 항목을 반환하는 유형이 될 수 있음을 의미합니다.
 
-Because we’re taking ownership of `args` and we’ll be mutating `args` by
-iterating over it, we can add the `mut` keyword into the specification of the
-`args` parameter to make it mutable.
+`args`에 소유권을 가져가고 `args`를 반복하여 변경하기 때문에 `args` 매개변수의 명시에 `mut` 키워드를 추가하여 변경 가능하도록 할 수 있습니다.
 
-#### Using `Iterator` Trait Methods Instead of Indexing
+#### `Iterator` 트레이트 메서드 사용
 
-Next, we’ll fix the body of `Config::build`. Because `args` implements the
-`Iterator` trait, we know we can call the `next` method on it! Listing 13-20
-updates the code from Listing 12-23 to use the `next` method:
+다음으로 `Config::build`의 바디를 수정합니다. `args`가 `Iterator` 트레이트를 구현하기 때문에 `next` 메서드를 호출할 수 있다는 것을 알 수 있습니다. 13-20번 목록은 12-23번 목록에서 `next` 메서드를 사용하는 코드로 업데이트합니다.
 
-<Listing number="13-20" file-name="src/lib.rs" caption="Changing the body of `Config::build` to use iterator methods">
+<Listing number=\"13-20\" file-name=\"src/lib.rs\" caption=\"`Config::build`의 바디를 이터레이터 메서드를 사용하여 변경\">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-20/src/lib.rs:here}}
@@ -108,20 +73,13 @@ updates the code from Listing 12-23 to use the `next` method:
 
 </Listing>
 
-Remember that the first value in the return value of `env::args` is the name of
-the program. We want to ignore that and get to the next value, so first we call
-`next` and do nothing with the return value. Second, we call `next` to get the
-value we want to put in the `query` field of `Config`. If `next` returns a
-`Some`, we use a `match` to extract the value. If it returns `None`, it means
-not enough arguments were given and we return early with an `Err` value. We do
-the same thing for the `file_path` value.
+`env::args`의 반환 값의 첫 번째 값은 프로그램의 이름입니다. 이를 무시하고 다음 값을 가져오려면 먼저 `next`를 호출하고 반환 값을 무시합니다. 두 번째로 `next`를 호출하여 `query` 필드에 들어갈 값을 가져옵니다. `next`가 `Some`을 반환하면 `match`를 사용하여 값을 추출합니다. `None`을 반환하면 인수가 충분하지 않아 `Err` 값으로 조기에 반환합니다. `file_path` 값에 대해서도 동일한 작업을 수행합니다.
 
-### Making Code Clearer with Iterator Adaptors
+### 이터레이터 어댑터를 사용하여 코드를 명확하게 만들기
 
-We can also take advantage of iterators in the `search` function in our I/O
-project, which is reproduced here in Listing 13-21 as it was in Listing 12-19:
+또한 I/O 프로젝트의 `search` 함수에서도 이터레이터를 활용할 수 있습니다. 13-21번 목록은 12-19번 목록에서와 같이 `search` 함수를 재현합니다.
 
-<Listing number="13-21" file-name="src/lib.rs" caption="The implementation of the `search` function from Listing 12-19">
+<Listing number=\"13-21\" file-name=\"src/lib.rs\" caption=\"12-19번 목록에서 `search` 함수의 구현\">
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-19/src/lib.rs:ch13}}
@@ -129,14 +87,10 @@ project, which is reproduced here in Listing 13-21 as it was in Listing 12-19:
 
 </Listing>
 
-We can write this code in a more concise way using iterator adaptor methods.
-Doing so also lets us avoid having a mutable intermediate `results` vector. The
-functional programming style prefers to minimize the amount of mutable state to
-make code clearer. Removing the mutable state might enable a future enhancement
-to make searching happen in parallel, because we wouldn’t have to manage
-concurrent access to the `results` vector. Listing 13-22 shows this change:
+이터레이터 어댑터 메서드를 사용하여 이 코드를 더 간결하게 작성할 수 있습니다. 이렇게 하면 변경 가능한 중간 `results` 벡터를 가지지 않아도 됩니다. 함수형 프로그래밍 스타일은 코드를 명확하게 하기 위해 변경 가능한 상태의 양을 최소화하는 것을 선호합니다. 변경 가능한 상태를 제거하면 `results` 벡터에 대한 동시 액세스를 관리하지 않아도 되므로 미래에 병렬 검색을 수행하는 것을 가능하게 할 수 있습니다.
+13-22번 목록은 이 변경 사항을 보여줍니다.
 
-<Listing number="13-22" file-name="src/lib.rs" caption="Using iterator adaptor methods in the implementation of the `search` function">
+<Listing number=\"13-22\" file-name=\"src/lib.rs\" caption=\"`search` 함수의 구현에서 이터레이터 어댑터 메서드 사용\">
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-22/src/lib.rs:here}}
@@ -144,29 +98,12 @@ concurrent access to the `results` vector. Listing 13-22 shows this change:
 
 </Listing>
 
-Recall that the purpose of the `search` function is to return all lines in
-`contents` that contain the `query`. Similar to the `filter` example in Listing
-13-16, this code uses the `filter` adaptor to keep only the lines that
-`line.contains(query)` returns `true` for. We then collect the matching lines
-into another vector with `collect`. Much simpler! Feel free to make the same
-change to use iterator methods in the `search_case_insensitive` function as
-well.
+`search` 함수의 목적은 `contents`의 모든 줄에서 `query`를 포함하는 줄을 반환하는 것입니다. 13-16번 목록의 `filter` 예제와 유사하게 이 코드는 `filter` 어댑터를 사용하여 `line.contains(query)`가 `true`를 반환하는 줄만 유지합니다. 다음으로 `collect`를 사용하여 일치하는 줄을 다른 벡터에 수집합니다. 훨씬 간단합니다! `search_case_insensitive` 함수에서도 이터레이터 메서드를 사용하여 동일한 변경을 적용하는 것을 자유롭게 해보세요.
 
-### Choosing Between Loops or Iterators
+### 루프와 이터레이터 중 선택하기
 
-The next logical question is which style you should choose in your own code and
-why: the original implementation in Listing 13-21 or the version using
-iterators in Listing 13-22. Most Rust programmers prefer to use the iterator
-style. It’s a bit tougher to get the hang of at first, but once you get a feel
-for the various iterator adaptors and what they do, iterators can be easier to
-understand. Instead of fiddling with the various bits of looping and building
-new vectors, the code focuses on the high-level objective of the loop. This
-abstracts away some of the commonplace code so it’s easier to see the concepts
-that are unique to this code, such as the filtering condition each element in
-the iterator must pass.
+다음 논리적인 질문은 자신의 코드에서 루프 스타일과 이터레이터 스타일 중 어떤 스타일을 선택해야 하는지, 그리고 왜 그런지에 대한 것입니다. 대부분의 Rust 프로그래머는 이터레이터 스타일을 선호합니다. 처음에는 익숙해지기가 조금 어려울 수 있지만, 다양한 이터레이터 어댑터와 그들이 하는 일에 대한 이해를 갖게 되면 이터레이터는 코드를 작성하는 데 더 쉽게 사용할 수 있습니다이해하기 위해서 반복문과 새로운 벡터를 만드는 여러 부분을 조작하는 대신, 코드는 반복문의 고수준 목표에 중점을 둡니다. 이는 일상적인 코드를 추상화하여 이 코드만의 독특한 개념, 예를 들어 이터레이터의 각 요소가 통과해야 하는 필터링 조건과 같은 것을 더 쉽게 볼 수 있게 합니다.
 
-But are the two implementations truly equivalent? The intuitive assumption
-might be that the more low-level loop will be faster. Let’s talk about
-performance.
+하지만 두 구현은 정말로 동등한가요? 직관적인 가정은 더 저수준의 루프가 더 빠를 것이라는 것입니다. 성능에 대해 이야기해 보겠습니다.
 
 [impl-trait]: ch10-02-traits.html#traits-as-parameters

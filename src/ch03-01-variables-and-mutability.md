@@ -1,191 +1,96 @@
-## Variables and Mutability
+## 변수와 변경 가능성
 
-As mentioned in the [“Storing Values with
-Variables”][storing-values-with-variables]<!-- ignore --> section, by default,
-variables are immutable. This is one of many nudges Rust gives you to write
-your code in a way that takes advantage of the safety and easy concurrency that
-Rust offers. However, you still have the option to make your variables mutable.
-Let’s explore how and why Rust encourages you to favor immutability and why
-sometimes you might want to opt out.
+[\"변수를 사용하여 값 저장\"][storing-values-with-variables]에서 언급했듯이, 기본적으로 변수는 변경 불가능합니다. 이는 Rust가 안전성과 쉬운 병렬 처리를 제공하도록 코드를 작성하도록 유도하는 여러 가지 촉구 중 하나입니다. 그러나 여전히 변수를 변경 가능하게 만들 수 있습니다. 변수의 변경 가능성을 왜 선호하는지, 그리고 때때로는 왜 선택적으로 변경 가능성을 사용하는지 살펴보겠습니다.
 
-When a variable is immutable, once a value is bound to a name, you can’t change
-that value. To illustrate this, generate a new project called *variables* in
-your *projects* directory by using `cargo new variables`.
+변수가 변경 불가능하면 값이 이름에 바인딩되면 그 값을 변경할 수 없습니다. 이를 보여주기 위해 `cargo new variables`를 사용하여 *projects* 디렉토리에 *variables*라는 이름의 새 프로젝트를 생성합니다.
 
-Then, in your new *variables* directory, open *src/main.rs* and replace its
-code with the following code, which won’t compile just yet:
+새로운 *variables* 디렉토리에서 *src/main.rs*를 열고 아직 컴파일되지 않은 다음 코드로 코드를 대체합니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-01-variables-are-immutable/src/main.rs}}
 ```
 
-Save and run the program using `cargo run`. You should receive an error message
-regarding an immutability error, as shown in this output:
+`cargo run`을 사용하여 코드를 저장하고 실행합니다. 컴파일 오류 메시지가 표시되어 컴파일되지 않습니다.
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/no-listing-01-variables-are-immutable/output.txt}}
 ```
 
-This example shows how the compiler helps you find errors in your programs.
-Compiler errors can be frustrating, but really they only mean your program
-isn’t safely doing what you want it to do yet; they do *not* mean that you’re
-not a good programmer! Experienced Rustaceans still get compiler errors.
+이 예제는 컴파일러가 프로그램에서 오류를 찾는 데 도움을 주는 방식을 보여줍니다. 컴파일러 오류는 답답할 수 있지만, 프로그램이 아직 안전하게 원하는 작업을 수행하지 못하는 것일 뿐입니다. 즉, 당신이 좋은 프로그래머가 아니라는 의미는 아닙니다! 경험이 많은 Rust 개발자도 여전히 컴파일러 오류를 받습니다.
 
-You received the error message `` cannot assign twice to immutable variable `x`
-`` because you tried to assign a second value to the immutable `x` variable.
+`` cannot assign twice to immutable variable `x` `` 오류 메시지를 받은 이유는 변경 불가능한 `x` 변수에 두 번째 값을 할당하려고 시도했기 때문입니다.
 
-It’s important that we get compile-time errors when we attempt to change a
-value that’s designated as immutable because this very situation can lead to
-bugs. If one part of our code operates on the assumption that a value will
-never change and another part of our code changes that value, it’s possible
-that the first part of the code won’t do what it was designed to do. The cause
-of this kind of bug can be difficult to track down after the fact, especially
-when the second piece of code changes the value only *sometimes*. The Rust
-compiler guarantees that when you state that a value won’t change, it really
-won’t change, so you don’t have to keep track of it yourself. Your code is thus
-easier to reason through.
+변수를 변경 가능하게 하지 않고 변경 가능한 값을 지정하면 코드에서 오류가 발생하는 것을 컴파일 시간에 감지하는 것이 중요합니다. 이러한 상황은 버그로 이어질 수 있습니다. 코드의 한 부분이 값이 변경되지 않는다는 가정으로 작동하고 다른 부분이 값을 변경하면 첫 번째 부분의 코드가 설계된대로 작동하지 않을 수 있습니다. 특히 두 번째 코드 조각이 값을 *때때로*만 변경하는 경우 버그의 원인을 추적하는 것은 어려울 수 있습니다. Rust 컴파일러는 값이 변경되지 않는다고 명시하면 실제로 변경되지 않도록 보장하므로, 이를 스스로 추적할 필요가 없습니다. 따라서 코드를 논리적으로 생각하는 것이 더 쉬워집니다.
 
-But mutability can be very useful, and can make code more convenient to write.
-Although variables are immutable by default, you can make them mutable by
-adding `mut` in front of the variable name as you did in [Chapter
-2][storing-values-with-variables]<!-- ignore -->. Adding `mut` also conveys
-intent to future readers of the code by indicating that other parts of the code
-will be changing this variable’s value.
+그러나 변경 가능성은 매우 유용하며 코드를 작성하는 데 더 편리하게 만들 수 있습니다. 변수는 기본적으로 변경 불가능하지만, `mut`를 변수 이름 앞에 추가하면 변경 가능하게 만들 수 있습니다. `mut`를 추가하면 코드의 미래 독자에게 다른 코드 부분이 이 변수의 값을 변경할 것이라는 의도를 전달합니다.
 
-For example, let’s change *src/main.rs* to the following:
+예를 들어, *src/main.rs*를 다음과 같이 변경해 보겠습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-02-adding-mut/src/main.rs}}
 ```
 
-When we run the program now, we get this:
+이제 프로그램을 실행하면 다음과 같은 결과를 얻습니다.
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/no-listing-02-adding-mut/output.txt}}
 ```
 
-We’re allowed to change the value bound to `x` from `5` to `6` when `mut` is
-used. Ultimately, deciding whether to use mutability or not is up to you and
-depends on what you think is clearest in that particular situation.
+`mut`를 사용하면 `x`에 할당된 값을 `5`에서 `6`으로 변경할 수 있습니다. 결국, 변경 가능성을 사용할지 여부는 상황에 따라 달라지며, 당시 가장 명확하다고 생각하는 것이 중요합니다.
 
-### Constants
+### 상수
 
-Like immutable variables, *constants* are values that are bound to a name and
-are not allowed to change, but there are a few differences between constants
-and variables.
+변경 불가능한 변수와 마찬가지로 *상수*는 이름에 바인딩된 값이며 변경할 수 없습니다. 하지만 상수와 변수에는 몇 가지 차이점이 있습니다.
 
-First, you aren’t allowed to use `mut` with constants. Constants aren’t just
-immutable by default—they’re always immutable. You declare constants using the
-`const` keyword instead of the `let` keyword, and the type of the value *must*
-be annotated. We’ll cover types and type annotations in the next section,
-[“Data Types”][data-types]<!-- ignore -->, so don’t worry about the details
-right now. Just know that you must always annotate the type.
+첫째, 상수에는 `mut`를 사용할 수 없습니다. 상수는 단순히 기본적으로 변경 불가능한 것이 아니라 항상 변경 불가능합니다. 상수는 `let` 키워드 대신 `const` 키워드를 사용하여 선언하고, 값의 유형은 반드시 주어져야 합니다. 다음 섹션에서 유형과 유형 주석에 대해 다룰 것입니다.
+[\u201c데이터 유형\u201d][데이터-유형]<!-- 무시 -->, 지금 당장은 자세한 내용은 신경 쓰지 마세요.
+단지 항상 유형을 지정해야 한다는 것을 알아두세요.
 
-Constants can be declared in any scope, including the global scope, which makes
-them useful for values that many parts of code need to know about.
+상수는 글로벌 스코프를 포함하여 모든 스코프에서 선언할 수 있습니다.
+이는 코드의 많은 부분이 알아야 할 값에 유용합니다.
 
-The last difference is that constants may be set only to a constant expression,
-not the result of a value that could only be computed at runtime.
+마지막 차이점은 상수는 런타임에만 계산될 수 있는 값의 결과가 아니라 상수 표현식에만 할당될 수 있다는 것입니다.
 
-Here’s an example of a constant declaration:
+다음은 상수 선언의 예입니다.
 
 ```rust
 const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
 ```
 
-The constant’s name is `THREE_HOURS_IN_SECONDS` and its value is set to the
-result of multiplying 60 (the number of seconds in a minute) by 60 (the number
-of minutes in an hour) by 3 (the number of hours we want to count in this
-program). Rust’s naming convention for constants is to use all uppercase with
-underscores between words. The compiler is able to evaluate a limited set of
-operations at compile time, which lets us choose to write out this value in a
-way that’s easier to understand and verify, rather than setting this constant
-to the value 10,800. See the [Rust Reference’s section on constant
-evaluation][const-eval] for more information on what operations can be used
-when declaring constants.
+상수의 이름은 `THREE_HOURS_IN_SECONDS`이고 값은 60 (분당 초의 수)를 60 (시간당 분의 수)에 3 (프로그램에서 계산하려는 시간의 수)으로 곱한 결과로 설정됩니다.
+Rust의 상수 명명 규칙은 모든 대문자를 사용하고 단어 사이에 언더스코어를 넣는 것입니다. 컴파일러는 컴파일 시간에 한정된 수의 연산을 평가할 수 있으므로 이 값을 이해하기 쉽고 검증하기 쉬운 방식으로 작성할 수 있습니다.
+[Rust 참조의 상수 평가 섹션][const-eval]에서 상수를 선언할 때 사용할 수 있는 연산에 대한 자세한 내용을 확인하세요.
 
-Constants are valid for the entire time a program runs, within the scope in
-which they were declared. This property makes constants useful for values in
-your application domain that multiple parts of the program might need to know
-about, such as the maximum number of points any player of a game is allowed to
-earn, or the speed of light.
+상수는 선언된 스코프 내에서 프로그램이 실행되는 동안 유효합니다. 이 속성은 프로그램의 여러 부분이 알아야 할 값에 대한 상수가 유용하다는 것을 의미합니다.
+예를 들어 게임의 플레이어가 얻을 수 있는 최대 점수 또는 빛의 속도와 같습니다.
 
-Naming hardcoded values used throughout your program as constants is useful in
-conveying the meaning of that value to future maintainers of the code. It also
-helps to have only one place in your code you would need to change if the
-hardcoded value needed to be updated in the future.
+프로그램 전체에서 사용되는 고정된 값을 상수로 명명하는 것은 그 값의 의미를 코드의 미래 유지 보수자에게 전달하는 데 유용합니다.
+또한 미래에 고정된 값을 업데이트해야 하는 경우 코드에서 변경해야 하는 곳이 하나만 있도록 도와줍니다.
 
-### Shadowing
+### 변수 오버라이딩
 
-As you saw in the guessing game tutorial in [Chapter
-2][comparing-the-guess-to-the-secret-number]<!-- ignore -->, you can declare a
-new variable with the same name as a previous variable. Rustaceans say that the
-first variable is *shadowed* by the second, which means that the second
-variable is what the compiler will see when you use the name of the variable.
-In effect, the second variable overshadows the first, taking any uses of the
-variable name to itself until either it itself is shadowed or the scope ends.
-We can shadow a variable by using the same variable’s name and repeating the
-use of the `let` keyword as follows:
+[Chapter 2][comparing-the-guess-to-the-secret-number]<!-- 무시 -->에서 본 숫자 맞추기 게임 튜토리얼에서 알 수 있듯이, 이전 변수와 동일한 이름으로 새로운 변수를 선언할 수 있습니다. Rust 개발자들은 첫 번째 변수가 두 번째 변수에 의해 *오버라이딩*된다고 말합니다. 즉, 컴파일러는 변수 이름을 사용할 때 두 번째 변수를 볼 것입니다. 효과적으로 두 번째 변수가 첫 번째를 가리고, 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기까지 계속됩니다. 변수 이름을 사용하는 것은 두 번째 변수로 가기```
 
-<span class="filename">Filename: src/main.rs</span>
-
-```rust
-{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-03-shadowing/src/main.rs}}
-```
-
-This program first binds `x` to a value of `5`. Then it creates a new variable
-`x` by repeating `let x =`, taking the original value and adding `1` so the
-value of `x` is then `6`. Then, within an inner scope created with the curly
-brackets, the third `let` statement also shadows `x` and creates a new
-variable, multiplying the previous value by `2` to give `x` a value of `12`.
-When that scope is over, the inner shadowing ends and `x` returns to being `6`.
-When we run this program, it will output the following:
-
-```console
-{{#include ../listings/ch03-common-programming-concepts/no-listing-03-shadowing/output.txt}}
-```
-
-Shadowing is different from marking a variable as `mut` because we’ll get a
-compile-time error if we accidentally try to reassign to this variable without
-using the `let` keyword. By using `let`, we can perform a few transformations
-on a value but have the variable be immutable after those transformations have
-been completed.
-
-The other difference between `mut` and shadowing is that because we’re
-effectively creating a new variable when we use the `let` keyword again, we can
-change the type of the value but reuse the same name. For example, say our
-program asks a user to show how many spaces they want between some text by
-inputting space characters, and then we want to store that input as a number:
-
-```rust
-{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-04-shadowing-can-change-types/src/main.rs:here}}
-```
-
-The first `spaces` variable is a string type and the second `spaces` variable
-is a number type. Shadowing thus spares us from having to come up with
-different names, such as `spaces_str` and `spaces_num`; instead, we can reuse
-the simpler `spaces` name. However, if we try to use `mut` for this, as shown
-here, we’ll get a compile-time error:
+첫 번째 `spaces` 변수는 문자열 유형이고 두 번째 `spaces` 변수는 숫자 유형입니다.  
+\u2018shadowing\u2019은 `spaces_str` 와 `spaces_num`과 같이 다른 이름을 생각해내지 않아도 되도록 해줍니다. 대신, 더 간단한 `spaces` 이름을 재사용할 수 있습니다. 그러나 `mut`를 사용하려고 하면 다음과 같이 컴파일 시간 오류가 발생합니다.
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-05-mut-cant-change-types/src/main.rs:here}}
 ```
 
-The error says we’re not allowed to mutate a variable’s type:
+오류 메시지는 변수의 유형을 변경할 수 없다고 말합니다.
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/no-listing-05-mut-cant-change-types/output.txt}}
 ```
 
-Now that we’ve explored how variables work, let’s look at more data types they
-can have.
+이제 변수가 어떻게 작동하는지 살펴봤으니, 더 많은 데이터 유형을 가질 수 있는지 살펴보겠습니다.
 
-[comparing-the-guess-to-the-secret-number]:
-ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number
+[comparing-the-guess-to-the-secret-number]: ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number
 [data-types]: ch03-02-data-types.html#data-types
 [storing-values-with-variables]: ch02-00-guessing-game-tutorial.html#storing-values-with-variables
 [const-eval]: ../reference/const_eval.html

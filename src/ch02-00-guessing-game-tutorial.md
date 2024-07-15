@@ -1,33 +1,24 @@
-# Programming a Guessing Game
+## 추측 게임 프로그래밍
 
-Let’s jump into Rust by working through a hands-on project together! This
-chapter introduces you to a few common Rust concepts by showing you how to use
-them in a real program. You’ll learn about `let`, `match`, methods, associated
-functions, external crates, and more! In the following chapters, we’ll explore
-these ideas in more detail. In this chapter, you’ll just practice the
-fundamentals.
+함께 손을 잡고 Rust를 배우는 건 어떨까요? 이
+장에서는 실제 프로그램을 통해 몇 가지 일반적인 Rust 개념을 소개합니다.
+`let`, `match`, 메서드, 연관 함수, 외부 crate 등을 사용하는 방법을 배울 수 있습니다.
+다음 장에서는 이러한 개념들을 자세히 살펴보겠습니다. 이 장에서는 단순히 기본적인 개념을 연습하는 데 집중합니다.
 
-We’ll implement a classic beginner programming problem: a guessing game. Here’s
-how it works: the program will generate a random integer between 1 and 100. It
-will then prompt the player to enter a guess. After a guess is entered, the
-program will indicate whether the guess is too low or too high. If the guess is
-correct, the game will print a congratulatory message and exit.
+우리는 흔히 초보 프로그래머가 접하는 고전적인 문제인 추측 게임을 구현합니다. 게임의 방식은 다음과 같습니다: 프로그램이 1부터 100까지의 임의의 정수를 생성합니다. 그런 다음 사용자에게 숫자를 추측하도록 요청합니다. 사용자가 숫자를 입력하면 프로그램이 추측이 너무 낮거나 너무 높은지 알려줍니다. 추측이 맞으면 프로그램은 축하 메시지를 출력하고 종료됩니다.
 
-## Setting Up a New Project
+## 새 프로젝트 설정
 
-To set up a new project, go to the *projects* directory that you created in
-Chapter 1 and make a new project using Cargo, like so:
+1장에서 만든 *projects* 디렉토리로 이동하여 Cargo를 사용하여 새 프로젝트를 생성합니다.
 
 ```console
 $ cargo new guessing_game
 $ cd guessing_game
 ```
 
-The first command, `cargo new`, takes the name of the project (`guessing_game`)
-as the first argument. The second command changes to the new project’s
-directory.
+첫 번째 명령어인 `cargo new`는 프로젝트 이름 (`guessing_game`)을 첫 번째 인수로 받습니다. 두 번째 명령어는 새 프로젝트의 디렉토리로 이동합니다.
 
-Look at the generated *Cargo.toml* file:
+생성된 *Cargo.toml* 파일을 살펴보세요:
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial
@@ -38,42 +29,35 @@ cargo run > output.txt 2>&1
 cd ../../..
 -->
 
-<span class="filename">Filename: Cargo.toml</span>
+<span class=\"filename\">Filename: Cargo.toml</span>
 
 ```toml
 {{#include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/Cargo.toml}}
 ```
 
-As you saw in Chapter 1, `cargo new` generates a “Hello, world!” program for
-you. Check out the *src/main.rs* file:
+1장에서 보았듯이 `cargo new`는 "Hello, world!" 프로그램을 생성합니다. *src/main.rs* 파일을 확인해 보세요:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/src/main.rs}}
 ```
 
-Now let’s compile this “Hello, world!” program and run it in the same step
-using the `cargo run` command:
+이제 `cargo run` 명령어를 사용하여 이 "Hello, world!" 프로그램을 컴파일하고 실행합니다.
 
 ```console
 {{#include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/output.txt}}
 ```
 
-The `run` command comes in handy when you need to rapidly iterate on a project,
-as we’ll do in this game, quickly testing each iteration before moving on to
-the next one.
+`run` 명령어는 프로젝트를 빠르게 반복적으로 개발할 때 유용합니다. 이 게임에서도 즉시 테스트할 수 있도록 도와줍니다.
 
-Reopen the *src/main.rs* file. You’ll be writing all the code in this file.
+*src/main.rs* 파일을 다시 열고 모든 코드를 작성할 것입니다.
 
-## Processing a Guess
+## 추측 처리
 
-The first part of the guessing game program will ask for user input, process
-that input, and check that the input is in the expected form. To start, we’ll
-allow the player to input a guess. Enter the code in Listing 2-1 into
-*src/main.rs*.
+추측 게임 프로그램의 첫 번째 부분은 사용자 입력을 받고, 해당 입력을 처리하고, 입력이 예상 형식인지 확인합니다. 처음에는 사용자에게 숫자를 입력하도록 하겠습니다. Listing 2-1에 있는 코드를 *src/main.rs* 에 입력하세요.
 
-<Listing number="2-1" file-name="src/main.rs" caption="Code that gets a guess from the user and prints it">
+<Listing number=\"2-1\" file-name=\"src/main.rs\" caption=\"사용자로부터 추측을 받고 출력하는 코드\">
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:all}}
@@ -81,220 +65,142 @@ allow the player to input a guess. Enter the code in Listing 2-1 into
 
 </Listing> 
 
-This code contains a lot of information, so let’s go over it line by line. To
-obtain user input and then print the result as output, we need to bring the
-`io` input/output library into scope. The `io` library comes from the standard
-library, known as `std`:
+이 코드에는 많은 정보가 포함되어 있으므로 줄별로 살펴보겠습니다. 사용자 입력을 받고 출력하기 위해서는 `io` 입력/출력 라이브러리를 사용해야 합니다. `io` 라이브러리는 표준 라이브러리인 `std`에서 제공됩니다:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:io}}
 ```
 
-By default, Rust has a set of items defined in the standard library that it
-brings into the scope of every program. This set is called the *prelude*, and
-you can see everything in it [in the standard library documentation][prelude].
+기본적으로 Rust는 모든 프로그램에 포함되는 표준 라이브러리의 일부인 *prelude* 라는 항목 세트를 제공합니다. 이러한 모든 항목은 [표준 라이브러리 문서][prelude]에서 볼 수 있습니다.
 
-If a type you want to use isn’t in the prelude, you have to bring that type
-into scope explicitly with a `use` statement. Using the `std::io` library
-provides you with a number of useful features, including the ability to accept
-user input.
+사용하려는 유형이 prelude에 없으면 `use` 문을 사용하여 해당 유형을 명시적으로 스코프에 가져와야 합니다. `std::io` 라이브러리를 사용하는 것은 이러한 유형을 가져오는 방법입니다.
+Rust는 여러 유용한 기능을 제공하며, 사용자 입력을 받는 능력도 포함됩니다.
 
-As you saw in Chapter 1, the `main` function is the entry point into the
-program:
+1장에서 보셨듯이 `main` 함수는 프로그램의 시작점입니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:main}}
 ```
 
-The `fn` syntax declares a new function; the parentheses, `()`, indicate there
-are no parameters; and the curly bracket, `{`, starts the body of the function.
+`fn` 문법은 새로운 함수를 선언합니다. 괄호 `()`,는 매개변수가 없음을 나타내며, 중괄호 `{`,는 함수의 몸체를 시작합니다.
 
-As you also learned in Chapter 1, `println!` is a macro that prints a string to
-the screen:
+1장에서 배운 것처럼 `println!`은 화면에 문자열을 출력하는 매크로입니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:print}}
 ```
 
-This code is printing a prompt stating what the game is and requesting input
-from the user.
+이 코드는 게임이 무엇인지 나타내는 프롬프트를 출력하고 사용자로부터 입력을 요청합니다.
 
-### Storing Values with Variables
+### 변수를 사용하여 값 저장하기
 
-Next, we’ll create a *variable* to store the user input, like this:
+다음으로 사용자 입력을 저장하기 위해 *변수*를 만들겠습니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:string}}
 ```
 
-Now the program is getting interesting! There’s a lot going on in this little
-line. We use the `let` statement to create the variable. Here’s another example:
+이제 프로그램이 더욱 흥미로워지고 있습니다! 이 작은 줄에는 많은 일이 일어납니다. `let` 문을 사용하여 변수를 생성합니다. 다음은 또 다른 예입니다.
 
 ```rust,ignore
 let apples = 5;
 ```
 
-This line creates a new variable named `apples` and binds it to the value 5. In
-Rust, variables are immutable by default, meaning once we give the variable a
-value, the value won’t change. We’ll be discussing this concept in detail in
-the [“Variables and Mutability”][variables-and-mutability]<!-- ignore -->
-section in Chapter 3. To make a variable mutable, we add `mut` before the
-variable name:
+이 줄은 `apples`라는 이름의 새로운 변수를 생성하고 5라는 값에 바인딩합니다. Rust에서 변수는 기본적으로 불변입니다. 즉, 변수에 값을 할당하면 값이 변경되지 않습니다. 이 개념은 3장의 "변수와 불변성" 섹션에서 자세히 설명됩니다. 변수를 변경 가능하게 하려면 변수 이름 앞에 `mut`를 추가합니다.
 
 ```rust,ignore
-let apples = 5; // immutable
-let mut bananas = 5; // mutable
+let apples = 5; // 불변
+let mut bananas = 5; // 변경 가능
 ```
 
-> Note: The `//` syntax starts a comment that continues until the end of the
-> line. Rust ignores everything in comments. We’ll discuss comments in more
-> detail in [Chapter 3][comments]<!-- ignore -->.
+> 주의: `//` 문법은 줄의 끝까지 지속되는 주석을 시작합니다. Rust는 주석을 무시합니다. 주석에 대해서는 3장의 [주석] 섹션에서 자세히 설명합니다.
 
-Returning to the guessing game program, you now know that `let mut guess` will
-introduce a mutable variable named `guess`. The equal sign (`=`) tells Rust we
-want to bind something to the variable now. On the right of the equal sign is
-the value that `guess` is bound to, which is the result of calling
-`String::new`, a function that returns a new instance of a `String`.
-[`String`][string]<!-- ignore --> is a string type provided by the standard
-library that is a growable, UTF-8 encoded bit of text.
+추가로 돌아가서 `let mut guess`는 `guess`라는 이름의 변경 가능한 변수를 만들 것입니다. 등호 기호 (`=`)는 Rust가 변수에 값을 할당하도록 알립니다. 등호 기호의 오른쪽에는 `guess`가 바인딩될 값이 있습니다. `String::new()`를 호출하여 얻은 값입니다. `String`은 표준 라이브러리에서 제공되는 UTF-8 인코딩된 확장 가능한 문자열 유형입니다.
 
-The `::` syntax in the `::new` line indicates that `new` is an associated
-function of the `String` type. An *associated function* is a function that’s
-implemented on a type, in this case `String`. This `new` function creates a
-new, empty string. You’ll find a `new` function on many types because it’s a
-common name for a function that makes a new value of some kind.
+`::` 문법은 `String::new` 줄에서 `new`가 `String` 유형의 연관 함수임을 나타냅니다. *연관 함수*는 특정 유형에 대한 함수입니다. 이 경우 `String` 유형입니다. 이 `new` 함수는 새로운 빈 문자열을 만듭니다.
 
-In full, the `let mut guess = String::new();` line has created a mutable
-variable that is currently bound to a new, empty instance of a `String`. Whew!
+전체적으로 `let mut guess = String::new();` 줄은 현재 빈 `String` 인스턴스에 바인딩된 변경 가능한 변수를 만들었습니다.
 
-### Receiving User Input
+### 사용자 입력 받기
 
-Recall that we included the input/output functionality from the standard
-library with `use std::io;` on the first line of the program. Now we’ll call
-the `stdin` function from the `io` module, which will allow us to handle user
-input:
+`use std::io;`를 프로그램의 첫 번째 줄에 포함하여 표준 라이브러리의 입력/출력 기능을 사용했습니다. 이제 `stdin` 함수를 호출하여 사용자 입력을 처리할 수 있습니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:read}}
 ```
 
-If we hadn’t imported the `io` library with `use std::io;` at the beginning of
-the program, we could still use the function by writing this function call as
-`std::io::stdin`. The `stdin` function returns an instance of
-[`std::io::Stdin`][iostdin]<!-- ignore -->, which is a type that represents a
-handle to the standard input for your terminal.
+만약 `use std::io;`를 프로그램의 시작 부분에 포함하지 않았다면, `std::io::stdin`으로 함수를 호출할 수도 있습니다. `stdin` 함수는 터미널의 표준 입력에 대한 핸들을 반환하는 `std::io::Stdin` 인스턴스를 반환합니다.
 
-Next, the line `.read_line(&mut guess)` calls the [`read_line`][read_line]<!--
-ignore --> method on the standard input handle to get input from the user.
-We’re also passing `&mut guess` as the argument to `read_line` to tell it what
-string to store the user input in. The full job of `read_line` is to take
-whatever the user types into standard input and append that into a string
-(without overwriting its contents), so we therefore pass that string as an
-argument. The string argument needs to be mutable so the method can change the
-string’s content.
+다음 줄은 `read_line` 메서드를 사용하여 표준 입력 핸들에서 사용자 입력을 가져옵니다.
 
-The `&` indicates that this argument is a *reference*, which gives you a way to
-let multiple parts of your code access one piece of data without needing to
-copy that data into memory multiple times. References are a complex feature,
-and one of Rust’s major advantages is how safe and easy it is to use
-references. You don’t need to know a lot of those details to finish this
-program. For now, all you need to know is that, like variables, references are
-immutable by default. Hence, you need to write `&mut guess` rather than
-`&guess` to make it mutable. (Chapter 4 will explain references more
-thoroughly.)
+```rust,ignore
+.read_line(&mut guess)
+```
+또한 `&mut guess` 를 `read_line` 함수의 인자로 전달하여 사용자가 입력한 문자열을 어디에 저장할지 알려줍니다. `read_line` 함수의 전체 작업은 사용자가 표준 입력에 입력한 내용을 가져와 문자열에 추가하는 것입니다(내용을 덮어쓰지 않고). 따라서 해당 문자열을 인자로 전달합니다. 문자열 인자는 함수가 문자열의 내용을 변경할 수 있도록 변경 가능해야 합니다.
+
+`&` 는 이 인자가 *참조*임을 나타냅니다. 참조를 통해 코드의 여러 부분이 한 개의 데이터에 액세스할 수 있는 방법을 제공하지만, 데이터를 메모리에 여러 번 복사할 필요가 없습니다. 참조는 복잡한 기능이며, Rust의 주요 장점 중 하나는 참조를 안전하고 쉽게 사용할 수 있는 방식입니다. 이 프로그램을 완료하기 위해서는 참조에 대한 많은 세부 사항을 알 필요는 없습니다. 지금 당장은 변수와 마찬가지로 참조도 기본적으로 불변임을 알아두세요. 따라서 `&mut guess` 와 같이 작성하여 변경 가능하게 해야 합니다. (제4장에서 참조에 대해 자세히 설명합니다.)
 
 <!-- Old heading. Do not remove or links may break. -->
-<a id="handling-potential-failure-with-the-result-type"></a>
+<a id=\"handling-potential-failure-with-the-result-type\"></a>
 
-### Handling Potential Failure with `Result`
+### `Result` 유형으로 발생 가능한 오류 처리
 
-We’re still working on this line of code. We’re now discussing a third line of
-text, but note that it’s still part of a single logical line of code. The next
-part is this method:
+우리는 여전히 이 코드 줄을 작업 중입니다. 다음 줄의 텍스트를 다루고 있지만, 여전히 하나의 논리적인 코드 줄의 일부임을 알아두세요. 다음 부분은 이 메서드입니다:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:expect}}
 ```
 
-We could have written this code as:
+우리는 이 코드를 다음과 같이 작성할 수도 있었습니다.
 
 ```rust,ignore
 io::stdin().read_line(&mut guess).expect("Failed to read line");
 ```
 
-However, one long line is difficult to read, so it’s best to divide it. It’s
-often wise to introduce a newline and other whitespace to help break up long
-lines when you call a method with the `.method_name()` syntax. Now let’s
-discuss what this line does.
+그러나 한 줄의 코드는 읽기 어렵기 때문에 줄바꿈과 기타  whitespaces를 추가하여 긴 코드 줄을 분리하는 것이 좋습니다. 이제 이 줄이 무엇을 하는지 살펴보겠습니다.
 
-As mentioned earlier, `read_line` puts whatever the user enters into the string
-we pass to it, but it also returns a `Result` value. [`Result`][result]<!--
-ignore --> is an [*enumeration*][enums]<!-- ignore -->, often called an *enum*,
-which is a type that can be in one of multiple possible states. We call each
-possible state a *variant*.
+앞서 언급했듯이 `read_line` 은 사용자가 입력한 내용을 우리가 전달한 문자열에 넣지만, `Result` 값을 반환합니다. [`Result`][result]<!-- ignore --> 는 *열거형* [enums]<!-- ignore --> 이라고도 불리는 유형으로, 여러 가지 가능한 상태 중 하나를 나타내는 유형입니다. 각 가능한 상태를 *변이*라고 합니다.
 
-[Chapter 6][enums]<!-- ignore --> will cover enums in more detail. The purpose
-of these `Result` types is to encode error-handling information.
+[Chapter 6][enums]<!-- ignore --> 에서 열거형에 대해 자세히 다룹니다. 이러한 `Result` 유형의 목적은 오류 처리 정보를 암호화하는 것입니다.
 
-`Result`’s variants are `Ok` and `Err`. The `Ok` variant indicates the
-operation was successful, and inside `Ok` is the successfully generated value.
-The `Err` variant means the operation failed, and `Err` contains information
-about how or why the operation failed.
+`Result` 의 변이는 `Ok` 와 `Err` 입니다. `Ok` 변이는 작업이 성공했음을 나타내며, `Ok` 안에는 성공적으로 생성된 값이 있습니다. `Err` 변이는 작업이 실패했음을 의미하며, `Err` 는 작업이 실패한 이유에 대한 정보를 포함합니다.
 
-Values of the `Result` type, like values of any type, have methods defined on
-them. An instance of `Result` has an [`expect` method][expect]<!-- ignore -->
-that you can call. If this instance of `Result` is an `Err` value, `expect`
-will cause the program to crash and display the message that you passed as an
-argument to `expect`. If the `read_line` method returns an `Err`, it would
-likely be the result of an error coming from the underlying operating system.
-If this instance of `Result` is an `Ok` value, `expect` will take the return
-value that `Ok` is holding and return just that value to you so you can use it.
-In this case, that value is the number of bytes in the user’s input.
+`Result` 유형의 값은 다른 유형의 값과 마찬가지로 메서드가 정의되어 있습니다. `Result` 인스턴스에는 `expect` 메서드가 있습니다. 이 메서드를 호출할 수 있습니다. 만약 이 `Result` 인스턴스가 `Err` 값이라면 `expect` 는 프로그램을 종료시키고 `expect` 에 전달한 메시지를 표시합니다. 만약 `read_line` 메서드가 `Err` 를 반환하면, 그것은 아마도 운영 체제에서 발생한 오류의 결과일 것입니다. 만약 이 `Result` 인스턴스가 `Ok` 값이라면 `expect` 는 `Ok` 가 가지고 있는 반환 값을 가져와서 사용할 수 있도록 그 값만 반환합니다. 이 경우 그 값은 사용자의 입력에서의 바이트 수입니다.
 
-If you don’t call `expect`, the program will compile, but you’ll get a warning:
+`expect` 를 호출하지 않으면 프로그램은 컴파일되지만 경고 메시지를 받게 됩니다.
 
 ```console
 {{#include ../listings/ch02-guessing-game-tutorial/no-listing-02-without-expect/output.txt}}
 ```
 
-Rust warns that you haven’t used the `Result` value returned from `read_line`,
-indicating that the program hasn’t handled a possible error.
+Rust는 `read_line` 에서 반환된 `Result` 값을 사용하지 않았다고 경고하며, 프로그램이 가능한 오류를 처리하지 않았음을 나타냅니다.
 
-The right way to suppress the warning is to actually write error-handling code,
-but in our case we just want to crash this program when a problem occurs, so we
-can use `expect`. You’ll learn about recovering from errors in [Chapter
-9][recover]<!-- ignore -->.
+오류를 처리하는 코드를 실제로 작성하는 것이 올바른 방법이지만, 우리의 경우 문제가 발생하면 프로그램을 종료하고 싶으므로 `expect` 를 사용합니다. [Chapter 9][recover]<!-- ignore --> 에서 오류에서 벗어나는 방법을 배웁니다.
 
-### Printing Values with `println!` Placeholders
+### `println!` 템플릿 변수를 사용하여 값 출력
 
-Aside from the closing curly bracket, there’s only one more line to discuss in
-the code so far:
+닫는 중괄호 외에 코드에서 논의해야 할 또 다른 줄이 있습니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:print_guess}}
 ```
 
-This line prints the string that now contains the user’s input. The `{}` set of
-curly brackets is a placeholder: think of `{}` as little crab pincers that hold
-a value in place. When printing the value of a variable, the variable name can
-go inside the curly brackets. When printing the result of evaluating an
-expression, place empty curly brackets in the format string, then follow the
-format string with a comma-separated list of expressions to print in each empty
-curly bracket placeholder in the same order. Printing a variable and the result
-of an expression in one call to `println!` would look like this:
+이 줄은 사용자 입력을 담은 문자열을 출력합니다. `{}` 쌍은 홀더: `{}`를 작은 게게 핀셋으로 생각해 보세요. 변수의 값을 출력할 때, 변수 이름을 중괄호 안에 넣을 수 있습니다. 표현식의 결과를 출력할 때는 형식 문자열에 빈 중괄호를 사용하고, 빈 중괄호 홀더에 각각 출력할 표현식을 쉼표로 구분하여 따릅니다.
+
+변수와 표현식의 결과를 `println!` 한 번의 호출로 출력하는 방법은 다음과 같습니다.
 
 ```rust
 let x = 5;
 let y = 10;
 
-println!("x = {x} and y + 2 = {}", y + 2);
+println!(\"x = {x} and y + 2 = {}\", y + 2);
 ```
 
-This code would print `x = 5 and y + 2 = 12`.
+이 코드는 `x = 5 and y + 2 = 12`를 출력합니다.
 
-### Testing the First Part
+### 첫 번째 부분 테스트
 
-Let’s test the first part of the guessing game. Run it using `cargo run`:
+게임의 첫 번째 부분을 테스트해 보겠습니다. `cargo run`을 사용하여 실행합니다.
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-01/
@@ -313,61 +219,34 @@ Please input your guess.
 You guessed: 6
 ```
 
-At this point, the first part of the game is done: we’re getting input from the
-keyboard and then printing it.
+이제 게임의 첫 번째 부분이 완료되었습니다. 키보드에서 입력을 받고 출력합니다.
 
-## Generating a Secret Number
+## 비밀 숫자 생성
 
-Next, we need to generate a secret number that the user will try to guess. The
-secret number should be different every time so the game is fun to play more
-than once. We’ll use a random number between 1 and 100 so the game isn’t too
-difficult. Rust doesn’t yet include random number functionality in its standard
-library. However, the Rust team does provide a [`rand` crate][randcrate] with
-said functionality.
+다음으로 사용자가 추측할 비밀 숫자를 생성해야 합니다. 비밀 숫자는 매번 다르게 생성되어 게임을 여러 번 재생하는 것이 재미있어야 합니다. 게임이 너무 어렵지 않도록 1에서 100 사이의 임의의 숫자를 사용합니다. Rust은 아직 표준 라이브러리에 임의 숫자 기능을 포함하지 않았습니다. 그러나 Rust 팀은 `rand` crate라는 임의 숫자 기능을 제공하는 crate를 제공합니다.
 
-### Using a Crate to Get More Functionality
+### 추가 기능을 위한 crate 사용
 
-Remember that a crate is a collection of Rust source code files. The project
-we’ve been building is a *binary crate*, which is an executable. The `rand`
-crate is a *library crate*, which contains code that is intended to be used in
-other programs and can’t be executed on its own.
+crate는 Rust 소스 코드 파일의 모음입니다. 우리가 지금까지 구축해 온 프로젝트는 실행 가능한 파일인 *binary crate*입니다. `rand` crate는 *library crate*이며, 다른 프로그램에서 사용할 수 있는 코드를 포함하고 스스로 실행할 수 없습니다.
 
-Cargo’s coordination of external crates is where Cargo really shines. Before we
-can write code that uses `rand`, we need to modify the *Cargo.toml* file to
-include the `rand` crate as a dependency. Open that file now and add the
-following line to the bottom, beneath the `[dependencies]` section header that
-Cargo created for you. Be sure to specify `rand` exactly as we have here, with
-this version number, or the code examples in this tutorial may not work:
+Cargo는 외부 crate를 관리하는 데 탁월합니다. `rand`를 사용하기 전에 *Cargo.toml* 파일을 수정하여 `rand` crate를 의존성으로 추가해야 합니다. 지금 `Cargo.toml` 파일을 열고 `[dependencies]` 섹션 아래에 다음 줄을 추가합니다. Cargo가 생성한 `[dependencies]` 섹션 헤더 아래에 있는지 확인하세요.
 
-<!-- When updating the version of `rand` used, also update the version of
-`rand` used in these files so they all match:
+<!-- `rand` 버전을 업데이트할 때, 이 튜토리얼의 코드 예제가 작동하도록 이 파일에서 사용하는 `rand` 버전도 업데이트해야 합니다:
 * ch07-04-bringing-paths-into-scope-with-the-use-keyword.md
 * ch14-03-cargo-workspaces.md
 -->
 
-<span class="filename">Filename: Cargo.toml</span>
+<span class=\"filename\">Filename: Cargo.toml</span>
 
 ```toml
 {{#include ../listings/ch02-guessing-game-tutorial/listing-02-02/Cargo.toml:8:}}
 ```
 
-In the *Cargo.toml* file, everything that follows a header is part of that
-section that continues until another section starts. In `[dependencies]` you
-tell Cargo which external crates your project depends on and which versions of
-those crates you require. In this case, we specify the `rand` crate with the
-semantic version specifier `0.8.5`. Cargo understands [Semantic
-Versioning][semver]<!-- ignore --> (sometimes called *SemVer*), which is a
-standard for writing version numbers. The specifier `0.8.5` is actually
-shorthand for `^0.8.5`, which means any version that is at least 0.8.5 but
-below 0.9.0.
+`Cargo.toml` 파일에서 헤더 다음에 오는 모든 것은 해당 섹션에 속하며, 다른 섹션이 시작될 때까지 계속됩니다. `[dependencies]`에서 Cargo는 프로젝트가 의존하는 외부 crate와 필요한 버전을 알립니다. 이 경우 `rand` crate를 버전 `0.8.5`로 지정합니다. Cargo는 [Semantic Versioning][semver]<!-- ignore --> (때로는 *SemVer*라고도 함)을 이해합니다. SemVer는 버전 번호를 작성하는 데 사용되는 표준입니다. `0.8.5`는 실제로 `^0.8.5`의 약자로, 0.8.5 이상이지만 0.9.0 미만인 모든 버전을 의미합니다.
 
-Cargo considers these versions to have public APIs compatible with version
-0.8.5, and this specification ensures you’ll get the latest patch release that
-will still compile with the code in this chapter. Any version 0.9.0 or greater
-is not guaranteed to have the same API as what the following examples use.
+Cargo는 이러한 버전이 0.8.5 버전과 공개 API가 호환되는 것으로 간주하며, 이러한 명세는 이 장의 코드와 함께 컴파일될 수 있는 최신 패치 리리스를 얻게 됩니다. 0.9.0 이상의 모든 버전은 다음 예제에서 사용하는 API와 동일하지 않을 수 있습니다.
 
-Now, without changing any of the code, let’s build the project, as shown in
-Listing 2-2.
+이제 코드를 변경하지 않고 프로젝트를 빌드하는 방법을 살펴보겠습니다. 2-2번 목록에 나와 있습니다.
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-02/
@@ -375,7 +254,7 @@ rm Cargo.lock
 cargo clean
 cargo build -->
 
-<Listing number="2-2" caption="The output from running `cargo build` after adding the rand crate as a dependency">
+<Listing number="2-2" caption="`cargo build`를 실행한 후 `rand` crate를 의존성으로 추가했을 때의 출력">
 
 ```console
 $ cargo build
@@ -400,30 +279,15 @@ $ cargo build
 
 </Listing>
 
-You may see different version numbers (but they will all be compatible with the
-code, thanks to SemVer!) and different lines (depending on the operating
-system), and the lines may be in a different order.
+다른 버전 번호를 볼 수도 있지만 (모두 코드와 호환되므로 SemVer 덕분입니다!), 다른 줄이 있을 수도 있으며 (운영 체제에 따라 달라질 수 있음) 줄의 순서가 다를 수 있습니다.
 
-When we include an external dependency, Cargo fetches the latest versions of
-everything that dependency needs from the *registry*, which is a copy of data
-from [Crates.io][cratesio]. Crates.io is where people in the Rust ecosystem
-post their open source Rust projects for others to use.
+외부 의존성을 포함할 때 Cargo는 해당 의존성이 필요로 하는 모든 최신 버전을 *레지스트리*에서 가져옵니다. 레지스트리는 [Crates.io][cratesio]의 데이터 복사본입니다. Crates.io는 Rust 생태계의 사람들이 다른 사람들이 사용할 수 있도록 오픈 소스 Rust 프로젝트를 게시하는 곳입니다.
 
-After updating the registry, Cargo checks the `[dependencies]` section and
-downloads any crates listed that aren’t already downloaded. In this case,
-although we only listed `rand` as a dependency, Cargo also grabbed other crates
-that `rand` depends on to work. After downloading the crates, Rust compiles
-them and then compiles the project with the dependencies available.
+Cargo는 레지스트리를 업데이트한 후 `[dependencies]` 섹션을 확인하고 아직 다운로드되지 않은 목록에 있는 crate를 다운로드합니다. 이 경우 `rand`만 의존성으로 나열했지만 Cargo는 `rand`가 작동하려면 필요한 다른 crate도 가져왔습니다. crate를 다운로드한 후 Rust는 이를 컴파일하고 의존성이 있는 프로젝트를 컴파일합니다.
 
-If you immediately run `cargo build` again without making any changes, you
-won’t get any output aside from the `Finished` line. Cargo knows it has already
-downloaded and compiled the dependencies, and you haven’t changed anything
-about them in your *Cargo.toml* file. Cargo also knows that you haven’t changed
-anything about your code, so it doesn’t recompile that either. With nothing to
-do, it simply exits.
+`cargo build`를 다시 즉시 실행하면 코드 변경 사항이 없으므로 `Finished` 줄 외에 출력이 없습니다. Cargo는 이미 의존성을 다운로드하고 컴파일했으며, *Cargo.toml* 파일에서 의존성에 대한 변경 사항이 없다는 것을 알고 있습니다. Cargo는 코드에도 변경 사항이 없다는 것을 알고 있으므로 다시 컴파일하지 않습니다. 할 일이 없으므로 단순히 종료됩니다.
 
-If you open the *src/main.rs* file, make a trivial change, and then save it and
-build again, you’ll only see two lines of output:
+*src/main.rs* 파일을 열고 사소한 변경 사항을 한 후 저장하고 다시 빌드하면 다음과 같은 두 줄의 출력만 표시됩니다.
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-02/
@@ -436,40 +300,31 @@ $ cargo build
     Finished dev [unoptimized + debuginfo] target(s) in 2.53 secs
 ```
 
-These lines show that Cargo only updates the build with your tiny change to the
-*src/main.rs* file. Your dependencies haven’t changed, so Cargo knows it can
-reuse what it has already downloaded and compiled for those.
+이 줄은 Cargo가 `src/main.rs` 파일의 작은 변경 사항만으로 빌드를 업데이트한다는 것을 보여줍니다. 의존성이 변경되지 않았으므로 Cargo는 이미 다운로드하고 컴파일한 내용을 다시 사용할 수 있습니다.
 
-#### Ensuring Reproducible Builds with the *Cargo.lock* File
+#### *Cargo.lock* 파일을 사용하여 재현 가능한 빌드를 보장하는 방법
 
-Cargo has a mechanism that ensures you can rebuild the same artifact every time
-you or anyone else builds your code: Cargo will use only the versions of the
-dependencies you specified until you indicate otherwise. For example, say that
-next week version 0.8.6 of the `rand` crate comes out, and that version
-contains an important bug fix, but it also contains a regression that will
-break your code. To handle this, Rust creates the *Cargo.lock* file the first
-time you run `cargo build`, so we now have this in the *guessing_game*
-directory.
+Cargo는 코드를 다시 빌드할 때마다 동일한 결과물을 얻을 수 있도록 하는 메커니즘을 제공합니다. Cargo는 지정한 의존성의 버전만 사용하여 빌드합니다. 예를 들어, 다음 주에 `rand` crate의 0.8.6 버전이 출시되고, 이 버전에는 중요한 버그 수정 사항이 포함되어 있지만 코드를 끊는 문제가 발생하는 경우, Rust는 처음 `cargo build`를 실행할 때 *Cargo.lock* 파일을 생성합니다. 이제 *guessing_game* 디렉토리에 이 파일이 있습니다.
 
-When you build a project for the first time, Cargo figures out all the versions
-of the dependencies that fit the criteria and then writes them to the
-*Cargo.lock* file. When you build your project in the future, Cargo will see
-that the *Cargo.lock* file exists and will use the versions specified there
-rather than doing all the work of figuring out versions again. This lets you
-have a reproducible build automatically. In other words, your project will
-remain at 0.8.5 until you explicitly upgrade, thanks to the *Cargo.lock* file.
-Because the *Cargo.lock* file is important for reproducible builds, it’s often
-checked into source control with the rest of the code in your project.
 
-#### Updating a Crate to Get a New Version
+프로젝트를 처음 빌드할 때 Cargo는 조건에 맞는 모든 의존성의 버전을 파악하고
+*Cargo.lock* 파일로 기록합니다. 앞으로 프로젝트를 빌드할 때 Cargo는
+*Cargo.lock* 파일이 존재한다는 것을 알아차리고 버전을 다시 파악하는 작업 대신
+이 파일에서 지정된 버전을 사용합니다. 이렇게 하면 재현 가능한 빌드를 자동으로
+가능하게 합니다. 즉, *Cargo.lock* 파일 덕분에 프로젝트는 명시적으로 업그레이드할
+때까지 0.8.5를 유지합니다.
 
-When you *do* want to update a crate, Cargo provides the command `update`,
-which will ignore the *Cargo.lock* file and figure out all the latest versions
-that fit your specifications in *Cargo.toml*. Cargo will then write those
-versions to the *Cargo.lock* file. In this case, Cargo will only look for
-versions greater than 0.8.5 and less than 0.9.0. If the `rand` crate has
-released the two new versions 0.8.6 and 0.9.0, you would see the following if
-you ran `cargo update`:
+*Cargo.lock* 파일은 재현 가능한 빌드에 중요하기 때문에 프로젝트의 나머지 코드와
+src/main.rs와 함께 소스 제어 시스템에 체크인됩니다.
+
+#### Crate 업데이트를 통한 새 버전 가져오기
+
+Crate를 업데이트하고 싶을 때 Cargo는 `update` 명령을 제공하며, 이 명령은
+*Cargo.lock* 파일을 무시하고 *Cargo.toml* 에 있는 모든 최신 버전을 파악합니다.
+Cargo는 이러한 버전을 *Cargo.lock* 파일로 기록합니다. 이 경우 Cargo는
+0.8.5보다 크고 0.9.0보다 작은 버전만 찾습니다. 만약 `rand` Crate가 0.8.6과
+0.9.0 두 가지 새로운 버전을 출시했다면, `cargo update`를 실행하면 다음과 같은
+출력이 표시됩니다.
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-02/
@@ -483,32 +338,28 @@ $ cargo update
     Updating rand v0.8.5 -> v0.8.6
 ```
 
-Cargo ignores the 0.9.0 release. At this point, you would also notice a change
-in your *Cargo.lock* file noting that the version of the `rand` crate you are
-now using is 0.8.6. To use `rand` version 0.9.0 or any version in the 0.9.*x*
-series, you’d have to update the *Cargo.toml* file to look like this instead:
+Cargo는 0.9.0 출시를 무시합니다. 이제 *Cargo.lock* 파일에서 `rand` Crate의 버전이
+0.8.6으로 변경되었음을 알 수 있습니다. `rand` 버전 0.9.0 또는 0.9.*x* 시리즈를 사용하려면
+*Cargo.toml* 파일을 다음과 같이 업데이트해야 합니다.
 
 ```toml
 [dependencies]
-rand = "0.9.0"
+rand = \"0.9.0\"
 ```
 
-The next time you run `cargo build`, Cargo will update the registry of crates
-available and reevaluate your `rand` requirements according to the new version
-you have specified.
+다음에 `cargo build`를 실행하면 Cargo는 사용 가능한 Crate 레지스트리를 업데이트하고
+새로 지정된 버전에 따라 `rand` 요구 사항을 다시 평가합니다.
 
-There’s a lot more to say about [Cargo][doccargo]<!-- ignore --> and [its
-ecosystem][doccratesio]<!-- ignore -->, which we’ll discuss in Chapter 14, but
-for now, that’s all you need to know. Cargo makes it very easy to reuse
-libraries, so Rustaceans are able to write smaller projects that are assembled
-from a number of packages.
+Cargo와 [그 생태계][doccratesio]에 대해서는 14장에서 자세히 설명하지만, 지금은 이만
+충분합니다. Cargo는 라이브러리를 재사용하는 것을 매우 쉽게 만들기 때문에
+Rustaceans는 여러 패키지로 구성된 작은 프로젝트를 작성할 수 있습니다.
 
-### Generating a Random Number
+### 임의의 숫자 생성하기
 
-Let’s start using `rand` to generate a number to guess. The next step is to
-update *src/main.rs*, as shown in Listing 2-3.
+`rand`를 사용하여 추측할 숫자를 생성하는 방법을 살펴보겠습니다. 다음 단계는
+Listing 2-3과 같이 *src/main.rs* 파일을 업데이트하는 것입니다.
 
-<Listing number="2-3" file-name="src/main.rs" caption="Adding code to generate a random number">
+<Listing number=\"2-3\" file-name=\"src/main.rs\" caption=\"임의의 숫자를 생성하는 코드 추가\">
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-03/src/main.rs:all}}
@@ -516,35 +367,18 @@ update *src/main.rs*, as shown in Listing 2-3.
 
 </Listing>
 
-First we add the line `use rand::Rng;`. The `Rng` trait defines methods that
-random number generators implement, and this trait must be in scope for us to
-use those methods. Chapter 10 will cover traits in detail.
+먼저 `use rand::Rng;` 라인을 추가합니다. `Rng` 트레이트는 임의 숫자 생성기가 구현하는 메서드를 정의하며, 이 트레이트가 범위 내에 있어야만 해당 메서드를 사용할 수 있습니다. 10장에서 트레이트에 대해 자세히 설명합니다.
 
-Next, we’re adding two lines in the middle. In the first line, we call the
-`rand::thread_rng` function that gives us the particular random number
-generator we’re going to use: one that is local to the current thread of
-execution and is seeded by the operating system. Then we call the `gen_range`
-method on the random number generator. This method is defined by the `Rng`
-trait that we brought into scope with the `use rand::Rng;` statement. The
-`gen_range` method takes a range expression as an argument and generates a
-random number in the range. The kind of range expression we’re using here takes
-the form `start..=end` and is inclusive on the lower and upper bounds, so we
-need to specify `1..=100` to request a number between 1 and 100.
+다음으로 중간에 두 줄을 추가합니다. 첫 번째 줄에서는 현재 실행 스레드에 고유한 임의 숫자 생성기를 제공하는 `rand::thread_rng` 함수를 호출합니다. 이 생성기는 운영 체제에서 씨드를 사용하여 초기화됩니다. 그런 다음 `gen_range` 메서드를 임의 숫자 생성기에 호출합니다. 이 메서드는 `Rng` 트레이트에서 정의되며, 범위 표현을 인수로 받고 범위 내의 임의 숫자를 생성합니다. 여기서 사용하는 범위 표현은 `start..=end` 형태이며, 하한과 상한을 포함하므로 1부터 100까지의 숫자를 요청하려면 `1..=100`를 사용해야 합니다.
 
-> Note: You won’t just know which traits to use and which methods and functions
-> to call from a crate, so each crate has documentation with instructions for
-> using it. Another neat feature of Cargo is that running the `cargo doc
-> --open` command will build documentation provided by all your dependencies
-> locally and open it in your browser. If you’re interested in other
-> functionality in the `rand` crate, for example, run `cargo doc --open` and
-> click `rand` in the sidebar on the left.
+> 주의: 어떤 트레이트를 사용해야 하고 어떤 메서드와 함수를 사용해야 하는지 즉시 알 수 없습니다.
 
-The second new line prints the secret number. This is useful while we’re
-developing the program to be able to test it, but we’ll delete it from the
-final version. It’s not much of a game if the program prints the answer as soon
-as it starts!
 
-Try running the program a few times:
+crate를 호출하는 방법을 설명하는 문서가 있습니다. Cargo의 또 다른 멋진 기능은 `cargo doc --open` 명령을 실행하면 모든 의존성이 제공하는 문서가 로컬로 빌드되고 브라우저에서 열리는 것입니다. 예를 들어 `rand` crate의 다른 기능에 관심이 있다면 `cargo doc --open`을 실행하고 왼쪽 사이드바에서 `rand`를 클릭하십시오.
+
+두 번째 줄은 비밀 번호를 출력합니다. 개발 중이므로 테스트할 수 있도록 유용하지만 최종 버전에서는 삭제해야 합니다. 프로그램이 시작하는 즉시 답을 출력하는 것은 게임이라고 할 수 없습니다.
+
+프로그램을 몇 번 실행해 보세요.
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-03/
@@ -575,16 +409,13 @@ Please input your guess.
 You guessed: 5
 ```
 
-You should get different random numbers, and they should all be numbers between
-1 and 100. Great job!
+다른 랜덤 숫자가 나오고, 모두 1부터 100까지의 숫자여야 합니다. 잘했어요!
 
-## Comparing the Guess to the Secret Number
+## 추측과 비밀 숫자의 비교
 
-Now that we have user input and a random number, we can compare them. That step
-is shown in Listing 2-4. Note that this code won’t compile just yet, as we will
-explain.
+이제 사용자 입력과 랜덤 숫자를 가지고 있으므로 비교할 수 있습니다. 해당 단계는 Listing 2-4에 나와 있습니다. 이 코드는 아직 컴파일되지 않을 것입니다.
 
-<Listing number="2-4" file-name="src/main.rs" caption="Handling the possible return values of comparing two numbers">
+<Listing number="2-4" file-name="src/main.rs" caption="두 숫자를 비교할 때 가능한 반환 값을 처리하는 방법">
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-04/src/main.rs:here}}
@@ -592,128 +423,67 @@ explain.
 
 </Listing>
 
-First we add another `use` statement, bringing a type called
-`std::cmp::Ordering` into scope from the standard library. The `Ordering` type
-is another enum and has the variants `Less`, `Greater`, and `Equal`. These are
-the three outcomes that are possible when you compare two values.
+먼저 `std::cmp::Ordering`이라는 유형을 가져오는 또 다른 `use` 문을 추가합니다. `Ordering` 유형은 또 다른 `enum`이며 `Less`, `Greater`, `Equal`이라는 변형을 가지고 있습니다. 이러한 변형은 두 값을 비교할 때 가능한 세 가지 결과입니다.
 
-Then we add five new lines at the bottom that use the `Ordering` type. The
-`cmp` method compares two values and can be called on anything that can be
-compared. It takes a reference to whatever you want to compare with: here it’s
-comparing `guess` to `secret_number`. Then it returns a variant of the
-`Ordering` enum we brought into scope with the `use` statement. We use a
-[`match`][match]<!-- ignore --> expression to decide what to do next based on
-which variant of `Ordering` was returned from the call to `cmp` with the values
-in `guess` and `secret_number`.
+그런 다음 `Ordering` 유형을 사용하는 다섯 줄을 추가합니다. `cmp` 메서드는 두 값을 비교할 수 있으며 어떤 값이든 비교할 수 있습니다. `guess`와 `secret_number`를 비교하는 경우 `cmp` 메서드를 사용하여 두 값을 비교합니다. `Ordering` 유형의 변형을 반환합니다. `match` 표현식을 사용하여 `cmp` 메서드에서 반환된 `Ordering` 유형의 변형에 따라 다음을 수행합니다.
 
-A `match` expression is made up of *arms*. An arm consists of a *pattern* to
-match against, and the code that should be run if the value given to `match`
-fits that arm’s pattern. Rust takes the value given to `match` and looks
-through each arm’s pattern in turn. Patterns and the `match` construct are
-powerful Rust features: they let you express a variety of situations your code
-might encounter and they make sure you handle them all. These features will be
-covered in detail in Chapter 6 and Chapter 18, respectively.
+`match` 표현식은 *팔*로 구성됩니다. 팔은 `match`에 주어진 값이 일치하는지 확인하는 *패턴*과 일치하는 경우 실행할 코드를 포함합니다. Rust는 `match`에 주어진 값을 보고 각 팔의 패턴을 순서대로 확인합니다. 패턴과 `match` 구조는 강력한 Rust 기능입니다. 다양한 상황을 표현하고 처리할 수 있도록 합니다. 이러한 기능은 6장과 18장에서 자세히 설명됩니다.
 
-Let’s walk through an example with the `match` expression we use here. Say that
-the user has guessed 50 and the randomly generated secret number this time is
-38.
+`Ordering::Less` 패턴을 확인하고 `Ordering::Greater` 값이 `Ordering::Less`와 일치하지 않으므로 해당 패턴의 코드를 무시합니다. 다음 팔의 패턴을 확인합니다. `Ordering::Greater` 값이 `Ordering::Greater` 패턴과 일치하므로 해당 패턴의 코드를 실행합니다.
 
-When the code compares 50 to 38, the `cmp` method will return
-`Ordering::Greater` because 50 is greater than 38. The `match` expression gets
-the `Ordering::Greater` value and starts checking each arm’s pattern. It looks
-at the first arm’s pattern, `Ordering::Less`, and sees that the value
-`Ordering::Greater` does not match `Ordering::Less`, so it ignores the code in
-that arm and moves to the next arm. The next arm’s pattern is
-`Ordering::Greater`, which *does* match `Ordering::Greater`! The associated
-code in that arm will execute and print `Too big!` to the screen. The `match`
-expression ends after the first successful match, so it won’t look at the last
-arm in this scenario.
+이제 `match` 표현식이 어떻게 작동하는지 이해하셨을 것입니다.
 
-However, the code in Listing 2-4 won’t compile yet. Let’s try it:
+
+팔을 움직여 다음 팔로 이동합니다. 다음 팔의 패턴은
+`Ordering::Greater`이며, 이는 `Ordering::Greater`와 일치합니다! 해당 팔의
+관련 코드가 실행되고 화면에 "너무 크다!"가 출력됩니다. `match` 표현식은
+첫 번째 성공적인 일치 후에 종료되므로 이 시나리오에서는 마지막 팔의
+코드를 살펴보지 않습니다.
+
+그러나 Listing 2-4의 코드는 아직 컴파일되지 않습니다. 해보도록 하겠습니다.
 
 <!--
-The error numbers in this output should be that of the code **WITHOUT** the
-anchor or snip comments
+이 출력의 오류 번호는 **코드를 제외한** 앵커 또는 코드 스니펫 주석이 없는 코드의 번호여야 합니다
 -->
 
 ```console
 {{#include ../listings/ch02-guessing-game-tutorial/listing-02-04/output.txt}}
 ```
 
-The core of the error states that there are *mismatched types*. Rust has a
-strong, static type system. However, it also has type inference. When we wrote
-`let mut guess = String::new()`, Rust was able to infer that `guess` should be
-a `String` and didn’t make us write the type. The `secret_number`, on the other
-hand, is a number type. A few of Rust’s number types can have a value between 1
-and 100: `i32`, a 32-bit number; `u32`, an unsigned 32-bit number; `i64`, a
-64-bit number; as well as others. Unless otherwise specified, Rust defaults to
-an `i32`, which is the type of `secret_number` unless you add type information
-elsewhere that would cause Rust to infer a different numerical type. The reason
-for the error is that Rust cannot compare a string and a number type.
+오류의 핵심은 *타입 불일치*임을 나타냅니다. Rust는 강력하고 정적 타입 시스템을 가지고 있습니다. 그러나 동시에 타입 추론 기능도 있습니다. `let mut guess = String::new()`를 작성했을 때, Rust는 `guess`가 `String`이어야 한다는 것을 추론하여 `guess`의 타입을 명시하지 않도록 했습니다. 반면 `secret_number`는 숫자 타입입니다. Rust의 몇 가지 숫자 타입은 1과 100 사이의 값을 가질 수 있습니다: `i32` (32비트 숫자), `u32` (무符号 32비트 숫자), `i64` (64비트 숫자) 등. 그렇지 않으면 명시적으로 지정하지 않는 한 Rust는 기본적으로 `i32`를 사용하며, 이는 `secret_number`의 타입입니다. 오류의 이유는 Rust가 문자열과 숫자 타입을 비교할 수 없기 때문입니다.
 
-Ultimately, we want to convert the `String` the program reads as input into a
-number type so we can compare it numerically to the secret number. We do so by
-adding this line to the `main` function body:
+결국, 프로그램이 입력으로 읽는 문자열을 숫자 타입으로 변환하여 비교해야 합니다. 이를 위해 `main` 함수 본문에 다음 줄을 추가합니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-03-convert-string-to-number/src/main.rs:here}}
 ```
 
-The line is:
+이 줄은 다음과 같습니다.
 
 ```rust,ignore
-let guess: u32 = guess.trim().parse().expect("Please type a number!");
+let guess: u32 = guess.trim().parse().expect(\"Please type a number!\");
 ```
 
-We create a variable named `guess`. But wait, doesn’t the program already have
-a variable named `guess`? It does, but helpfully Rust allows us to shadow the
-previous value of `guess` with a new one. *Shadowing* lets us reuse the `guess`
-variable name rather than forcing us to create two unique variables, such as
-`guess_str` and `guess`, for example. We’ll cover this in more detail in
-[Chapter 3][shadowing]<!-- ignore -->, but for now, know that this feature is
-often used when you want to convert a value from one type to another type.
+`guess`라는 이름의 변수를 생성합니다. 하지만 프로그램에 이미 `guess`라는 변수가 있지 않나요? 그렇습니다. 하지만 Rust는 유용하게 이전 `guess` 변수의 값을 새 `guess` 변수로 가리키도록 허용합니다. *변수 오버라이딩*은 `guess`라는 변수 이름을 재사용할 수 있도록 해주는 기능입니다. 예를 들어 `guess_str`과 `guess`와 같이 두 개의 고유한 변수를 만들지 않고도 사용할 수 있습니다. 이 기능은 종종 값을 한 타입에서 다른 타입으로 변환할 때 사용됩니다.
 
-We bind this new variable to the expression `guess.trim().parse()`. The `guess`
-in the expression refers to the original `guess` variable that contained the
-input as a string. The `trim` method on a `String` instance will eliminate any
-whitespace at the beginning and end, which we must do to be able to compare the
-string to the `u32`, which can only contain numerical data. The user must press
-<kbd>enter</kbd> to satisfy `read_line` and input their guess, which adds a
-newline character to the string. For example, if the user types <kbd>5</kbd> and
-presses <kbd>enter</kbd>, `guess` looks like this: `5\n`. The `\n` represents
-“newline.” (On Windows, pressing <kbd>enter</kbd> results in a carriage return
-and a newline, `\r\n`.) The `trim` method eliminates `\n` or `\r\n`, resulting
-in just `5`.
+`guess` 변수는 `guess.trim().parse()`라는 표현으로 바인딩됩니다. `guess`는 문자열로 입력된 값을 담고 있는 원래 `guess` 변수를 가리킵니다. `String` 인스턴스의 `trim` 메서드는 시작과 끝에 있는 모든 공백을 제거합니다. 이는 `u32`와 비교하기 위해 필수적입니다. 사용자는 <kbd>enter</kbd> 키를 누르면 `read_line`을 만족시키고 자신의 추측을 입력해야 하며, 이는 문자열에 줄 바꿈 문자를 추가합니다. 예를 들어 사용자가 <kbd>5</kbd>를 입력하고 <kbd>enter</kbd> 키를 누르면 `guess`는 다음과 같습니다: `5\
+`. `\
+`은 줄 바꿈을 나타냅니다. (Windows에서 <kbd>enter</kbd> 키를 누르면 캐리지 리턴과 줄 바꿈이 발생하여 `\\r\
+`이 됩니다.) `trim` 메서드는 `\
+` 또는 `\\r\
+`을 제거하여 `5`만 남깁니다.
 
-The [`parse` method on strings][parse]<!-- ignore --> converts a string to
-another type. Here, we use it to convert from a string to a number. We need to
-tell Rust the exact number type we want by using `let guess: u32`. The colon
-(`:`) after `guess` tells Rust we’ll annotate the variable’s type. Rust has a
-few built-in number types; the `u32` seen here is an unsigned, 32-bit integer.
-It’s a good default choice for a small positive number. You’ll learn about
-other number types in [Chapter 3][integers]<!-- ignore -->.
+문자열의 [`parse` 메서드][parse]<!-- ignore -->는 문자열을 다른 타입으로 변환합니다. 여기서는 문자열을 숫자로 변환하기 위해 사용합니다. `let guess: u32`를 사용하여 Rust에 원하는 정확한 숫자 타입을 알려야 합니다. 콜론(`:`)은 `guess` 뒤에 붙어 Rust가 변수의 타입을 명시하도록 합니다. Rust에는 몇 가지 내장된 숫자 타입이 있으며, 여기서 보는 `u32`는 무符号 32비트 정수입니다. 작은 긍정적인 숫자에 대한 좋은 기본 선택입니다. 타입에 대해서는 [Chapter 3][shadowing]<!-- ignore -->에서 자세히 알아볼 수 있습니다. 하지만 지금은 이 기능이 값을 한 타입에서 다른 타입으로 변환할 때 자주 사용되는 것을 알아두세요.
 
-Additionally, the `u32` annotation in this example program and the comparison
-with `secret_number` means Rust will infer that `secret_number` should be a
-`u32` as well. So now the comparison will be between two values of the same
-type!
+다른 숫자 유형은 [제3장][정수]에서 자세히 설명되어 있습니다.<!-- 무시 -->
 
-The `parse` method will only work on characters that can logically be converted
-into numbers and so can easily cause errors. If, for example, the string
-contained `A👍%`, there would be no way to convert that to a number. Because it
-might fail, the `parse` method returns a `Result` type, much as the `read_line`
-method does (discussed earlier in [“Handling Potential Failure with
-`Result`”](#handling-potential-failure-with-result)<!-- ignore-->). We’ll treat
-this `Result` the same way by using the `expect` method again. If `parse`
-returns an `Err` `Result` variant because it couldn’t create a number from the
-string, the `expect` call will crash the game and print the message we give it.
-If `parse` can successfully convert the string to a number, it will return the
-`Ok` variant of `Result`, and `expect` will return the number that we want from
-the `Ok` value.
+또한 이 예제 프로그램에서 `u32` 어노테이션과 `secret_number`와의 비교는 Rust가 `secret_number`도 `u32`가 되어야 한다고 추론하도록 합니다. 이제 비교는 같은 유형의 두 값 사이에서 이루어집니다! 
 
-Let’s run the program now:
+`parse` 메서드는 논리적으로 숫자로 변환할 수 있는 문자열만 작동하며, 쉽게 오류를 일으킬 수 있습니다. 예를 들어 문자열에 `A\ud83d\udc4d%`가 포함되어 있다면 숫자로 변환할 방법이 없습니다. 변환에 실패할 수 있기 때문에 `parse` 메서드는 `Result` 유형을 반환합니다. 이전에 언급된 것처럼 `read_line` 메서드도 `Result` 유형을 반환합니다. ([\u201c`Result`를 사용하여 발생할 수 있는 오류 처리\u201d](#handling-potential-failure-with-result)<!-- 무시 -->) 우리는 이 `Result`를 `expect` 메서드를 사용하여 동일하게 처리합니다. 만약 `parse`가 문자열에서 숫자를 만들 수 없어 `Err` `Result` 변형을 반환하면 `expect` 호출은 게임을 종료시키고 우리가 제공한 메시지를 출력합니다. `parse`가 문자열을 숫자로 성공적으로 변환하면 `Ok` 변형의 `Result`를 반환하고 `expect`는 `Ok` 값에서 원하는 숫자를 반환합니다.
+
+이제 프로그램을 실행해 보겠습니다.
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/no-listing-03-convert-string-to-number/
@@ -734,43 +504,30 @@ You guessed: 76
 Too big!
 ```
 
-Nice! Even though spaces were added before the guess, the program still figured
-out that the user guessed 76. Run the program a few times to verify the
-different behavior with different kinds of input: guess the number correctly,
-guess a number that is too high, and guess a number that is too low.
+멋지네요! 공백이 입력값 앞에 추가되었더라도 프로그램은 사용자가 76을 추측했다는 것을 알아냈습니다. 프로그램을 몇 번 실행하여 올바르게 숫자를 추측하는 경우, 너무 높은 숫자를 추측하는 경우, 너무 낮은 숫자를 추측하는 경우의 다양한 동작을 확인하십시오.
 
-We have most of the game working now, but the user can make only one guess.
-Let’s change that by adding a loop!
+지금 우리는 게임의 대부분을 작동시켰지만, 사용자는 한 번만 추측할 수 있습니다. 루프를 추가하여 사용자에게 더 많은 추측 기회를 주도록 변경해 보겠습니다.
 
-## Allowing Multiple Guesses with Looping
+## 루프를 사용하여 여러 번 추측 가능하게 하기
 
-The `loop` keyword creates an infinite loop. We’ll add a loop to give users
-more chances at guessing the number:
+`loop` 키워드는 무한 루프를 만듭니다. 사용자에게 더 많은 추측 기회를 제공하기 위해 루프를 추가합니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-04-looping/src/main.rs:here}}
 ```
 
-As you can see, we’ve moved everything from the guess input prompt onward into
-a loop. Be sure to indent the lines inside the loop another four spaces each
-and run the program again. The program will now ask for another guess forever,
-which actually introduces a new problem. It doesn’t seem like the user can quit!
+루프 안의 각 줄을 4개의 공백으로 들여쓰고 프로그램을 다시 실행하십시오. 이제 프로그램은 영원히 또 다른 추측을 요청할 것입니다. 이는 새로운 문제를 야기합니다. 사용자는 프로그램에서 빠져나올 수 없습니다!
 
-The user could always interrupt the program by using the keyboard shortcut
-<kbd>ctrl</kbd>-<kbd>c</kbd>. But there’s another way to escape this insatiable
-monster, as mentioned in the `parse` discussion in [“Comparing the Guess to the
-Secret Number”](#comparing-the-guess-to-the-secret-number)<!-- ignore -->: if
-the user enters a non-number answer, the program will crash. We can take
-advantage of that to allow the user to quit, as shown here:
+사용자는 <kbd>ctrl</kbd>-<kbd>c</kbd> 키 조합을 사용하여 프로그램을 중단할 수는 있지만, 사용자가 프로그램에서 빠져나올 수 있는 또 다른 방법이 있습니다. 이전에 언급된 것처럼, 사용자가 숫자가 아닌 값을 입력하면 프로그램이 종료됩니다. 이를 사용하여 사용자가 프로그램에서 빠져나갈 수 있도록 할 수 있습니다.
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/no-listing-04-looping/
 cargo run
-(too small guess)
-(too big guess)
-(correct guess)
+(너무 작은 추측)
+(너무 큰 추측)
+(올바른 추측)
 quit
 -->
 
@@ -791,40 +548,33 @@ You guessed: 60
 Too big!
 Please input your guess.
 59
-You guessed: 59
-You win!
-Please input your guess.
+59를 맞추셨습니다.
+축하합니다!
+예상치를 입력하세요.
 quit
-thread 'main' panicked at 'Please type a number!: ParseIntError { kind: InvalidDigit }', src/main.rs:28:47
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+main 스레드에서 panic: '숫자를 입력하세요!: ParseIntError { kind: InvalidDigit }', src/main.rs:28:47
+note: `RUST_BACKTRACE=1` 환경 변수로 실행하여 백트레이스를 표시하세요
 ```
 
-Typing `quit` will quit the game, but as you’ll notice, so will entering any
-other non-number input. This is suboptimal, to say the least; we want the game
-to also stop when the correct number is guessed.
+quit를 입력하면 게임이 종료되지만, 다른 숫자가 아닌 입력을 하면도 게임이 종료됩니다. 이는 최소한의 문제점입니다. 게임이 정답을 맞췄을 때 종료하도록 만들고 싶습니다.
 
-### Quitting After a Correct Guess
+### 정답 맞춤 후 종료
 
-Let’s program the game to quit when the user wins by adding a `break` statement:
+정답을 맞췄을 때 사용자가 게임에서 이기도록 `break` 문을 추가하여 프로그램을 만들겠습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-05-quitting/src/main.rs:here}}
 ```
 
-Adding the `break` line after `You win!` makes the program exit the loop when
-the user guesses the secret number correctly. Exiting the loop also means
-exiting the program, because the loop is the last part of `main`.
+`You win!` 다음에 `break` 문을 추가하면 사용자가 비밀 숫자를 맞출 때 프로그램이 루프를 종료합니다. 루프를 종료하는 것은 `main`의 마지막 부분이기 때문에 프로그램을 종료하는 것과 동일합니다.
 
-### Handling Invalid Input
+### 잘못된 입력 처리
 
-To further refine the game’s behavior, rather than crashing the program when
-the user inputs a non-number, let’s make the game ignore a non-number so the
-user can continue guessing. We can do that by altering the line where `guess`
-is converted from a `String` to a `u32`, as shown in Listing 2-5.
+게임의 동작을 더욱 개선하기 위해 사용자가 숫자가 아닌 입력을 하면 프로그램이 충돌하는 대신, 게임이 숫자가 아닌 입력을 무시하도록 만들겠습니다. 이를 위해 `guess`가 `String`에서 `u32`로 변환되는 줄을 수정하면 됩니다. Listing 2-5에서 보여주는 것처럼
 
-<Listing number="2-5" file-name="src/main.rs" caption="Ignoring a non-number guess and asking for another guess instead of crashing the program">
+<Listing number=\"2-5\" file-name=\"src/main.rs\" caption=\"숫자가 아닌 입력을 무시하고, 오류 발생 시 다시 입력을 요청하는 프로그램\">
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:here}}
@@ -832,37 +582,21 @@ is converted from a `String` to a `u32`, as shown in Listing 2-5.
 
 </Listing>
 
-We switch from an `expect` call to a `match` expression to move from crashing
-on an error to handling the error. Remember that `parse` returns a `Result`
-type and `Result` is an enum that has the variants `Ok` and `Err`. We’re using
-a `match` expression here, as we did with the `Ordering` result of the `cmp`
-method.
+`expect` 함수를 `match` 표현식으로 바꾸어 오류를 처리하는 방식으로 변경했습니다. `parse`는 `Result` 유형을 반환하며 `Result`는 `Ok`와 `Err` 두 가지 변형을 가진 열거형입니다. `match` 표현식을 사용하는 이유는 `cmp` 메서드의 `Ordering` 결과와 같습니다.
 
-If `parse` is able to successfully turn the string into a number, it will
-return an `Ok` value that contains the resultant number. That `Ok` value will
-match the first arm’s pattern, and the `match` expression will just return the
-`num` value that `parse` produced and put inside the `Ok` value. That number
-will end up right where we want it in the new `guess` variable we’re creating.
+`parse`가 문자열을 숫자로 성공적으로 변환할 수 있다면 `Ok` 값을 반환하며, 이 `Ok` 값은 첫 번째 팔의 패턴에 맞습니다. `match` 표현식은 `Ok` 값에 포함된 숫자를 `num` 변수에 저장하고 그 값을 반환합니다. 이 숫자는 우리가 만드는 새로운 `guess` 변수에 들어갑니다.
 
-If `parse` is *not* able to turn the string into a number, it will return an
-`Err` value that contains more information about the error. The `Err` value
-does not match the `Ok(num)` pattern in the first `match` arm, but it does
-match the `Err(_)` pattern in the second arm. The underscore, `_`, is a
-catchall value; in this example, we’re saying we want to match all `Err`
-values, no matter what information they have inside them. So the program will
-execute the second arm’s code, `continue`, which tells the program to go to the
-next iteration of the `loop` and ask for another guess. So, effectively, the
-program ignores all errors that `parse` might encounter!
+`parse`가 문자열을 숫자로 변환할 수 없다면 `Err` 값을 반환하며, 이 `Err` 값은 첫 번째 `match` 팔의 `Ok(num)` 패턴에 맞지 않습니다. 그러나 `Err` 값은 `Err(_)` 패턴의 두 번째 팔에 맞습니다. 밑줄 `_`은 모든 `Err` 값을 나타내는 잡다한 값입니다. 이 예제에서는 모든 `Err` 값에 맞는 것을 의미합니다. 따라서 프로그램은 두 번째 팔의 코드인 `continue`를 실행하고, 루프의 다음 반복으로 이동하여 다시 입력을 요청합니다. 즉, 프로그램은 `parse`가 발생시킬 수 있는 모든 오류를 무시합니다!
 
-Now everything in the program should work as expected. Let’s try it:
+이제 프로그램의 모든 부분이 예상대로 작동해야 합니다. 실행해 보겠습니다.
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-05/
 cargo run
-(too small guess)
-(too big guess)
+(너무 작은 추측)
+(너무 큰 추측)
 foo
-(correct guess)
+(정답 추측)
 -->
 
 ```console
@@ -872,7 +606,7 @@ $ cargo run
      Running `target/debug/guessing_game`
 Guess the number!
 The secret number is: 61
-Please input your guess.
+예상치를 입력하세요.
 10
 You guessed: 10
 Too small!
@@ -888,12 +622,9 @@ You guessed: 61
 You win!
 ```
 
-Awesome! With one tiny final tweak, we will finish the guessing game. Recall
-that the program is still printing the secret number. That worked well for
-testing, but it ruins the game. Let’s delete the `println!` that outputs the
-secret number. Listing 2-6 shows the final code.
+멋지네요! 아주 작은 마지막 수정만 더하면 추측 게임을 완성할 수 있습니다. 이전에 프로그램이 비밀 숫자를 출력하는 것을 기억하시나요? 테스트에는 잘 작동했지만, 게임을 망쳐버립니다. 비밀 숫자를 출력하는 `println!`을 삭제해 보겠습니다. 2-6번 목록은 최종 코드를 보여줍니다.
 
-<Listing number="2-6" file-name="src/main.rs" caption="Complete guessing game code">
+<Listing number=\"2-6\" file-name=\"src/main.rs\" caption=\"완성된 추측 게임 코드\">
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-06/src/main.rs}}
@@ -901,17 +632,11 @@ secret number. Listing 2-6 shows the final code.
 
 </Listing>
 
-At this point, you’ve successfully built the guessing game. Congratulations!
+이제 추측 게임을 성공적으로 구축했습니다. 축하합니다!
 
-## Summary
+## 요약
 
-This project was a hands-on way to introduce you to many new Rust concepts:
-`let`, `match`, functions, the use of external crates, and more. In the next
-few chapters, you’ll learn about these concepts in more detail. Chapter 3
-covers concepts that most programming languages have, such as variables, data
-types, and functions, and shows how to use them in Rust. Chapter 4 explores
-ownership, a feature that makes Rust different from other languages. Chapter 5
-discusses structs and method syntax, and Chapter 6 explains how enums work.
+이 프로젝트는 여러 새로운 Rust 개념을 직접 경험하는 좋은 방법이었습니다: `let`, `match`, 함수, 외부 crate 사용 등. 다음 몇 개의 챕터에서는 이러한 개념을 자세히 알아보겠습니다. 3장에서는 변수, 데이터 유형, 함수와 같은 대부분의 프로그래밍 언어에서 사용되는 개념을 다룹니다. 4장에서는 소유권 개념을 설명합니다. 소유권은 Rust를 다른 언어와 구분하는 특징입니다. 5장에서는 구조체와 메서드 문법을 다룹니다. 6장에서는 enum이 어떻게 작동하는지 설명합니다.
 
 [prelude]: ../std/prelude/index.html
 [variables-and-mutability]: ch03-01-variables-and-mutability.html#variables-and-mutability

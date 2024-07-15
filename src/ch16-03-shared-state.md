@@ -1,249 +1,142 @@
-## Shared-State Concurrency
+## 공유 상태 병렬 처리
 
-Message passing is a fine way of handling concurrency, but it’s not the only
-one. Another method would be for multiple threads to access the same shared
-data. Consider this part of the slogan from the Go language documentation
-again: “do not communicate by sharing memory.”
+메시지 전달은 병렬 처리를 다루는 좋은 방법이지만, 유일한 방법은 아닙니다. 다른 방법은 여러 스레드가 동일한 공유 데이터에 액세스하는 것입니다. Go 언어 문서의 슬로건의 일부를 다시 생각해 보세요: \u201c메모리 공유를 통해 의사소통하지 마세요.\u201d
 
-What would communicating by sharing memory look like? In addition, why would
-message-passing enthusiasts caution not to use memory sharing?
+메모리 공유를 통해 의사소통하는 것은 어떻게 보일까요? 또한 메시지 전달 애호가들이 메모리 공유를 사용하지 않도록 경고하는 이유는 무엇일까요?
 
-In a way, channels in any programming language are similar to single ownership,
-because once you transfer a value down a channel, you should no longer use that
-value. Shared memory concurrency is like multiple ownership: multiple threads
-can access the same memory location at the same time. As you saw in Chapter 15,
-where smart pointers made multiple ownership possible, multiple ownership can
-add complexity because these different owners need managing. Rust’s type system
-and ownership rules greatly assist in getting this management correct. For an
-example, let’s look at mutexes, one of the more common concurrency primitives
-for shared memory.
+어떤 면에서는 모든 프로그래밍 언어의 채널은 단일 소유권과 유사합니다. 왜냐하면 채널을 통해 값을 전달하면 그 값을 더 이상 사용해서는 안 되기 때문입니다. 메모리 공유 병렬 처리 방식은 여러 소유권과 같습니다. 여러 스레드가 동시에 동일한 메모리 위치에 액세스할 수 있습니다. 15장에서 스마트 포인터가 여러 소유권을 가능하게 했듯이, 여러 소유권은 다른 소유자들을 관리해야 하기 때문에 복잡성을 추가할 수 있습니다. Rust의 타입 시스템과 소유권 규칙은 이러한 관리를 올바르게 수행하는 데 큰 도움을 줍니다. 예를 들어 mutex를 살펴보겠습니다. mutex는 병렬 처리를 위한 흔한 동기화 기본 구조입니다.
 
-### Using Mutexes to Allow Access to Data from One Thread at a Time
+### Mutex를 사용하여 한 스레드에서 한 번에 데이터에 액세스하도록 허용하기
 
-*Mutex* is an abbreviation for *mutual exclusion*, as in, a mutex allows only
-one thread to access some data at any given time. To access the data in a
-mutex, a thread must first signal that it wants access by asking to acquire the
-mutex’s *lock*. The lock is a data structure that is part of the mutex that
-keeps track of who currently has exclusive access to the data. Therefore, the
-mutex is described as *guarding* the data it holds via the locking system.
+*Mutex*는 *상호 배제*의 약자로, mutex는 한 번에 한 스레드만 특정 데이터에 액세스할 수 있도록 허용합니다. mutex의 데이터에 액세스하려면 스레드가 먼저 *잠금*을 요청하여 액세스 권한을 요청해야 합니다. 잠금은 mutex의 일부인 데이터 구조로, 현재 누가 데이터에 독점적인 액세스 권한을 가지고 있는지 추적합니다. 따라서 mutex는 잠금 시스템을 통해 보호하는 데이터를 *지키고 있다고* 설명할 수 있습니다.
 
-Mutexes have a reputation for being difficult to use because you have to
-remember two rules:
+Mutex는 잠금을 얻기 전에 데이터를 사용해야 하고, 데이터를 사용한 후에는 다른 스레드가 잠금을 얻을 수 있도록 잠금을 해제해야 한다는 두 가지 규칙을 기억해야 하기 때문에 사용하기 어렵다는 평판이 있습니다.
 
-* You must attempt to acquire the lock before using the data.
-* When you’re done with the data that the mutex guards, you must unlock the
-  data so other threads can acquire the lock.
+mutex의 실제 세계적인 메타포로는 회의에서 마이크가 하나만 있는 패널 토론을 상상해 보세요. 패널리스트가 말하기 전에 마이크를 사용하려면 신호를 보내거나 요청해야 합니다. 마이크를 얻으면 원하는 만큼 말할 수 있으며, 다음에 말하고자 하는 패널리스트에게 마이크를 건네야 합니다. 패널리스트가 마이크를 사용한 후에 마이크를 건네지 않으면 다른 사람은 말할 수 없습니다. 공유 마이크의 관리가 잘못되면 패널 토론이 원하는 대로 진행되지 않습니다!
 
-For a real-world metaphor for a mutex, imagine a panel discussion at a
-conference with only one microphone. Before a panelist can speak, they have to
-ask or signal that they want to use the microphone. When they get the
-microphone, they can talk for as long as they want to and then hand the
-microphone to the next panelist who requests to speak. If a panelist forgets to
-hand the microphone off when they’re finished with it, no one else is able to
-speak. If management of the shared microphone goes wrong, the panel won’t work
-as planned!
+mutex의 관리가 매우 어려울 수 있기 때문에 많은 사람들이 채널에 대해 열광적입니다. 그러나 Rust의 타입 시스템과 소유권 규칙 덕분에 잠금과 해제를 잘못할 수 없습니다.
 
-Management of mutexes can be incredibly tricky to get right, which is why so
-many people are enthusiastic about channels. However, thanks to Rust’s type
-system and ownership rules, you can’t get locking and unlocking wrong.
+#### `Mutex<T>`의 API
 
-#### The API of `Mutex<T>`
+mutex를 사용하는 방법을 살펴보기 위해 Listing 16-12에서 단일 스레드 컨텍스트에서 mutex를 사용하는 예시를 살펴보겠습니다.
 
-As an example of how to use a mutex, let’s start by using a mutex in a
-single-threaded context, as shown in Listing 16-12:
-
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-12/src/main.rs}}
 ```
 
-<span class="caption">Listing 16-12: Exploring the API of `Mutex<T>` in a
-single-threaded context for simplicity</span>
+<span class=\"caption\">Listing 16-12: 단일 스레드 컨텍스트에서 `Mutex<T>`의 API를 탐색하기 위한 간단한 예시</span>
 
-As with many types, we create a `Mutex<T>` using the associated function `new`.
-To access the data inside the mutex, we use the `lock` method to acquire the
-lock. This call will block the current thread so it can’t do any work until
-it’s our turn to have the lock.
+많은 타입과 마찬가지로 `Mutex<T>`는 `new` 연관 함수를 사용하여 생성합니다. mutex 내부의 데이터에 액세스하려면 `lock` 메서드를 사용하여 잠금을 획득해야 합니다. 이 호출은 현재 스레드가 잠금을 얻을 때까지 작업을 할 수 없도록 차단합니다.
 
-The call to `lock` would fail if another thread holding the lock panicked. In
-that case, no one would ever be able to get the lock, so we’ve chosen to
-`unwrap` and have this thread panic if we’re in that situation.
+`lock` 호출은 다른 스레드가 잠금을 갖고 있을 때 실패할 수 있습니다. 그런 경우, 아무도 잠금을 얻을 수 없기 때문에, 우리는 `unwrap`을 선택하여 이 상황에서 스레드가 panic하도록 합니다.
 
-After we’ve acquired the lock, we can treat the return value, named `num` in
-this case, as a mutable reference to the data inside. The type system ensures
-that we acquire a lock before using the value in `m`. The type of `m` is
-`Mutex<i32>`, not `i32`, so we *must* call `lock` to be able to use the `i32`
-value. We can’t forget; the type system won’t let us access the inner `i32`
-otherwise.
+잠금을 획득한 후에는 `num`이라는 반환 값을 사용하여 mutex 내부의 데이터에 대한 변경 가능한 참조로 간주할 수 있습니다. 타입 시스템은 `m`에서 `Mutex<i32>` 타입이므로 `lock`을 호출해야만 `i32` 값을 사용할 수 있다는 것을 보장합니다. 타입 시스템은 우리가 잠금을 얻지 않고 내부 `i32`에 액세스하는 것을 방지합니다.
 
-As you might suspect, `Mutex<T>` is a smart pointer. More accurately, the call
-to `lock` *returns* a smart pointer called `MutexGuard`, wrapped in a
-`LockResult` that we handled with the call to `unwrap`. The `MutexGuard` smart
-pointer implements `Deref` to point at our inner data; the smart pointer also
-has a `Drop` implementation that releases the lock automatically when a
-`MutexGuard` goes out of scope, which happens at the end of the inner scope. As
-a result, we don’t risk forgetting to release the lock and blocking the mutex
-from being used by other threads, because the lock release happens
-automatically.
+ `MutexGuard` 스마트 포인터는 내부 데이터를 가리키는 `Deref`를 구현합니다. 스마트 포인터는 또한 `MutexGuard`가 범위를 벗어날 때 잠금을 자동으로 해제하는 `Drop` 구현을 가지고 있습니다. 즉, `MutexGuard`가 범위를 벗어날 때 잠금이 자동으로 해제되므로, 잠금을 잊어버리고 다른 스레드가 잠금을 사용하지 못하게 하는 것을 방지할 수 있습니다.
 
-After dropping the lock, we can print the mutex value and see that we were able
-to change the inner `i32` to 6.
+잠금을 해제한 후에는 뮤텍스 값을 출력하고 6으로 변경할 수 있었음을 확인할 수 있습니다.
 
-#### Sharing a `Mutex<T>` Between Multiple Threads
+#### 여러 스레드 간의 `Mutex<T>` 공유
 
-Now, let’s try to share a value between multiple threads using `Mutex<T>`.
-We’ll spin up 10 threads and have them each increment a counter value by 1, so
-the counter goes from 0 to 10. The next example in Listing 16-13 will have
-a compiler error, and we’ll use that error to learn more about using
-`Mutex<T>` and how Rust helps us use it correctly.
+이제 `Mutex<T>`를 사용하여 여러 스레드 간에 값을 공유해 보겠습니다. 10개의 스레드를 생성하고 각 스레드가 카운터 값을 1씩 증가시키도록 하여 카운터가 0에서 10까지 증가하도록 합니다. 다음은 16-13번 목록의 예제에서 컴파일 오류가 발생하고, 이 오류를 사용하여 `Mutex<T>`를 사용하는 방법과 Rust가 우리를 올바르게 사용하도록 돕는 방법을 배우겠습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-13/src/main.rs}}
 ```
 
-<span class="caption">Listing 16-13: Ten threads each increment a counter
-guarded by a `Mutex<T>`</span>
+<span class=\"caption\">Listing 16-13: 10개의 스레드가 각각 `Mutex<T>`로 보호되는 카운터를 1씩 증가시킵니다.</span>
 
-We create a `counter` variable to hold an `i32` inside a `Mutex<T>`, as we did
-in Listing 16-12. Next, we create 10 threads by iterating over a range of
-numbers. We use `thread::spawn` and give all the threads the same closure: one
-that moves the counter into the thread, acquires a lock on the `Mutex<T>` by
-calling the `lock` method, and then adds 1 to the value in the mutex. When a
-thread finishes running its closure, `num` will go out of scope and release the
-lock so another thread can acquire it.
+Listing 16-12와 같이 `Mutex<T>` 안에 `i32`을 저장하는 `counter` 변수를 생성합니다. 다음으로 10개의 스레드를 생성하여 범위를 반복합니다. `thread::spawn`을 사용하여 모든 스레드에 동일한 closure를 제공합니다. `Mutex<T>`에 대한 잠금을 획득하는 `lock` 메서드를 호출하여 뮤텍스 내부의 값에 1을 더합니다. 스레드가 closure를 완료하면 `num`이 범위를 벗어나 잠금을 해제하여 다른 스레드가 잠금을 획득할 수 있습니다.
 
-In the main thread, we collect all the join handles. Then, as we did in Listing
-16-2, we call `join` on each handle to make sure all the threads finish. At
-that point, the main thread will acquire the lock and print the result of this
-program.
+메인 스레드에서는 모든 join 핸들을 수집합니다. 다음으로 16-2번 목록에서와 같이 각 핸들에 `join`을 호출하여 모든 스레드가 완료될 때까지 기다립니다. 그때 메인 스레드가 잠금을 획득하고 결과를 출력합니다.
 
-We hinted that this example wouldn’t compile. Now let’s find out why!
+이 예제가 컴파일되지 않는다는 것을 암시했습니다. 이제 왜 그런지 알아보겠습니다!
 
 ```console
 {{#include ../listings/ch16-fearless-concurrency/listing-16-13/output.txt}}
 ```
 
-The error message states that the `counter` value was moved in the previous
-iteration of the loop. Rust is telling us that we can’t move the ownership
-of `counter` into multiple threads. Let’s fix the compiler error with a
-multiple-ownership method we discussed in Chapter 15.
+오류 메시지는 `counter` 값이 이전 반복에서 이동되었음을 나타냅니다. Rust는 여러 스레드에 `counter`의 소유권을 이동할 수 없다고 알려줍니다. `Rc<T>`를 사용하여 값에 여러 소유주를 부여하는 방법을 15장에서 설명했으므로, 이를 사용하여 컴파일 오류를 해결해 보겠습니다.
 
-#### Multiple Ownership with Multiple Threads
+#### 여러 소유주를 가진 여러 스레드
 
-In Chapter 15, we gave a value multiple owners by using the smart pointer
-`Rc<T>` to create a reference counted value. Let’s do the same here and see
-what happens. We’ll wrap the `Mutex<T>` in `Rc<T>` in Listing 16-14 and clone
-the `Rc<T>` before moving ownership to the thread.
+15장에서 `Rc<T>`를 사용하여 값에 여러 소유주를 부여했습니다. Listing 16-14에서 `Mutex<T>`를 `Rc<T>`로 감싸고 `Rc<T>`를 이동하기 전에 복사하여 스레드에 소유권을 이동하는 방법을 살펴보겠습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-14/src/main.rs}}
 ```
 
-<span class="caption">Listing 16-14: Attempting to use `Rc<T>` to allow
-multiple threads to own the `Mutex<T>`</span>
+<span class=\"caption\">Listing 16-14: `Mutex<T>`를 공유하려고 `Rc<T>`를 사용하는 시도</span>
 
-Once again, we compile and get... different errors! The compiler is teaching us
-a lot.
+다시 한번 컴파일하면... 다른 오류가 발생합니다! 컴파일러가 우리에게 많은 것을 가르쳐 주고 있습니다.
 
 ```console
 {{#include ../listings/ch16-fearless-concurrency/listing-16-14/output.txt}}
 ```
 
-Wow, that error message is very wordy! Here’s the important part to focus on:
-`` `Rc<Mutex<i32>>` cannot be sent between threads safely ``. The compiler is
-also telling us the reason why: ``the trait `Send` is not implemented for
-`Rc<Mutex<i32>>` ``. We’ll talk about `Send` in the next section: it’s one of
-the traits that ensures the types we use with threads are meant for use in
-concurrent situations.
+오류 메시지는 매우 길지만, 중요한 부분은 다음과 같습니다: `` `Rc<Mutex<i32>>`는 스레드 간에 안전하게 전송할 수 없습니다 ``. 컴파일러는 또한 이유를 알려줍니다: ```Rc<Mutex<i32>>`에 대한 `Send` 트레이트가 구현되지 않았습니다 ``. 다음 섹션에서 `Send`에 대해 이야기하겠습니다. `Send`는 스레드 간에 값을 안전하게 전송할 수 있는지 여부를 나타내는 트레이트입니다.
+스레드에서 사용하는 유형이 동시 상황에서 사용하기 위해 설계된
+형식을 보장하는 트레이트입니다.
 
-Unfortunately, `Rc<T>` is not safe to share across threads. When `Rc<T>`
-manages the reference count, it adds to the count for each call to `clone` and
-subtracts from the count when each clone is dropped. But it doesn’t use any
-concurrency primitives to make sure that changes to the count can’t be
-interrupted by another thread. This could lead to wrong counts—subtle bugs that
-could in turn lead to memory leaks or a value being dropped before we’re done
-with it. What we need is a type exactly like `Rc<T>` but one that makes changes
-to the reference count in a thread-safe way.
+불행히도 `Rc<T>`는 스레드 간에 공유하는 데 안전하지 않습니다. `Rc<T>`가
+참조 카운트를 관리할 때, `clone` 호출마다 카운트에 추가되고 각 클론이
+삭제될 때마다 카운트에서 감소합니다. 그러나 다른 스레드가 카운트 변경을
+방해할 수 없도록 동시성 프림리티브를 사용하지 않습니다. 이는 잘못된
+카운트로 이어질 수 있으며, 이는 메모리 누수 또는 사용이 끝나기 전에
+값이 삭제되는 등의 미묘한 버그를 일으킬 수 있습니다. 우리가 필요한 것은
+`Rc<T>`와 정확히 같은 유형이지만 스레드 안전하게 참조 카운트를 변경하는
+유형입니다.
 
-#### Atomic Reference Counting with `Arc<T>`
+#### `Arc<T>`를 사용한 원자 참조 카운트
 
-Fortunately, `Arc<T>` *is* a type like `Rc<T>` that is safe to use in
-concurrent situations. The *a* stands for *atomic*, meaning it’s an *atomically
-reference counted* type. Atomics are an additional kind of concurrency
-primitive that we won’t cover in detail here: see the standard library
-documentation for [`std::sync::atomic`][atomic]<!-- ignore --> for more
-details. At this point, you just need to know that atomics work like primitive
-types but are safe to share across threads.
+행운으로 `Arc<T>`는 동시 상황에서 안전하게 사용할 수 있는 `Rc<T>`와
+같은 유형입니다. *a*는 *원자*를 의미하며, *원자 참조 카운트* 유형입니다.
+원자는 여기서는 자세히 다루지 않지만, 표준 라이브러리 문서를 참조하십시오.
+[`std::sync::atomic`][atomic]<!-- ignore -->. 지금은 원자가 기본형과 같이
+작동하지만 스레드 간에 공유하는 데 안전하다는 것을 알아두세요.
 
-You might then wonder why all primitive types aren’t atomic and why standard
-library types aren’t implemented to use `Arc<T>` by default. The reason is that
-thread safety comes with a performance penalty that you only want to pay when
-you really need to. If you’re just performing operations on values within a
-single thread, your code can run faster if it doesn’t have to enforce the
-guarantees atomics provide.
+모든 기본형이 원자적이지 않고 표준 라이브러리 유형이 기본적으로
+`Arc<T>`를 사용하지 않는 이유는 스레드 안전성이 성능 저하를 가져오기
+때문입니다. 단일 스레드 내에서 값에 대한 작업만 수행하는 경우 원자
+이 제공하는 보장을 강제할 필요가 없으므로 코드가 더 빠르게 실행될 수
+있습니다.
 
-Let’s return to our example: `Arc<T>` and `Rc<T>` have the same API, so we fix
-our program by changing the `use` line, the call to `new`, and the call to
-`clone`. The code in Listing 16-15 will finally compile and run:
+다시 예시로 돌아가면 `Arc<T>`와 `Rc<T>`는 동일한 API를 가지므로 코드를
+수정하여 `use` 문, `new` 호출 및 `clone` 호출을 변경하면 Listing 16-15
+의 코드가 마침내 컴파일되고 실행됩니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-15/src/main.rs}}
 ```
 
-<span class="caption">Listing 16-15: Using an `Arc<T>` to wrap the `Mutex<T>`
-to be able to share ownership across multiple threads</span>
+<span class=\"caption\">Listing 16-15: `Mutex<T>`를 감싸서 여러 스레드에서 소유권을 공유할 수 있는 `Arc<T>` 사용</span>
 
-This code will print the following:
+이 코드는 다음과 같이 출력됩니다.
 
-<!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
-changes in the compiler -->
+<!-- 출력을 추출하지 않음. 출력의 변경 사항은 컴파일러의 변경이 아니라 스레드가 다르게 실행되기 때문입니다. -->
 
 ```text
 Result: 10
 ```
 
-We did it! We counted from 0 to 10, which may not seem very impressive, but it
-did teach us a lot about `Mutex<T>` and thread safety. You could also use this
-program’s structure to do more complicated operations than just incrementing a
-counter. Using this strategy, you can divide a calculation into independent
-parts, split those parts across threads, and then use a `Mutex<T>` to have each
-thread update the final result with its part.
+성공했습니다! 0부터 10까지 세어 보았습니다. 굉장히 인상적이지 않을 수도 있지만, `Mutex<T>`와 스레드 안전성에 대해 많이 배웠습니다. 이 프로그램의 구조를 사용하면 단순히 카운터를 증가시키는 것 이상의 복잡한 작업을 수행할 수 있습니다. 이 전략을 사용하면 계산을 독립적인 부분으로 나누고, 이 부분들을 스레드에 분산하고, `Mutex<T>`를 사용하여 각 스레드가 결과에 자신의 부분을 업데이트할 수 있습니다.
 
-Note that if you are doing simple numerical operations, there are types simpler
-than `Mutex<T>` types provided by the [`std::sync::atomic` module of the
-standard library][atomic]<!-- ignore -->. These types provide safe, concurrent,
-atomic access to primitive types. We chose to use `Mutex<T>` with a primitive
-type for this example so we could concentrate on how `Mutex<T>` works.
+`Mutex<T>`를 사용할 때도 Rust이 모든 종류의 논리 오류를 보호해 줄 수는 없습니다. 15장에서 기억하시면 `Rc<T>`를 사용하면 참조 주기가 발생할 위험이 있습니다. 즉, 두 개의 `Rc<T>` 값이 서로 참조하여 메모리 누수가 발생할 수 있습니다. 마찬가지로 `Mutex<T>`는 `Mutex<T>`를 사용할 때도 논리 오류의 위험이 있습니다. 따라서 `Mutex<T>`를 사용할 때는 항상 주의해야 합니다.
 
-### Similarities Between `RefCell<T>`/`Rc<T>` and `Mutex<T>`/`Arc<T>`
+### `RefCell<T>`/`Rc<T>`와 `Mutex<T>`/`Arc<T>`의 유사점
 
-You might have noticed that `counter` is immutable but we could get a mutable
-reference to the value inside it; this means `Mutex<T>` provides interior
-mutability, as the `Cell` family does. In the same way we used `RefCell<T>` in
-Chapter 15 to allow us to mutate contents inside an `Rc<T>`, we use `Mutex<T>`
-to mutate contents inside an `Arc<T>`.
+`counter`는 불변이지만 내부 값에 대한 가변 참조를 얻을 수 있다는 점을 알 수 있습니다. 즉, `Mutex<T>`는 `Cell` 가족과 같이 내부 가변성을 제공합니다. 마찬가지로 15장에서 `Rc<T>`를 사용하여 `RefCell<T>` 내부의 내용을 변형할 수 있듯이, `Mutex<T>`를 사용하여 `Arc<T>` 내부의 내용을 변형할 수 있습니다.
 
-Another detail to note is that Rust can’t protect you from all kinds of logic
-errors when you use `Mutex<T>`. Recall in Chapter 15 that using `Rc<T>` came
-with the risk of creating reference cycles, where two `Rc<T>` values refer to
-each other, causing memory leaks. Similarly, `Mutex<T>` comes with the risk of
-creating *deadlocks*. These occur when an operation needs to lock two resources
-and two threads have each acquired one of the locks, causing them to wait for
-each other forever. If you’re interested in deadlocks, try creating a Rust
-program that has a deadlock; then research deadlock mitigation strategies for
-mutexes in any language and have a go at implementing them in Rust. The
-standard library API documentation for `Mutex<T>` and `MutexGuard` offers
-useful information.
+또 다른 주목할 점은 Rust이 `Mutex<T>`를 사용할 때도 모든 종류의 논리 오류를 보호해 줄 수 없다는 것입니다. 15장에서 `Rc<T>`를 사용하면 참조 주기가 발생할 위험이 있었습니다. 마찬가지로 `Mutex<T>`를 사용할 때도 논리 오류의 위험이 있습니다. 따라서 `Mutex<T>`를 사용할 때는 항상 주의해야 합니다.데드락을 만들 수 있습니다. 이는 두 가지 리소스를 잠그려는 작업이 발생하고 두 개의 스레드가 각각 하나의 잠금을 획득하여 서로를 영원히 기다리는 경우입니다. 데드락에 관심이 있다면 Rust 프로그램에서 데드락이 있는 프로그램을 만들어 보세요. 그런 다음 어떤 언어에서든 뮤텍스의 데드락 완화 전략을 조사하고 Rust에서 구현해 보세요. `Mutex<T>` 및 `MutexGuard`에 대한 표준 라이브러리 API 설명서는 유용한 정보를 제공합니다.
 
-We’ll round out this chapter by talking about the `Send` and `Sync` traits and
-how we can use them with custom types.
+이 장을 마무리하기 위해 `Send` 및 `Sync` 트레이트에 대해 이야기하고 이를 사용자 정의 유형과 함께 사용하는 방법에 대해 알아보겠습니다.
 
 [atomic]: ../std/sync/atomic/index.html

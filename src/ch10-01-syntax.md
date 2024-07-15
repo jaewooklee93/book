@@ -1,159 +1,98 @@
-## Generic Data Types
+## 제네릭 데이터 유형
 
-We use generics to create definitions for items like function signatures or
-structs, which we can then use with many different concrete data types. Let’s
-first look at how to define functions, structs, enums, and methods using
-generics. Then we’ll discuss how generics affect code performance.
+제네릭을 사용하여 함수 서명이나 구조체와 같은 항목에 대한 정의를 만들고, 이를 여러 다른 구체 데이터 유형과 함께 사용할 수 있습니다. 먼저 함수, 구조체, 열거형 및 메서드를 정의하는 방법을 살펴보겠습니다. 그런 다음 제네릭이 코드 성능에 미치는 영향에 대해 논의하겠습니다.
 
-### In Function Definitions
+### 함수 정의에서
 
-When defining a function that uses generics, we place the generics in the
-signature of the function where we would usually specify the data types of the
-parameters and return value. Doing so makes our code more flexible and provides
-more functionality to callers of our function while preventing code duplication.
+제네릭을 사용하여 함수를 정의할 때, 함수 매개변수와 반환 값의 데이터 유형을 일반적으로 지정하는 위치에 제네릭을 넣습니다. 이렇게 하면 코드가 더 유연해지고 함수의 호출자에게 더 많은 기능을 제공하면서 코드 중복을 방지합니다.
 
-Continuing with our `largest` function, Listing 10-4 shows two functions that
-both find the largest value in a slice. We’ll then combine these into a single
-function that uses generics.
+`largest` 함수를 계속해서 살펴보겠습니다. 10-4번 목록은 두 개의 함수를 보여주는데, 두 함수 모두 슬라이스에서 가장 큰 값을 찾습니다. 이제 이들을 제네릭을 사용하는 하나의 함수로 통합해 보겠습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-04/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 10-4: Two functions that differ only in their
-names and in the types in their signatures</span>
+<span class=\"caption\">Listing 10-4: 이름과 서명의 유형만 다른 두 함수</span>
 
-The `largest_i32` function is the one we extracted in Listing 10-3 that finds
-the largest `i32` in a slice. The `largest_char` function finds the largest
-`char` in a slice. The function bodies have the same code, so let’s eliminate
-the duplication by introducing a generic type parameter in a single function.
+`largest_i32` 함수는 10-3번 목록에서 추출한 `i32` 슬라이스에서 가장 큰 값을 찾는 함수입니다. `largest_char` 함수는 슬라이스에서 가장 큰 `char` 값을 찾습니다. 함수 본문은 동일하므로 제네릭 데이터 유형을 사용하여 하나의 함수로 코드를 통합할 수 있습니다.
 
-To parameterize the types in a new single function, we need to name the type
-parameter, just as we do for the value parameters to a function. You can use
-any identifier as a type parameter name. But we’ll use `T` because, by
-convention, type parameter names in Rust are short, often just one letter, and
-Rust’s type-naming convention is UpperCamelCase. Short for *type*, `T` is the
-default choice of most Rust programmers.
+새로운 함수에 유형 매개변수를 파라미터화하려면 유형 매개변수 이름을 지정해야 합니다. 유형 매개변수 이름으로는 임의의 식별자를 사용할 수 있습니다. 하지만 `T`를 사용할 것입니다. 왜냐하면 Rust에서 유형 매개변수 이름은 일반적으로 짧고, 종종 한 글자만 사용되며, Rust의 유형 명명 규칙은 UpperCamelCase이기 때문입니다. `T`는 *유형*의 약자로, 대부분의 Rust 프로그래머가 선호하는 기본 선택입니다.
 
-When we use a parameter in the body of the function, we have to declare the
-parameter name in the signature so the compiler knows what that name means.
-Similarly, when we use a type parameter name in a function signature, we have
-to declare the type parameter name before we use it. To define the generic
-`largest` function, we place type name declarations inside angle brackets,
-`<>`, between the name of the function and the parameter list, like this:
+함수 본문에서 매개변수를 사용할 때는 컴파일러가 해당 이름이 무엇을 의미하는지 알 수 있도록 매개변수 이름을 서명에 선언해야 합니다. 유형 매개변수 이름을 함수 서명에서 사용할 때도 마찬가지입니다. 제네릭 유형을 정의하려면 함수 이름과 매개변수 목록 사이에 각각의 유형 이름을 선언하는 각각의 괄호 `<>` 안에 유형 이름을 넣습니다.
 
 ```rust,ignore
 fn largest<T>(list: &[T]) -> &T {
 ```
 
-We read this definition as: the function `largest` is generic over some type
-`T`. This function has one parameter named `list`, which is a slice of values
-of type `T`. The `largest` function will return a reference to a value of the
-same type `T`.
+이 정의를 읽으면 `largest` 함수는 어떤 유형 `T`에 대해 일반화된 함수임을 알 수 있습니다. 이 함수는 `T` 유형의 값으로 구성된 슬라이스 `list`라는 하나의 매개변수를 가지고 있습니다. `largest` 함수는 `T` 유형의 값에 대한 참조를 반환합니다.
 
-Listing 10-5 shows the combined `largest` function definition using the generic
-data type in its signature. The listing also shows how we can call the function
-with either a slice of `i32` values or `char` values. Note that this code won’t
-compile yet, but we’ll fix it later in this chapter.
+10-5번 목록은 제네릭 데이터 유형을 사용하는 `largest` 함수 정의를 보여줍니다. 이 목록은 `i32` 값 또는 `char` 값의 슬라이스로 함수를 호출하는 방법을 보여줍니다. 이 코드는 아직 컴파일되지 않지만, 이 장에서 나중에 수정할 것입니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-05/src/main.rs}}
 ```
 
-<span class="caption">Listing 10-5: The `largest` function using generic type
-parameters; this doesn’t compile yet</span>
+<span class=\"caption\">Listing 10-5: 제네릭 유형 매개변수를 사용하는 `largest` 함수; 아직 컴파일되지 않음</span>
 
-If we compile this code right now, we’ll get this error:
+이 코드를 지금 바로 컴파일하면 다음과 같은 오류 메시지를 받습니다.
 
 ```console
 {{#include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-05/output.txt}}
 ```
 
-The help text mentions `std::cmp::PartialOrd`, which is a *trait*, and we’re
-going to talk about traits in the next section. For now, know that this error
-states that the body of `largest` won’t work for all possible types that `T`
-could be. Because we want to compare values of type `T` in the body, we can
-only use types whose values can be ordered. To enable comparisons, the standard
-library has the `std::cmp::PartialOrd` trait that you can implement on types
-(see Appendix C for more on this trait). By following the help text’s
-suggestion, we restrict the types valid for `T` to only those that implement
-`PartialOrd` and this example will compile, because the standard library
-implements `PartialOrd` on both `i32` and `char`.
+도움말 텍스트는 `std::cmp::PartialOrd`라는 *trait*를 언급하고 있으며, 다음 섹션에서 trait에 대해 논의할 것입니다. 지금은 이 오류 메시지가 `T`가 될 수 있는 모든 가능한 유형에 대해 `largest` 함수의 본문이 작동하지 않음을 나타낸다는 것을 알아두세요. 함수 본문에서 `T` 유형의 값을 비교하려면, 값을 비교할 수 있는 유형이어야 합니다. 표준 라이브러리는 `std::cmp::PartialOrd`라는 trait를 제공하여 비교를 가능하게 합니다(참고: Appendix C에서 이 trait에 대한 자세한 내용을 참조하세요). 도움말 텍스트의 지시에 따라 `PartialOrd` trait를 구현하면 코드가 컴파일될 것입니다.
 
-### In Struct Definitions
+제안 사항으로, `T`에 유효한 유형을 `PartialOrd`를 구현하는 유형으로 제한하면 이 예제가 컴파일됩니다. 표준 라이브러리는 `i32`와 `char` 모두에 `PartialOrd`를 구현하기 때문입니다.
 
-We can also define structs to use a generic type parameter in one or more
-fields using the `<>` syntax. Listing 10-6 defines a `Point<T>` struct to hold
-`x` and `y` coordinate values of any type.
+### 구조 정의에서
 
-<span class="filename">Filename: src/main.rs</span>
+또한 구조체를 정의하여 하나 이상의 필드에 일반적인 유형 매개변수를 사용할 수 있습니다. 10-6번 목록은 모든 유형의 `x` 및 `y` 좌표 값을 저장하는 `Point<T>` 구조체를 정의합니다.
+
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-06/src/main.rs}}
 ```
 
-<span class="caption">Listing 10-6: A `Point<T>` struct that holds `x` and `y`
-values of type `T`</span>
+<span class=\"caption\">Listing 10-6: `Point<T>` 구조체는 유형 `T`의 `x` 및 `y` 값을 저장합니다</span>
 
-The syntax for using generics in struct definitions is similar to that used in
-function definitions. First we declare the name of the type parameter inside
-angle brackets just after the name of the struct. Then we use the generic
-type in the struct definition where we would otherwise specify concrete data
-types.
+구조체 정의에서 일반형을 사용하는 문법은 함수 정의에서 사용하는 문법과 유사합니다. 먼저 구조체 이름 뒤에 각각 괄호 안에 유형 매개변수의 이름을 선언합니다. 그런 다음 구조체 정의에서 구체적인 데이터 유형을 대신하여 일반적인 유형을 사용합니다.
 
-Note that because we’ve used only one generic type to define `Point<T>`, this
-definition says that the `Point<T>` struct is generic over some type `T`, and
-the fields `x` and `y` are *both* that same type, whatever that type may be. If
-we create an instance of a `Point<T>` that has values of different types, as in
-Listing 10-7, our code won’t compile.
+`Point<T>`를 정의할 때 하나의 일반적인 유형만 사용했기 때문에, 이 정의는 `Point<T>` 구조체가 어떤 유형인지에 관계없이 `T`라는 일반적인 유형에 대해 일반적이라는 것을 의미합니다. `Point<T>`의 인스턴스를 생성할 때 `x`와 `y` 필드가 모두 같은 유형이어야 합니다. 10-7번 목록과 같이 다른 유형의 값을 가진 `Point<T>` 인스턴스를 생성하면 코드가 컴파일되지 않습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-07/src/main.rs}}
 ```
 
-<span class="caption">Listing 10-7: The fields `x` and `y` must be the same
-type because both have the same generic data type `T`.</span>
+<span class=\"caption\">Listing 10-7: `x`와 `y` 필드는 같은 유형이어야 합니다. `x`와 `y`는 같은 일반 데이터 유형 `T`입니다.</span>
 
-In this example, when we assign the integer value `5` to `x`, we let the
-compiler know that the generic type `T` will be an integer for this instance of
-`Point<T>`. Then when we specify `4.0` for `y`, which we’ve defined to have the
-same type as `x`, we’ll get a type mismatch error like this:
+이 예제에서는 `x`에 정수 값 `5`를 할당할 때 컴파일러에게 `T`라는 일반 유형이 이 `Point<T>` 인스턴스에 대해 정수라는 것을 알립니다. 그런 다음 `y`에 `4.0`을 지정할 때, `x`와 같은 유형이어야 하므로 유형 불일치 오류가 발생합니다.
 
 ```console
 {{#include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-07/output.txt}}
 ```
 
-To define a `Point` struct where `x` and `y` are both generics but could have
-different types, we can use multiple generic type parameters. For example, in
-Listing 10-8, we change the definition of `Point` to be generic over types `T`
-and `U` where `x` is of type `T` and `y` is of type `U`.
+`x`가 유형 `T`이고 `y`가 유형 `U`인 `Point` 구조체를 정의하려면 10-8번 목록과 같이 `T`와 `U`라는 두 개의 일반 유형 매개변수를 사용하여 `Point`를 정의할 수 있습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-08/src/main.rs}}
 ```
 
-<span class="caption">Listing 10-8: A `Point<T, U>` generic over two types so
-that `x` and `y` can be values of different types</span>
+<span class=\"caption\">Listing 10-8: `Point<T, U>`는 두 가지 유형에 대해 일반적이며 `x`와 `y`는 각각 다른 유형일 수 있습니다</span>
 
-Now all the instances of `Point` shown are allowed! You can use as many generic
-type parameters in a definition as you want, but using more than a few makes
-your code hard to read. If you’re finding you need lots of generic types in
-your code, it could indicate that your code needs restructuring into smaller
-pieces.
+이제 모든 `Point` 인스턴스가 허용됩니다! `Point` 정의에 필요한 만큼 많은 일반 유형 매개변수를 사용할 수 있지만, 너무 많이 사용하면 코드가 읽기 어려워집니다. 코드에 많은 일반 유형 매개변수가 필요하다면 코드를 더 작은 부분으로 재구성해야 할 수 있습니다.
 
-### In Enum Definitions
+### 열거형 정의에서
 
-As we did with structs, we can define enums to hold generic data types in their
-variants. Let’s take another look at the `Option<T>` enum that the standard
-library provides, which we used in Chapter 6:
+구조체와 마찬가지로 열거형을 정의하여 변이 안에 일반적인 데이터 유형을 포함할 수 있습니다. 표준 라이브러리에서 제공하는 `Option<T>` 열거형을 다시 살펴보겠습니다. 이 열거형은 6장에서 사용했습니다.
 
 ```rust
 enum Option<T> {
@@ -162,15 +101,10 @@ enum Option<T> {
 }
 ```
 
-This definition should now make more sense to you. As you can see, the
-`Option<T>` enum is generic over type `T` and has two variants: `Some`, which
-holds one value of type `T`, and a `None` variant that doesn’t hold any value.
-By using the `Option<T>` enum, we can express the abstract concept of an
-optional value, and because `Option<T>` is generic, we can use this abstraction
-no matter what the type of the optional value is.
+이 정의가 이제 더 명확해졌을 것입니다. `Option<T>` 열거형은 유형 `T`에 대해 일반적이며 `Some` 변이 하나의 `T` 유형 값을 포함하고 `None` 변이는 값을 포함하지 않는다는 것을 알 수 있습니다.
+ `Option<T>` enum을 사용하면 옵셔널 값의 추상 개념을 표현할 수 있으며, `Option<T>`가 제네릭이기 때문에 옵셔널 값의 유형에 관계없이 이 추상화를 사용할 수 있습니다.
 
-Enums can use multiple generic types as well. The definition of the `Result`
-enum that we used in Chapter 9 is one example:
+제네릭을 사용하여 여러 유형을 사용할 수 있는 범위를 넓힐 수 있습니다. 9장에서 사용한 `Result` enum은 그 예입니다.
 
 ```rust
 enum Result<T, E> {
@@ -179,132 +113,56 @@ enum Result<T, E> {
 }
 ```
 
-The `Result` enum is generic over two types, `T` and `E`, and has two variants:
-`Ok`, which holds a value of type `T`, and `Err`, which holds a value of type
-`E`. This definition makes it convenient to use the `Result` enum anywhere we
-have an operation that might succeed (return a value of some type `T`) or fail
-(return an error of some type `E`). In fact, this is what we used to open a
-file in Listing 9-3, where `T` was filled in with the type `std::fs::File` when
-the file was opened successfully and `E` was filled in with the type
-`std::io::Error` when there were problems opening the file.
+`Result` enum은 `T`와 `E` 두 가지 유형에 대해 제네릭이며, `Ok`와 `Err` 두 가지 변형을 가지고 있습니다. `Ok`는 `T` 유형의 값을 담고 있으며, `Err`는 `E` 유형의 값을 담습니다. 이 정의는 성공할 수도 있고 실패할 수도 있는 작업에 `Result` enum을 사용하는 데 편리합니다. (어떤 유형의 `T`를 반환하거나 `E` 유형의 오류를 반환합니다.) 실제로 9-3번 목록에서 파일을 열 때 사용했는데, 파일이 성공적으로 열리면 `T`는 `std::fs::File` 유형으로 채워지고, 파일을 열 때 문제가 발생하면 `E`는 `std::io::Error` 유형으로 채워집니다.
 
-When you recognize situations in your code with multiple struct or enum
-definitions that differ only in the types of the values they hold, you can
-avoid duplication by using generic types instead.
+코드에서 여러 구조체 또는 enum 정의가 값이 저장하는 유형만 다를 때, 중복을 피하기 위해 제네릭 유형을 사용할 수 있습니다.
 
-### In Method Definitions
+### 메서드 정의에서
 
-We can implement methods on structs and enums (as we did in Chapter 5) and use
-generic types in their definitions too. Listing 10-9 shows the `Point<T>`
-struct we defined in Listing 10-6 with a method named `x` implemented on it.
+구조체와 enum에 메서드를 구현할 수 있으며 (5장에서 살펴봤듯이) 제네릭 유형을 메서드 정의에서도 사용할 수 있습니다. 10-9번 목록은 10-6번 목록에서 정의한 `Point<T>` 구조체에 `x`라는 이름의 메서드를 구현하는 것을 보여줍니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-09/src/main.rs}}
 ```
 
-<span class="caption">Listing 10-9: Implementing a method named `x` on the
-`Point<T>` struct that will return a reference to the `x` field of type
-`T`</span>
+<span class=\"caption\">Listing 10-9: `Point<T>` 구조체에 `x`라는 이름의 메서드를 구현하는 것. 이 메서드는 `x` 필드의 참조를 반환합니다.</span>
 
-Here, we’ve defined a method named `x` on `Point<T>` that returns a reference
-to the data in the field `x`.
+여기서 `Point<T>`에 `x`라는 이름의 메서드를 정의하여 `x` 필드의 데이터에 대한 참조를 반환합니다.
 
-Note that we have to declare `T` just after `impl` so we can use `T` to specify
-that we’re implementing methods on the type `Point<T>`. By declaring `T` as a
-generic type after `impl`, Rust can identify that the type in the angle
-brackets in `Point` is a generic type rather than a concrete type. We could
-have chosen a different name for this generic parameter than the generic
-parameter declared in the struct definition, but using the same name is
-conventional. Methods written within an `impl` that declares the generic type
-will be defined on any instance of the type, no matter what concrete type ends
-up substituting for the generic type.
+`impl` 뒤에 `T`를 선언해야 `T`를 사용하여 `Point<T>` 유형에 대해 메서드를 구현한다는 것을 알 수 있습니다. `T`를 제네릭 유형으로 선언함으로써 Rust는 각각의 구조체에서 `Point` 안의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각각의 각시그니처를 추가하여 예제를 더 명확하게 합니다. 이 메서드는 `self` `Point` (타입 `X1`)의 `x` 값과 전달된 `Point` (타입 `Y2`)의 `y` 값을 사용하여 새로운 `Point` 인스턴스를 생성합니다.
 
-We can also specify constraints on generic types when defining methods on the
-type. We could, for example, implement methods only on `Point<f32>` instances
-rather than on `Point<T>` instances with any generic type. In Listing 10-10 we
-use the concrete type `f32`, meaning we don’t declare any types after `impl`.
-
-<span class="filename">Filename: src/main.rs</span>
-
-```rust
-{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-10/src/main.rs:here}}
-```
-
-<span class="caption">Listing 10-10: An `impl` block that only applies to a
-struct with a particular concrete type for the generic type parameter `T`</span>
-
-This code means the type `Point<f32>` will have a `distance_from_origin`
-method; other instances of `Point<T>` where `T` is not of type `f32` will not
-have this method defined. The method measures how far our point is from the
-point at coordinates (0.0, 0.0) and uses mathematical operations that are
-available only for floating-point types.
-
-Generic type parameters in a struct definition aren’t always the same as those
-you use in that same struct’s method signatures. Listing 10-11 uses the generic
-types `X1` and `Y1` for the `Point` struct and `X2` `Y2` for the `mixup` method
-signature to make the example clearer. The method creates a new `Point`
-instance with the `x` value from the `self` `Point` (of type `X1`) and the `y`
-value from the passed-in `Point` (of type `Y2`).
-
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-11/src/main.rs}}
 ```
 
-<span class="caption">Listing 10-11: A method that uses generic types different
-from its struct’s definition</span>
+<span class=\"caption\">Listing 10-11: 구조체 정의와 다른 일반형을 사용하는 메서드</span>
 
-In `main`, we’ve defined a `Point` that has an `i32` for `x` (with value `5`)
-and an `f64` for `y` (with value `10.4`). The `p2` variable is a `Point` struct
-that has a string slice for `x` (with value `"Hello"`) and a `char` for `y`
-(with value `c`). Calling `mixup` on `p1` with the argument `p2` gives us `p3`,
-which will have an `i32` for `x` because `x` came from `p1`. The `p3` variable
-will have a `char` for `y` because `y` came from `p2`. The `println!` macro
-call will print `p3.x = 5, p3.y = c`.
+`main`에서 `Point`를 정의했는데, `x`는 `i32` (값은 `5`)이고, `y`는 `f64` (값은 `10.4`)입니다. `p2` 변수는 `x`에 문자열 슬라이스 (값은 `\"Hello\"`)와 `y`에 `char` (값은 `c`)를 가진 `Point` 구조체입니다. `p1`에 `p2`를 인자로 `mixup`를 호출하면 `p3`가 생성되며, `x`는 `p1`에서 가져오기 때문에 `i32`가 됩니다. `p3` 변수는 `y`를 `p2`에서 가져오기 때문에 `char`가 됩니다. `println!` 매크로 호출은 `p3.x = 5, p3.y = c`를 출력합니다.
 
-The purpose of this example is to demonstrate a situation in which some generic
-parameters are declared with `impl` and some are declared with the method
-definition. Here, the generic parameters `X1` and `Y1` are declared after
-`impl` because they go with the struct definition. The generic parameters `X2`
-and `Y2` are declared after `fn mixup` because they’re only relevant to the
-method.
+이 예제의 목적은 `impl`을 사용하여 일부 일반형 매개변수를 선언하고, 메서드 정의에서 다른 일반형 매개변수를 선언하는 상황을 보여주는 것입니다. 여기서는 `X1`과 `Y1`은 구조체 정의와 함께 `impl` 뒤에 선언되고, `X2`와 `Y2`는 `fn mixup` 뒤에 선언됩니다. 이는 `X2`와 `Y2`가 메서드에만 관련이 있기 때문입니다.
 
-### Performance of Code Using Generics
+### 일반형을 사용하는 코드의 성능
 
-You might be wondering whether there is a runtime cost when using generic type
-parameters. The good news is that using generic types won’t make your program
-run any slower than it would with concrete types.
+일반형 매개변수를 사용하면 런타임에 비용이 발생하는지 궁금해할 수 있습니다. 좋은 소식은 일반형을 사용해도 프로그램이 구체적인 형을 사용할 때보다 느리지 않다는 것입니다.
 
-Rust accomplishes this by performing monomorphization of the code using
-generics at compile time. *Monomorphization* is the process of turning generic
-code into specific code by filling in the concrete types that are used when
-compiled. In this process, the compiler does the opposite of the steps we used
-to create the generic function in Listing 10-5: the compiler looks at all the
-places where generic code is called and generates code for the concrete types
-the generic code is called with.
+Rust는 컴파일 시간에 일반형 코드를 특정 코드로 변환하는 모노모르피즘을 수행하여 이를 달성합니다. *모노모르피즘*은 일반형 코드를 사용하는 모든 곳에서 특정 형을 채우고 변환하는 과정입니다. 컴파일러는 일반형 코드가 호출되는 모든 곳을 살펴보고 일반형 코드가 호출되는 특정 형에 대한 코드를 생성합니다.
 
-Let’s look at how this works by using the standard library’s generic
-`Option<T>` enum:
+표준 라이브러리의 일반형 `Option<T>` enum을 사용하여 이것을 살펴보겠습니다.
 
 ```rust
 let integer = Some(5);
 let float = Some(5.0);
 ```
 
-When Rust compiles this code, it performs monomorphization. During that
-process, the compiler reads the values that have been used in `Option<T>`
-instances and identifies two kinds of `Option<T>`: one is `i32` and the other
-is `f64`. As such, it expands the generic definition of `Option<T>` into two
-definitions specialized to `i32` and `f64`, thereby replacing the generic
-definition with the specific ones.
+Rust가 이 코드를 컴파일할 때 모노모르피즘을 수행합니다. 그 과정에서 컴파일러는 `Option<T>` 인스턴스에서 사용된 값을 읽고 `i32`과 `f64` 두 가지 종류의 `Option<T>`를 식별합니다. 따라서 `Option<T>`의 일반적인 정의를 `i32`과 `f64`에 특화된 두 가지 정의로 확장합니다. 즉, 일반적인 정의를 특정 정의로 대체합니다.
 
-The monomorphized version of the code looks similar to the following (the
-compiler uses different names than what we’re using here for illustration):
+컴파일러가 사용하는 다른 이름으로 이 코드를 컴파일된 모습을 보여줍니다. (이 예시를 위해 우리가 사용하는 이름과는 다릅니다.)
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 enum Option_i32 {
@@ -323,9 +181,4 @@ fn main() {
 }
 ```
 
-The generic `Option<T>` is replaced with the specific definitions created by
-the compiler. Because Rust compiles generic code into code that specifies the
-type in each instance, we pay no runtime cost for using generics. When the code
-runs, it performs just as it would if we had duplicated each definition by
-hand. The process of monomorphization makes Rust’s generics extremely efficient
-at runtime.
+일반형 `Option<T>`는 컴파일러가 생성한 특정 정의로 대체됩니다. Rust가 일반형 코드를 각 인스턴스에서 유형을 명시하는 코드로 컴파일하기 때문에 일반형을 사용하는 데 런타임 비용이 발생하지 않습니다. 코드가 실행될 때, 우리가 코드를 직접 복제했을 때와 동일하게 실행됩니다. 모노모르피즘 과정을 통해 Rust의 일반형은 런타임에서 매우 효율적입니다.

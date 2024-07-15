@@ -1,90 +1,49 @@
-## Refutability: Whether a Pattern Might Fail to Match
+##  불가능성 검사: 패턴이 일치하지 않을 가능성
 
-Patterns come in two forms: refutable and irrefutable. Patterns that will match
-for any possible value passed are *irrefutable*. An example would be `x` in the
-statement `let x = 5;` because `x` matches anything and therefore cannot fail
-to match. Patterns that can fail to match for some possible value are
-*refutable*. An example would be `Some(x)` in the expression `if let Some(x) =
-a_value` because if the value in the `a_value` variable is `None` rather than
-`Some`, the `Some(x)` pattern will not match.
+패턴은 불가능성 검사 패턴과 확실성 검사 패턴의 두 가지 형태로 나뉩니다. 모든 가능한 값에 일치하는 패턴은 *확실성 검사 패턴*입니다. 예를 들어, `let x = 5;` 문에서 `x`는 모든 값에 일치하기 때문에 일치하지 않을 가능성이 없습니다. 일부 가능한 값에 대해 일치하지 않을 수 있는 패턴은 *불가능성 검사 패턴*입니다. 예를 들어, `if let Some(x) = a_value` 에서 `Some(x)` 패턴은 `a_value` 변수의 값이 `None`이 아니라 `Some`이면서만 일치합니다. 
 
-Function parameters, `let` statements, and `for` loops can only accept
-irrefutable patterns, because the program cannot do anything meaningful when
-values don’t match. The `if let` and `while let` expressions accept
-refutable and irrefutable patterns, but the compiler warns against
-irrefutable patterns because by definition they’re intended to handle possible
-failure: the functionality of a conditional is in its ability to perform
-differently depending on success or failure.
+함수 매개변수, `let` 문, `for` 루프는 불가능성 검사 패턴을 받을 수 없습니다. 프로그램이 값이 일치하지 않을 때 의미 있는 작업을 수행할 수 없기 때문입니다. `if let` 및 `while let` 표현식은 불가능성 검사 패턴과 확실성 검사 패턴을 받을 수 있지만, 컴파일러는 불가능성 검사 패턴에 대해 경고합니다. 이는 조건문의 기능이 성공 또는 실패에 따라 다르게 실행될 수 있다는 점에서 정의된 기본적인 개념 때문입니다.
 
-In general, you shouldn’t have to worry about the distinction between refutable
-and irrefutable patterns; however, you do need to be familiar with the concept
-of refutability so you can respond when you see it in an error message. In
-those cases, you’ll need to change either the pattern or the construct you’re
-using the pattern with, depending on the intended behavior of the code.
+일반적으로 불가능성 검사 패턴과 확실성 검사 패턴의 차이에 대해 걱정할 필요는 없습니다. 그러나 불가능성 검사 패턴의 개념을 이해해야 컴파일러 오류 메시지에서 발생하는 경우에 대처할 수 있습니다. 그러한 경우, 코드의 의도된 동작에 따라 패턴이나 패턴을 사용하는 구조를 변경해야 합니다.
 
-Let’s look at an example of what happens when we try to use a refutable pattern
-where Rust requires an irrefutable pattern and vice versa. Listing 18-8 shows a
-`let` statement, but for the pattern we’ve specified `Some(x)`, a refutable
-pattern. As you might expect, this code will not compile.
+불가능성 검사 패턴을 사용할 때 발생하는 문제를 보여주는 예를 살펴보겠습니다. 18-8번 목록은 `let` 문을 보여주지만, 우리가 지정한 패턴 `Some(x)`는 불가능성 검사 패턴입니다. 예상대로 이 코드는 컴파일되지 않습니다.
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-08/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 18-8: Attempting to use a refutable pattern with
-`let`</span>
+<span class=\"caption\">18-8번 목록: 불가능성 검사 패턴을 사용하여 `let`</span>
 
-If `some_option_value` was a `None` value, it would fail to match the pattern
-`Some(x)`, meaning the pattern is refutable. However, the `let` statement can
-only accept an irrefutable pattern because there is nothing valid the code can
-do with a `None` value. At compile time, Rust will complain that we’ve tried to
-use a refutable pattern where an irrefutable pattern is required:
+만약 `some_option_value` 가 `None` 값이었다면, `Some(x)` 패턴에 일치하지 않아 패턴이 불가능성 검사 패턴이라는 것을 알 수 있습니다. 그러나 `let` 문은 불가능성 검사 패턴을 받을 수 없습니다. `None` 값에 대해 유효한 작업을 수행할 수 없기 때문입니다. 컴파일 시간에 Rust는 불가능성 검사 패턴을 사용하려고 시도했다는 오류를 발생시킵니다.
 
 ```console
 {{#include ../listings/ch18-patterns-and-matching/listing-18-08/output.txt}}
 ```
 
-Because we didn’t cover (and couldn’t cover!) every valid value with the
-pattern `Some(x)`, Rust rightfully produces a compiler error.
+유효한 값을 패턴 `Some(x)`로 완전히 덮어주지 않았기 때문에 Rust는 정당하게 컴파일 오류를 발생시킵니다.
 
-If we have a refutable pattern where an irrefutable pattern is needed, we can
-fix it by changing the code that uses the pattern: instead of using `let`, we
-can use `if let`. Then if the pattern doesn’t match, the code will just skip
-the code in the curly brackets, giving it a way to continue validly. Listing
-18-9 shows how to fix the code in Listing 18-8.
+불가능성 검사 패턴이 필요한 곳에서 확실성 검사 패턴을 사용하는 경우, `let` 대신 `if let`을 사용하여 코드를 수정할 수 있습니다. 그러면 패턴이 일치하지 않으면 코드가 단순히 중괄호 안의 코드를 건너뛰어 유효하게 실행될 수 있습니다. 18-9번 목록은 18-8번 목록의 코드를 수정하는 방법을 보여줍니다.
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-09/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 18-9: Using `if let` and a block with refutable
-patterns instead of `let`</span>
+<span class=\"caption\">18-9번 목록: 불가능성 검사 패턴을 사용하는 `if let` 블록</span>
 
-We’ve given the code an out! This code is perfectly valid now. However,
-if we give `if let` an irrefutable pattern (a pattern that will always
-match), such as `x`, as shown in Listing 18-10, the compiler will give a
-warning.
+이제 코드에 빠져들 수 있습니다. 그러나 `if let`에 확실성 검사 패턴(항상 일치하는 패턴)을 사용하면 18-10번 목록과 같이 컴파일러가 경고를 표시합니다.
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-10/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 18-10: Attempting to use an irrefutable pattern
-with `if let`</span>
+<span class=\"caption\">18-10번 목록: `if let`에 확실성 검사 패턴 사용</span>
 
-Rust complains that it doesn’t make sense to use `if let` with an irrefutable
-pattern:
+Rust는 `if let`에 확실성 검사 패턴을 사용하는 것은 의미가 없다고 말합니다.
 
 ```console
-{{#include ../listings/ch18-patterns-and-matching/listing-18-10/output.txt}}
 ```
 
-For this reason, match arms must use refutable patterns, except for the last
-arm, which should match any remaining values with an irrefutable pattern. Rust
-allows us to use an irrefutable pattern in a `match` with only one arm, but
-this syntax isn’t particularly useful and could be replaced with a simpler
-`let` statement.
+이러한 이유로 `match` 팔의 경우 반드시 불가역 패턴을 사용해야 합니다. 마지막 팔을 제외하고는 모든 팔은 남은 값을 불가역 패턴으로 일치시켜야 합니다. Rust는 하나의 팔만 있는 `match`에서 불가역 패턴을 사용할 수 있지만, 이 문법은 특별히 유용하지 않으며 간단한 `let` 문으로 대체할 수 있습니다.
 
-Now that you know where to use patterns and the difference between refutable
-and irrefutable patterns, let’s cover all the syntax we can use to create
-patterns.
+이제 패턴을 어디에서 사용하고 불가역 패턴과 반드시 패턴의 차이를 알고 있다면, 패턴을 만드는 데 사용할 수 있는 모든 문법을 살펴보겠습니다.
+```

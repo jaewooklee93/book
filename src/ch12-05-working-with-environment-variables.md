@@ -1,22 +1,12 @@
-## Working with Environment Variables
+## 환경 변수 사용하기
 
-We’ll improve `minigrep` by adding an extra feature: an option for
-case-insensitive searching that the user can turn on via an environment
-variable. We could make this feature a command line option and require that
-users enter it each time they want it to apply, but by instead making it an
-environment variable, we allow our users to set the environment variable once
-and have all their searches be case insensitive in that terminal session.
+`minigrep`를 개선하여 대소문자를 구분하지 않는 검색 옵션을 추가합니다. 사용자가 이 옵션을 환경 변수를 통해 켜고 끌 수 있도록 합니다. 이 기능을 명령줄 옵션으로 만들고 사용자가 매번 입력해야 하는 대신 환경 변수를 한 번 설정하면 해당 터미널 세션에서 모든 검색이 대소문자를 구분하지 않도록 할 수 있습니다.
 
-### Writing a Failing Test for the Case-Insensitive `search` Function
+### 대소문자 구분하지 않는 `search` 함수를 위한 실패 테스트 작성
 
-We first add a new `search_case_insensitive` function that will be called when
-the environment variable has a value. We’ll continue to follow the TDD process,
-so the first step is again to write a failing test. We’ll add a new test for
-the new `search_case_insensitive` function and rename our old test from
-`one_result` to `case_sensitive` to clarify the differences between the two
-tests, as shown in Listing 12-20.
+먼저 환경 변수가 값을 가질 때 호출될 새로운 `search_case_insensitive` 함수를 추가합니다. TDD 프로세스를 계속 따라가므로 첫 번째 단계는 다시 실패하는 테스트를 작성하는 것입니다. `search_case_insensitive` 함수에 대한 새로운 테스트를 추가하고 `one_result`라는 기존 테스트를 `case_sensitive`로 이름을 바꿔 두 테스트의 차이를 명확히 합니다. Listing 12-20과 같이 보여줍니다.
 
-<Listing number="12-20" file-name="src/lib.rs" caption="Adding a new failing test for the case-insensitive function we’re about to add">
+<Listing number=\"12-20\" file-name=\"src/lib.rs\" caption=\"추가하려는 대소문자를 구분하지 않는 함수에 대한 새로운 실패 테스트 추가\">
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-20/src/lib.rs:here}}
@@ -24,30 +14,15 @@ tests, as shown in Listing 12-20.
 
 </Listing>
 
-Note that we’ve edited the old test’s `contents` too. We’ve added a new line
-with the text `"Duct tape."` using a capital D that shouldn’t match the query
-`"duct"` when we’re searching in a case-sensitive manner. Changing the old test
-in this way helps ensure that we don’t accidentally break the case-sensitive
-search functionality that we’ve already implemented. This test should pass now
-and should continue to pass as we work on the case-insensitive search.
+기존 테스트의 `contents`도 수정했습니다. `\"Duct tape.\"`라는 새로운 줄을 대문자 D를 사용하여 추가했습니다. 이는 대소문자를 구분하는 검색 방식으로는 `\"duct\"` 쿼리에 일치하지 않아야 합니다. 기존 테스트를 이렇게 변경하면 대소문자를 구분하는 검색 기능이 이미 구현되었기 때문에 실수로 손상되지 않도록 합니다. 이 테스트는 현재 통과해야 하며 대소문자를 구분하지 않는 검색을 구현하는 동안에도 계속 통과해야 합니다.
 
-The new test for the case-*insensitive* search uses `"rUsT"` as its query. In
-the `search_case_insensitive` function we’re about to add, the query `"rUsT"`
-should match the line containing `"Rust:"` with a capital R and match the line
-`"Trust me."` even though both have different casing from the query. This is
-our failing test, and it will fail to compile because we haven’t yet defined
-the `search_case_insensitive` function. Feel free to add a skeleton
-implementation that always returns an empty vector, similar to the way we did
-for the `search` function in Listing 12-16 to see the test compile and fail.
+대소문자를 구분하지 않는 검색을 위한 새로운 테스트는 `\"rUsT\"`를 쿼리로 사용합니다. `search_case_insensitive` 함수에서 `\"rUsT\"` 쿼리는 대문자 R를 가진 `\"Rust:\"` 라는 줄과 대문자 T를 가진 `\"Trust me.\"` 라는 줄에 일치해야 합니다. 이것이 우리의 실패 테스트이며, `search_case_insensitive` 함수를 아직 정의하지 않았기 때문에 컴파일되지 않습니다. Listing 12-16에서 `search` 함수를 구현한 방식과 유사하게 항상 빈 벡터를 반환하는 스켈레톤 구현을 추가하면 테스트가 컴파일되고 실패하는 것을 볼 수 있습니다.
 
-### Implementing the `search_case_insensitive` Function
+### `search_case_insensitive` 함수 구현
 
-The `search_case_insensitive` function, shown in Listing 12-21, will be almost
-the same as the `search` function. The only difference is that we’ll lowercase
-the `query` and each `line` so whatever the case of the input arguments,
-they’ll be the same case when we check whether the line contains the query.
+Listing 12-21에 나와 있는 `search_case_insensitive` 함수는 `search` 함수와 거의 동일합니다. 유일한 차이점은 쿼리와 각 줄을 소문자로 변환하기 때문에 입력 인수의 대소문자와 상관없이 줄이 쿼리에 포함되어 있는지 확인할 때 동일한 대소문자를 사용한다는 것입니다.
 
-<Listing number="12-21" file-name="src/lib.rs" caption="Defining the `search_case_insensitive` function to lowercase the query and the line before comparing them">
+<Listing number=\"12-21\" file-name=\"src/lib.rs\" caption=\"대소문자를 구분하지 않는 `search_case_insensitive` 함수를 정의하여 쿼리와 줄을 소문자로 변환하기 전에 비교합니다\">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-21/src/lib.rs:here}}
@@ -55,51 +30,29 @@ they’ll be the same case when we check whether the line contains the query.
 
 </Listing>
 
-First, we lowercase the `query` string and store it in a shadowed variable with
-the same name. Calling `to_lowercase` on the query is necessary so no
-matter whether the user’s query is `"rust"`, `"RUST"`, `"Rust"`, or `"rUsT"`,
-we’ll treat the query as if it were `"rust"` and be insensitive to the case.
-While `to_lowercase` will handle basic Unicode, it won’t be 100% accurate. If
-we were writing a real application, we’d want to do a bit more work here, but
-this section is about environment variables, not Unicode, so we’ll leave it at
-that here.
+먼저 `query` 문자열을 소문자로 변환하고 동일한 이름의 새 변수에 저장합니다. `to_lowercase`를 쿼리에 호출하는 것은 사용자의 쿼리가 `\"rust\"`, `\"RUST\"`, `\"Rust\"` 또는 `\"rUsT\"`인 경우에 상관없이 쿼리를 `\"rust\"`로 처리하기 위해 필요합니다. `to_lowercase`는 기본적인 Unicode를 처리하지만 100% 정확하지는 않습니다. 실제 응용 프로그램을 작성하는 경우 여기에서 조금 더 많은 작업을 해야 할 것입니다. 그러나 이 섹션은 환경 변수에 대한 것이므로 Unicode가 아니라 이 부분에 집중할 것입니다.
 
-Note that `query` is now a `String` rather than a string slice, because calling
-`to_lowercase` creates new data rather than referencing existing data. Say the
-query is `"rUsT"`, as an example: that string slice doesn’t contain a lowercase
-`u` or `t` for us to use, so we have to allocate a new `String` containing
-`"rust"`. When we pass `query` as an argument to the `contains` method now, we
-need to add an ampersand because the signature of `contains` is defined to take
-a string slice.
+참고로 `query`는 문자열 슬라이스가 아닌 `String`입니다. `to_lowercase`를 호출하면 기존 데이터를 참조하는 것이 아니라 새로운 데이터를 생성하기 때문입니다. 예를 들어 쿼리가 `\"rUsT\"` 라고 가정하면 문자열 슬라이스에는 소문자 `u` 또는 `t`가 없기 때문에 소문자 `u` 또는 `t`를 포함하는 새로운 `String`을 할당해야 합니다. `\"rust\"`. `query`를 `contains` 메서드에 인자로 전달할 때, 이제 `&`를 추가해야 합니다. `contains`의 서명은 문자열 슬라이스를 가져오도록 정의되어 있기 때문입니다.
 
-Next, we add a call to `to_lowercase` on each `line` to lowercase all
-characters. Now that we’ve converted `line` and `query` to lowercase, we’ll
-find matches no matter what the case of the query is.
+다음으로, 각 `line`에 `to_lowercase`를 호출하여 모든 문자를 소문자로 변환합니다. 이제 `line`과 `query`를 소문자로 변환했으므로, 쿼리의 경우에 관계없이 일치하는 항목을 찾을 수 있습니다.
 
-Let’s see if this implementation passes the tests:
+`search_case_insensitive` 함수가 테스트를 통과하는지 확인해 보겠습니다.
 
 ```console
 {{#include ../listings/ch12-an-io-project/listing-12-21/output.txt}}
 ```
 
-Great! They passed. Now, let’s call the new `search_case_insensitive` function
-from the `run` function. First, we’ll add a configuration option to the
-`Config` struct to switch between case-sensitive and case-insensitive search.
-Adding this field will cause compiler errors because we aren’t initializing
-this field anywhere yet:
+훌륭합니다! 테스트가 통과했습니다. 이제 `run` 함수에서 새 `search_case_insensitive` 함수를 호출해 보겠습니다. 먼저 `Config` 구조체에 사례에 민감하거나 사례에 민감하지 않은 검색을 전환하는 구성 옵션을 추가합니다. 이 필드를 추가하면 `ignore_case` 필드를 초기화하지 않았기 때문에 컴파일 오류가 발생합니다.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class=\"filename\">Filename: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/lib.rs:here}}
 ```
 
-We added the `ignore_case` field that holds a Boolean. Next, we need the `run`
-function to check the `ignore_case` field’s value and use that to decide
-whether to call the `search` function or the `search_case_insensitive`
-function, as shown in Listing 12-22. This still won’t compile yet.
+`ignore_case` 필드를 추가했습니다. 이 필드는 불리언 값을 저장합니다. 다음으로 `run` 함수가 `ignore_case` 필드의 값을 확인하고 `search` 함수 또는 `search_case_insensitive` 함수를 호출하는지 여부를 결정해야 합니다. Listing 12-22와 같이 구현했습니다. 이것도 아직 컴파일되지 않습니다.
 
-<Listing number="12-22" file-name="src/lib.rs" caption="Calling either `search` or `search_case_insensitive` based on the value in `config.ignore_case`">
+<Listing number=\"12-22\" file-name=\"src/lib.rs\" caption=\"`config.ignore_case` 값에 따라 `search` 또는 `search_case_insensitive`를 호출합니다\">
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/lib.rs:there}}
@@ -107,14 +60,9 @@ function, as shown in Listing 12-22. This still won’t compile yet.
 
 </Listing>
 
-Finally, we need to check for the environment variable. The functions for
-working with environment variables are in the `env` module in the standard
-library, so we bring that module into scope at the top of *src/lib.rs*. Then
-we’ll use the `var` function from the `env` module to check if any value
-has been set for an environment variable named `IGNORE_CASE`, as shown in
-Listing 12-23.
+마지막으로 환경 변수를 확인해야 합니다. 환경 변수를 처리하는 함수는 표준 라이브러리의 `env` 모듈에 있으므로 `src/lib.rs`의 맨 위에 해당 모듈을 스코프에 가져옵니다. 다음으로 `IGNORE_CASE`라는 이름의 환경 변수에 대해 값이 설정되었는지 확인하는 `env` 모듈의 `var` 함수를 사용합니다. Listing 12-23과 같이 구현했습니다.
 
-<Listing number="12-23" file-name="src/lib.rs" caption="Checking for any value in an environment variable named `IGNORE_CASE`">
+<Listing number=\"12-23\" file-name=\"src/lib.rs\" caption=\"`IGNORE_CASE`라는 이름의 환경 변수에 대해 값이 있는지 확인합니다\">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-23/src/lib.rs:here}}
@@ -122,55 +70,39 @@ Listing 12-23.
 
 </Listing>
 
-Here, we create a new variable `ignore_case`. To set its value, we call the
-`env::var` function and pass it the name of the `IGNORE_CASE` environment
-variable. The `env::var` function returns a `Result` that will be the
-successful `Ok` variant that contains the value of the environment variable if
-the environment variable is set to any value. It will return the `Err` variant
-if the environment variable is not set.
+여기서 `ignore_case`라는 새로운 변수를 생성합니다. 이 변수의 값을 설정하려면 `env::var` 함수를 호출하고 `IGNORE_CASE` 환경 변수의 이름을 전달합니다. `env::var` 함수는 환경 변수가 설정되어 있으면 성공적인 `Ok` 변형을 반환하고, 그 값을 포함합니다. 환경 변수가 설정되지 않았으면 `Err` 변형을 반환합니다.
 
-We’re using the `is_ok` method on the `Result` to check whether the environment
-variable is set, which means the program should do a case-insensitive search.
-If the `IGNORE_CASE` environment variable isn’t set to anything, `is_ok` will
-return false and the program will perform a case-sensitive search. We don’t
-care about the *value* of the environment variable, just whether it’s set or
-unset, so we’re checking `is_ok` rather than using `unwrap`, `expect`, or any
-of the other methods we’ve seen on `Result`.
+`Result`에서 환경 변수가 설정되었는지 확인하려면 `is_ok` 메서드를 사용합니다. 이는 프로그램이 사례에 민감하지 않은 검색을 수행해야 함을 의미합니다. `IGNORE_CASE` 환경 변수가 아무것도 설정되지 않았다면 `is_ok`은 `false`를 반환하고 프로그램은 사례에 민감한 검색을 수행합니다. 환경 변수의 *값*에 관심이 없으므로 `unwrap`, `expect` 또는 `Result`에서 본 다른 메서드 대신 `is_ok`를 사용합니다.
 
-We pass the value in the `ignore_case` variable to the `Config` instance so the
-`run` function can read that value and decide whether to call
-`search_case_insensitive` or `search`, as we implemented in Listing 12-22.
+`ignore_case` 변수의 값을 `Config` 인스턴스에 전달하여 `run` 함수가 해당 값을 읽고 `search_case_insensitive` 또는 `search`를 호출할 수 있도록 합니다.
 
-Let’s give it a try! First, we’ll run our program without the environment
-variable set and with the query `to`, which should match any line that contains
-the word “to” in all lowercase:
+이제 시도해 보겠습니다! 먼저 환경 변수를 설정하지 않고 프로그램을 실행하고 `to`라는 쿼리를 사용하여 `to`라는 단어가 소문자로 포함된 모든 줄을 찾습니다.
 
 ```console
-{{#include ../listings/ch12-an-io-project/listing-12-23/output.txt}}
-```
+"
 
-Looks like that still works! Now, let’s run the program with `IGNORE_CASE`
-set to `1` but with the same query `to`.
+
+``````
+
+여전히 작동하는 것처럼 보입니다! 이제 `IGNORE_CASE`를 `1`로 설정하지만 동일한 쿼리 `to`를 사용하여 프로그램을 실행해 보겠습니다.
 
 ```console
 $ IGNORE_CASE=1 cargo run -- to poem.txt
 ```
 
-If you’re using PowerShell, you will need to set the environment variable and
-run the program as separate commands:
+PowerShell을 사용하는 경우, 환경 변수를 설정하고 프로그램을 별도의 명령으로 실행해야 합니다.
 
 ```console
 PS> $Env:IGNORE_CASE=1; cargo run -- to poem.txt
 ```
 
-This will make `IGNORE_CASE` persist for the remainder of your shell
-session. It can be unset with the `Remove-Item` cmdlet:
+이렇게 하면 `IGNORE_CASE`가 셸 세션의 나머지 동안 유지됩니다. `Remove-Item` cmdlet를 사용하여 해제할 수 있습니다.
 
 ```console
 PS> Remove-Item Env:IGNORE_CASE
 ```
 
-We should get lines that contain “to” that might have uppercase letters:
+대소문자를 구분하지 않고 `to`를 포함하는 줄을 가져와야 합니다.
 
 <!-- manual-regeneration
 cd listings/ch12-an-io-project/listing-12-23
@@ -185,18 +117,6 @@ To tell your name the livelong day
 To an admiring bog!
 ```
 
-Excellent, we also got lines containing “To”! Our `minigrep` program can now do
-case-insensitive searching controlled by an environment variable. Now you know
-how to manage options set using either command line arguments or environment
-variables.
+훌륭합니다! `To`를 포함하는 줄도 가져왔습니다! `minigrep` 프로그램은 이제 환경 변수로 제어되는 대소문자 구분 없이 검색할 수 있습니다. 이제 명령줄 인수 또는 환경 변수를 사용하여 옵션을 설정하는 방법을 알고 있습니다. 일부 프로그램은 동일한 구성에 대해 *인수*와 *환경 변수*를 모두 허용합니다. 그러한 경우 프로그램은 하나 또는 다른 하나가 우선순위를 가지도록 결정합니다. 혼자서 해보는 다른 연습으로, 명령줄 인수 또는 환경 변수를 통해 대소문자 민감도를 제어해 보세요. 프로그램이 대소문자를 구분하는 것으로 설정되고 다른 하나는 대소문자를 무시하는 것으로 설정되어 실행될 때, 명령줄 인수 또는 환경 변수가 우선순위를 가지도록 결정하세요.
 
-Some programs allow arguments *and* environment variables for the same
-configuration. In those cases, the programs decide that one or the other takes
-precedence. For another exercise on your own, try controlling case sensitivity
-through either a command line argument or an environment variable. Decide
-whether the command line argument or the environment variable should take
-precedence if the program is run with one set to case sensitive and one set to
-ignore case.
-
-The `std::env` module contains many more useful features for dealing with
-environment variables: check out its documentation to see what is available.
+`std::env` 모듈에는 환경 변수를 처리하는 데 사용할 수 있는 많은 유용한 기능이 있습니다. 사용 가능한 기능을 확인하려면 설명서를 참조하세요.

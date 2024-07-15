@@ -1,291 +1,165 @@
-## Advanced Types
+## 고급 타입
 
-The Rust type system has some features that we’ve so far mentioned but haven’t
-yet discussed. We’ll start by discussing newtypes in general as we examine why
-newtypes are useful as types. Then we’ll move on to type aliases, a feature
-similar to newtypes but with slightly different semantics. We’ll also discuss
-the `!` type and dynamically sized types.
+Rust 타입 시스템에는 아직 논의하지 않았지만, 앞으로 다룰 특징들이 있습니다. 먼저, 새로운 타입(newtype)의 유용성을 살펴보며 새로운 타입을 사용하는 이유를 살펴보겠습니다. 그런 다음 타입 별칭(type alias)으로 넘어가겠습니다. 타입 별칭은 새로운 타입과 유사하지만 의미가 약간 다릅니다. 또한 `!` 타입과 동적으로 크기가 조절되는 타입에 대해서도 논의하겠습니다.
 
-### Using the Newtype Pattern for Type Safety and Abstraction
+### 타입 안전성과 추상화를 위한 새로운 타입 패턴 사용
 
-> Note: This section assumes you’ve read the earlier section [“Using the
-> Newtype Pattern to Implement External Traits on External
-> Types.”][using-the-newtype-pattern]<!-- ignore -->
+>참고: 이 섹션은 이전 섹션 [\u201c외부 타입에 대한 외부 트레이트를 구현하기 위한 새로운 타입 패턴 사용\u201d][using-the-newtype-pattern]<!-- ignore --> 에 대해 읽은 것을 가정합니다.
 
-The newtype pattern is also useful for tasks beyond those we’ve discussed so
-far, including statically enforcing that values are never confused and
-indicating the units of a value. You saw an example of using newtypes to
-indicate units in Listing 19-15: recall that the `Millimeters` and `Meters`
-structs wrapped `u32` values in a newtype. If we wrote a function with a
-parameter of type `Millimeters`, we couldn’t compile a program that
-accidentally tried to call that function with a value of type `Meters` or a
-plain `u32`.
+새로운 타입 패턴은 이전에 논의한 것 외에도 유용합니다. 예를 들어, 값이 절대 혼동되지 않도록 정적으로 보장하고 값의 단위를 나타내는 데 사용할 수 있습니다. Listing 19-15에서 새로운 타입을 사용하여 단위를 나타내는 예를 보았습니다. `Millimeters` 와 `Meters` 구조체는 `u32` 값을 새로운 타입으로 감싸었습니다. 만약 `Millimeters` 타입의 매개변수를 가진 함수를 작성하면, `Meters` 타입 또는 단순히 `u32` 값으로 함수를 호출하려고 시도하는 프로그램을 컴파일할 수 없습니다.
 
-We can also use the newtype pattern to abstract away some implementation
-details of a type: the new type can expose a public API that is different from
-the API of the private inner type.
+또한 새로운 타입 패턴은 타입의 일부 구현 세부 사항을 추상화하는 데 사용할 수 있습니다. 새로운 타입은 내부 타입의 API와 다른 공개 API를 제공할 수 있습니다.
 
-Newtypes can also hide internal implementation. For example, we could provide a
-`People` type to wrap a `HashMap<i32, String>` that stores a person’s ID
-associated with their name. Code using `People` would only interact with the
-public API we provide, such as a method to add a name string to the `People`
-collection; that code wouldn’t need to know that we assign an `i32` ID to names
-internally. The newtype pattern is a lightweight way to achieve encapsulation
-to hide implementation details, which we discussed in the [“Encapsulation that
-Hides Implementation
-Details”][encapsulation-that-hides-implementation-details]<!-- ignore -->
-section of Chapter 17.
+새로운 타입은 내부 구현을 숨길 수도 있습니다. 예를 들어, `People` 타입을 `HashMap<i32, String>`으로 감싸서 사람의 ID를 이름과 연결하여 저장할 수 있습니다. `People`을 사용하는 코드는 `People` 컬렉션에 이름 문자열을 추가하는 등 우리가 제공하는 공개 API와만 상호 작용할 것입니다. 해당 코드는 내부적으로 ID가 이름에 할당되는 것을 알 필요가 없습니다. 새로운 타입 패턴은 구현 세부 사항을 숨기기 위한 가벼운 방법이며, 이는 Chapter 17의 [\u201c구현 세부 사항을 숨기는 캡슐화\u201d][encapsulation-that-hides-implementation-details]<!-- ignore --> 섹션에서 논의했습니다.
 
-### Creating Type Synonyms with Type Aliases
+### 타입 별칭으로 타입 동의어 만들기
 
-Rust provides the ability to declare a *type alias* to give an existing type
-another name. For this we use the `type` keyword. For example, we can create
-the alias `Kilometers` to `i32` like so:
+Rust는 기존 타입에 다른 이름을 부여하기 위해 *타입 별칭*을 선언할 수 있습니다. 이를 위해 `type` 키워드를 사용합니다. 예를 들어, `Kilometers`라는 별칭을 `i32`에 만들 수 있습니다.
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-04-kilometers-alias/src/main.rs:here}}
 ```
 
-Now, the alias `Kilometers` is a *synonym* for `i32`; unlike the `Millimeters`
-and `Meters` types we created in Listing 19-15, `Kilometers` is not a separate,
-new type. Values that have the type `Kilometers` will be treated the same as
-values of type `i32`:
+이제 `Kilometers`라는 별칭은 `i32`의 *동의어*입니다. `Millimeters`와 `Meters` 타입이 Listing 19-15에서 만든 것과 달리 `Kilometers`는 별도의 새로운 타입이 아닙니다. `Kilometers` 타입의 값은 `i32` 타입의 값과 동일하게 처리됩니다.
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-04-kilometers-alias/src/main.rs:there}}
 ```
 
-Because `Kilometers` and `i32` are the same type, we can add values of both
-types and we can pass `Kilometers` values to functions that take `i32`
-parameters. However, using this method, we don’t get the type checking benefits
-that we get from the newtype pattern discussed earlier. In other words, if we
-mix up `Kilometers` and `i32` values somewhere, the compiler will not give us
-an error.
+`Kilometers`와 `i32`가 동일한 타입이기 때문에 `Kilometers` 값과 `i32` 값을 모두 추가할 수 있으며 `Kilometers` 값을 `i32` 매개변수를 받는 함수에 전달할 수 있습니다. 그러나 이 방법을 사용하면 Listing 19-15에서 논의한 새로운 타입 패턴에서 얻는 타입 검사 이점을 얻을 수 없습니다. 즉, `Kilometers`와 `i32` 값을 어딘가에서 혼동하면 컴파일러는 오류를 알려주지 않습니다.
 
-The main use case for type synonyms is to reduce repetition. For example, we
-might have a lengthy type like this:
+타입 동의어의 주요 사용 사례는 반복을 줄이는 것입니다. 예를 들어, 다음과 같은 긴 타입이 있을 수 있습니다.
 
 ```rust,ignore
 Box<dyn Fn() + Send + 'static>
 ```
 
-Writing this lengthy type in function signatures and as type annotations all
-over the code can be tiresome and error prone. Imagine having a project full of
-code like that in Listing 19-24.
+함수 서명과 타입 지정으로 이러한 긴 타입을 사용하는 것은 코드 전체에서 반복적이고 오류 발생 가능성이 높습니다. Listing 19-24와 같이 이러한 코드가 많은 프로젝트를 상상해 보세요.
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-24/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 19-24: Using a long type in many places</span>
+<span class=\"caption\">Listing 19-24: 여러 곳에서 긴 타입 사용</span>
 
-A type alias makes this code more manageable by reducing the repetition. In
-Listing 19-25, we’ve introduced an alias named `Thunk` for the verbose type and
-can replace all uses of the type with the shorter alias `Thunk`.
+타입 별칭은 `Thunk`라는 이름으로 이 긴 타입을 줄여서 코드를 더 관리하기 쉽게 합니다. Listing 19-25에서 `Thunk`라는 별칭을 도입하여 긴 타입을 대체하여 모든 사용을 짧은 별칭 `Thunk`로 바꿀 수 있습니다.
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-25/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 19-25: Introducing a type alias `Thunk` to reduce
-repetition</span>
+<span class=\"caption\">Listing 19-25: `Thunk` 타입 별칭을 사용하여 반복을 줄이기</span>
 
-This code is much easier to read and write! Choosing a meaningful name for a
-type alias can help communicate your intent as well (*thunk* is a word for code
-to be evaluated at a later time, so it’s an appropriate name for a closure that
-gets stored).
+이 코드는 읽고 작성하는 데 훨씬 쉬워집니다! 유의미한 이름을 타입 별칭에 지정하면 의도를 효과적으로 전달하는 데 도움이 됩니다 (*thunk*는 나중에 평가될 코드를 나타내는 단어이므로 닫힘이 저장되는 타입에 적절한 이름입니다).
 
-Type aliases are also commonly used with the `Result<T, E>` type for reducing
-repetition. Consider the `std::io` module in the standard library. I/O
-operations often return a `Result<T, E>` to handle situations when operations
-fail to work. This library has a `std::io::Error` struct that represents all
-possible I/O errors. Many of the functions in `std::io` will be returning
-`Result<T, E>` where the `E` is `std::io::Error`, such as these functions in
-the `Write` trait:
+타입 별칭은 `Result<T, E>` 타입과 함께 반복을 줄이기 위해 일반적으로 사용됩니다. 표준 라이브러리의 `std::io` 모듈을 생각해 보세요. I/O 작업은 종종 작업이 실패할 때 처리하기 위해 `Result<T, E>`를 반환합니다. 이 라이브러리에는 `std::io::Error` 구조체가 모든 가능한 I/O 오류를 나타냅니다. `std::io`의 많은 함수는 `Result<T, E>`를 반환하며 `E`가 `std::io::Error`로 채워집니다. 예를 들어 `Write` 트레이트의 함수는 다음과 같습니다.
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-05-write-trait/src/lib.rs}}
 ```
 
-The `Result<..., Error>` is repeated a lot. As such, `std::io` has this type
-alias declaration:
+`Result<..., Error>`가 반복적으로 사용됩니다. 따라서 `std::io`는 다음과 같은 타입 별칭 선언을 가지고 있습니다.
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-06-result-alias/src/lib.rs:here}}
 ```
 
-Because this declaration is in the `std::io` module, we can use the fully
-qualified alias `std::io::Result<T>`; that is, a `Result<T, E>` with the `E`
-filled in as `std::io::Error`. The `Write` trait function signatures end up
-looking like this:
+이 선언이 `std::io` 모듈에 있기 때문에 `std::io::Result<T>`라는 완전한 별칭을 사용할 수 있습니다. 즉, `E`가 `std::io::Error`로 채워진 `Result<T, E>`입니다. `Write` 트레이트 함수 선언은 다음과 같이 보입니다.
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-06-result-alias/src/lib.rs:there}}
 ```
 
-The type alias helps in two ways: it makes code easier to write *and* it gives
-us a consistent interface across all of `std::io`. Because it’s an alias, it’s
-just another `Result<T, E>`, which means we can use any methods that work on
-`Result<T, E>` with it, as well as special syntax like the `?` operator.
+타입 별칭은 코드 작성을 쉽게 하고 일관된 인터페이스를 제공하는 데 도움이 됩니다. 별칭이기 때문에 `Result<T, E>`와 동일하므로 `Result<T, E>`에 대해 작동하는 모든 메서드와 `?` 연산자와 같은 특수 문법을 사용할 수 있습니다.
 
-### The Never Type that Never Returns
+### 절대 돌아오지 않는 `Never` 타입
 
-Rust has a special type named `!` that’s known in type theory lingo as the
-*empty type* because it has no values. We prefer to call it the *never type*
-because it stands in the place of the return type when a function will never
-return. Here is an example:
+Rust에는 `!`라는 특수 타입이 있으며, 타입 이론 용어로는 *빈 타입*이라고 불립니다. 이 타입은 값이 없기 때문에 빈 타입입니다. 우리는 *절대 타입*이라고 부르는 것을 선호합니다. 이 타입은 함수가 절대 돌아오지 않을 때 반환 타입을 나타냅니다. 예를 들어 보세요.
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-07-never-type/src/lib.rs:here}}
 ```
 
-This code is read as “the function `bar` returns never.” Functions that return
-never are called *diverging functions*. We can’t create values of the type `!`
-so `bar` can never possibly return.
+이 코드는 \u201c함수 `bar`는 절대 돌아오지 않습니다\u201d라고 읽습니다. 절대 돌아오지 않는 함수는 *발산 함수*라고 합니다. `!` 타입의 값을 만들 수 없으므로 `bar`는 절대 돌아올 수 없습니다.
 
-But what use is a type you can never create values for? Recall the code from
-Listing 2-5, part of the number guessing game; we’ve reproduced a bit of it
-here in Listing 19-26.
+하지만 값을 만들 수 없는 타입은 어떤 용도가 있을까요? 2장의 코드에서 숫자 맞추기 게임을 살펴보았습니다. 19장의 코드에서 다시 살펴보겠습니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:ch19}}
 ```
 
-<span class="caption">Listing 19-26: A `match` with an arm that ends in
-`continue`</span>
+<span class=\"caption\">Listing 19-26: `continue` 문으로 끝나는 `match`</span>
 
-At the time, we skipped over some details in this code. In Chapter 6 in [“The
-`match` Control Flow Operator”][the-match-control-flow-operator]<!-- ignore -->
-section, we discussed that `match` arms must all return the same type. So, for
-example, the following code doesn’t work:
+당시에는 이 코드의 몇 가지 세부 사항을 건너뜁니다. 6장의 \u201cThe `match` Control Flow Operator\u201d 섹션에서 `match` 팔레트는 모두 동일한 타입을 반환해야 한다고 설명했습니다. 따라서 다음과 같은 코드는 작동하지 않습니다.
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-08-match-arms-different-types/src/main.rs:here}}
 ```
 
-The type of `guess` in this code would have to be an integer *and* a string,
-and Rust requires that `guess` have only one type. So what does `continue`
-return? How were we allowed to return a `u32` from one arm and have another arm
-that ends with `continue` in Listing 19-26?
+이 코드의 `guess` 유형은 정수이자 문자열이어야 하며, Rust은 `guess`가 하나의 유형만 가져야 한다고 요구합니다. 그렇다면 `continue`는 무엇을 반환하는가? 19-26번 목록에서 `u32`를 하나의 팔에서 반환하고 `continue`로 끝나는 다른 팔이 있었던 것은 어떻게 허용되었는가?
 
-As you might have guessed, `continue` has a `!` value. That is, when Rust
-computes the type of `guess`, it looks at both match arms, the former with a
-value of `u32` and the latter with a `!` value. Because `!` can never have a
-value, Rust decides that the type of `guess` is `u32`.
+짐작하셨을 것 같습니다. `continue`는 `!` 값을 가지고 있습니다. 즉, Rust가 `guess`의 유형을 계산할 때, 전자는 `u32` 값을 가지고 있는 `match` 팔과 후자는 `!` 값을 가지고 있는 `match` 팔을 모두 살펴봅니다. `!`는 값을 가질 수 없기 때문에 Rust는 `guess`의 유형이 `u32`라고 결정합니다.
 
-The formal way of describing this behavior is that expressions of type `!` can
-be coerced into any other type. We’re allowed to end this `match` arm with
-`continue` because `continue` doesn’t return a value; instead, it moves control
-back to the top of the loop, so in the `Err` case, we never assign a value to
-`guess`.
+이러한 동작을 공식적으로 설명하면 `!` 유형의 표현식은 다른 모든 유형으로 강제 변환될 수 있다는 것입니다. 우리는 `continue`로 이 `match` 팔을 끝낼 수 있는 이유는 `continue`가 값을 반환하지 않기 때문입니다. 대신, 제어를 루프의 맨 위로 되돌려서 `Err` 경우에는 `guess`에 값을 할당하지 않습니다.
 
-The never type is useful with the `panic!` macro as well. Recall the `unwrap`
-function that we call on `Option<T>` values to produce a value or panic with
-this definition:
+`never` 유형은 `panic!` 매크로와 함께 유용합니다. 우리가 `Option<T>` 값에 대해 호출하는 `unwrap` 함수를 기억하세요. 이 함수는 값을 생성하거나 다음과 같은 정의로 panic을 일으킵니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-09-unwrap-definition/src/lib.rs:here}}
 ```
 
-In this code, the same thing happens as in the `match` in Listing 19-26: Rust
-sees that `val` has the type `T` and `panic!` has the type `!`, so the result
-of the overall `match` expression is `T`. This code works because `panic!`
-doesn’t produce a value; it ends the program. In the `None` case, we won’t be
-returning a value from `unwrap`, so this code is valid.
+이 코드에서 `match`에서 19-26번 목록과 같은 일이 발생합니다. Rust는 `val`가 유형 `T`이고 `panic!`가 유형 `!`이므로 전체 `match` 표현식의 결과가 `T`임을 알 수 있습니다. 이 코드가 작동하는 이유는 `panic!`가 값을 생성하지 않기 때문입니다. 프로그램을 종료합니다. `None` 경우에는 `unwrap`에서 값을 반환하지 않으므로 이 코드는 유효합니다.
 
-One final expression that has the type `!` is a `loop`:
+마지막으로 `!` 유형을 가진 표현식은 `loop`입니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-10-loop-returns-never/src/main.rs:here}}
 ```
 
-Here, the loop never ends, so `!` is the value of the expression. However, this
-wouldn’t be true if we included a `break`, because the loop would terminate
-when it got to the `break`.
+여기서 루프는 끝나지 않으므로 `!`가 표현식의 값입니다. 그러나 `break`를 포함하면 이것은 사실이 아닙니다. 루프가 `break`에 도달하면 종료되기 때문입니다.
 
-### Dynamically Sized Types and the `Sized` Trait
+### 동적 크기 유형과 `Sized` 트레이트
 
-Rust needs to know certain details about its types, such as how much space to
-allocate for a value of a particular type. This leaves one corner of its type
-system a little confusing at first: the concept of *dynamically sized types*.
-Sometimes referred to as *DSTs* or *unsized types*, these types let us write
-code using values whose size we can know only at runtime.
+Rust는 유형의 특정 세부 사항을 알아야 합니다. 예를 들어, 특정 유형의 값에 할당할 메모리 공간의 크기를 알아야 합니다. 이로 인해 유형 시스템의 한 구석이 처음에는 약간 혼란스러울 수 있습니다. 동적 크기 유형이라는 개념입니다.
 
-Let’s dig into the details of a dynamically sized type called `str`, which
-we’ve been using throughout the book. That’s right, not `&str`, but `str` on
-its own, is a DST. We can’t know how long the string is until runtime, meaning
-we can’t create a variable of type `str`, nor can we take an argument of type
-`str`. Consider the following code, which does not work:
+때로는 DST 또는 불규칙 크기 유형이라고도 하며, 이 유형은 런타임에만 알 수 있는 크기를 가진 값을 작성할 수 있도록 합니다.
+
+이제까지 책에서 사용해 온 `str`이라는 동적 크기 유형에 대해 자세히 살펴보겠습니다. 바로 `str` 자체입니다. `&str`이 아니라 `str`입니다. 우리는 문자열의 길이를 런타임에만 알 수 있기 때문에 `str` 유형의 변수를 만들 수도 없고 `str` 유형의 인수를 받을 수도 없습니다. 다음과 같은 코드를 고려해 보세요. 이 코드는 작동하지 않습니다.
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-11-cant-create-str/src/main.rs:here}}
 ```
 
-Rust needs to know how much memory to allocate for any value of a particular
-type, and all values of a type must use the same amount of memory. If Rust
-allowed us to write this code, these two `str` values would need to take up the
-same amount of space. But they have different lengths: `s1` needs 12 bytes of
-storage and `s2` needs 15. This is why it’s not possible to create a variable
-holding a dynamically sized type.
+Rust는 특정 유형의 모든 값에 대해 메모리 할당량을 알아야 하며, 모든 유형의 값은 동일한 메모리 공간을 사용해야 합니다. Rust가 이 코드를 허용하면 `s1`과 `s2` 두 개의 `str` 값은 동일한 메모리 공간을 차지해야 합니다. 하지만 그들은 다른 길이를 가지고 있습니다. `s1`은 12바이트의 메모리를 사용해야 하며 `s2`는 15바이트를 사용해야 합니다. 이것이 `str` 유형의 변수를 만들 수 없는 이유입니다.
 
-So what do we do? In this case, you already know the answer: we make the types
-of `s1` and `s2` a `&str` rather than a `str`. Recall from the [“String
-Slices”][string-slices]<!-- ignore --> section of Chapter 4 that the slice data
-structure just stores the starting position and the length of the slice. So
-although a `&T` is a single value that stores the memory address of where the
-`T` is located, a `&str` is *two* values: the address of the `str` and its
-length. As such, we can know the size of a `&str` value at compile time: it’s
-twice the length of a `usize`. That is, we always know the size of a `&str`, no
-matter how long the string it refers to is. In general, this is the way in
-which dynamically sized types are used in Rust: they have an extra bit of
-metadata that stores the size of the dynamic information. The golden rule of
-dynamically sized types is that we must always put values of dynamically sized
-types behind a pointer of some kind.
+그렇다면 어떻게 해야 할까요? 이 경우, 이미 답을 알고 계시죠. 유형을 `&str`으로 만듭니다. 4장의 [\u201c문자열 슬라이스\u201d][string-slices]<!-- ignore --> 섹션에서 기억하시겠지만 슬라이스 데이터 구조는 단지 슬라이스의 시작 위치와 길이만 저장합니다. 따라서 `&T`는 특정 유형의 메모리 주소를 저장하는 단일 값입니다. 따라서 `&str`은 문자열의 길이를 알 수 있기 때문에 `str`과 달리 동적 크기 유형이 아닙니다.
 
-We can combine `str` with all kinds of pointers: for example, `Box<str>` or
-`Rc<str>`. In fact, you’ve seen this before but with a different dynamically
-sized type: traits. Every trait is a dynamically sized type we can refer to by
-using the name of the trait. In Chapter 17 in the [“Using Trait Objects That
-Allow for Values of Different
-Types”][using-trait-objects-that-allow-for-values-of-different-types]<!--
-ignore --> section, we mentioned that to use traits as trait objects, we must
-put them behind a pointer, such as `&dyn Trait` or `Box<dyn Trait>` (`Rc<dyn
-Trait>` would work too).
 
-To work with DSTs, Rust provides the `Sized` trait to determine whether or not
-a type’s size is known at compile time. This trait is automatically implemented
-for everything whose size is known at compile time. In addition, Rust
-implicitly adds a bound on `Sized` to every generic function. That is, a
-generic function definition like this:
+ `T` 가 위치한 곳에서 `&str`은 *두* 값입니다: `str`의 주소와 길이입니다. 따라서 컴파일 시간에 `&str` 값의 크기를 알 수 있습니다: `usize`의 길이의 두 배입니다. 즉, `&str`의 크기는 참조하는 문자열의 길이와 상관없이 항상 알 수 있습니다. 일반적으로 동적으로 크기가 조절되는 유형이 Rust에서 사용되는 방식입니다. 동적으로 크기가 조절되는 유형은 동적 정보의 크기를 저장하는 추가 메타데이터가 있습니다. 동적으로 크기가 조절되는 유형의 황금 규칙은 항상 어떤 종류의 포인터 뒤에 동적으로 크기가 조절되는 유형의 값을 넣어야 한다는 것입니다. 
+
+`str`을 모든 종류의 포인터와 결합할 수 있습니다. 예를 들어 `Box<str>` 또는 `Rc<str>`입니다. 사실, 이전에 다른 동적으로 크기가 조절되는 유형과 함께 본 적이 있지만, 추상화된 개념은 동일합니다. 추상화된 개념은 모든 동적으로 크기가 조절되는 유형과 동일합니다. 모든 추상화된 개념은 추상화된 개념의 이름을 사용하여 참조할 수 있는 동적으로 크기가 조절되는 유형입니다. 제17장의 [\u201c다양한 유형의 값을 허용하는 추상화된 개념 객체를 사용하는 방법\u201d][using-trait-objects-that-allow-for-values-of-different-types]<!--
+ignore --> 섹션에서 추상화된 개념을 추상화된 개념 객체로 사용하려면 `&dyn Trait` 또는 `Box<dyn Trait>` (`Rc<dyn Trait>`도 작동합니다)와 같은 포인터 뒤에 넣어야 한다고 언급했습니다. 
+
+Rust는 유형의 크기가 컴파일 시간에 알려져 있는지 여부를 확인하기 위해 `Sized` 추상화된 개념을 제공합니다. 이 추상화된 개념은 컴파일 시간에 크기가 알려진 모든 것에 대해 자동으로 구현됩니다. 또한 Rust는 모든 일반적인 함수에 `Sized`에 대한 암묵적인 경계를 추가합니다. 즉, 다음과 같은 일반적인 함수 정의는 다음과 같이 작성한 것으로 간주됩니다. 
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-12-generic-fn-definition/src/lib.rs}}
 ```
 
-is actually treated as though we had written this:
-
 ```rust,ignore
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-13-generic-implicit-sized-bound/src/lib.rs}}
 ```
 
-By default, generic functions will work only on types that have a known size at
-compile time. However, you can use the following special syntax to relax this
-restriction:
+ 기본적으로 일반적인 함수는 컴파일 시간에 크기가 알려진 유형에서만 작동합니다. 그러나 다음과 같은 특수한 구문을 사용하여 이 제한을 완화할 수 있습니다. 
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-14-generic-maybe-sized/src/lib.rs}}
 ```
 
-A trait bound on `?Sized` means “`T` may or may not be `Sized`” and this
-notation overrides the default that generic types must have a known size at
-compile time. The `?Trait` syntax with this meaning is only available for
-`Sized`, not any other traits.
+`?Sized` 추상화된 개념 경계는 \u201c`T`는 `Sized`일 수도 있고 없을 수도 있습니다\u201d를 의미하며, 이 구문은 일반적인 유형이 컴파일 시간에 크기가 알려져 있어야 한다는 기본값을 무시합니다. 이러한 의미의 `?Trait` 구문은 `Sized`에만 사용할 수 있으며 다른 추상화된 개념에는 사용할 수 없습니다. 
 
-Also note that we switched the type of the `t` parameter from `T` to `&T`.
-Because the type might not be `Sized`, we need to use it behind some kind of
-pointer. In this case, we’ve chosen a reference.
+ 또한 `t` 매개변수의 유형을 `T`에서 `&T`로 변경했다는 점에 주목하십시오. 유형이 `Sized`가 아니기 때문에 어떤 종류의 포인터 뒤에 넣어야 합니다. 이 경우에는 참조를 선택했습니다. 
 
-Next, we’ll talk about functions and closures!
+ 다음으로 함수와 폐쇄를 다룰 것입니다! 
 
 [encapsulation-that-hides-implementation-details]:
 ch17-01-what-is-oo.html#encapsulation-that-hides-implementation-details

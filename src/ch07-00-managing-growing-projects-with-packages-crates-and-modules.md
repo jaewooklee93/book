@@ -1,48 +1,20 @@
-# Managing Growing Projects with Packages, Crates, and Modules
+## 패키지, 크레이트 및 모듈을 사용하여 증가하는 프로젝트 관리
 
-As you write large programs, organizing your code will become increasingly
-important. By grouping related functionality and separating code with distinct
-features, you’ll clarify where to find code that implements a particular
-feature and where to go to change how a feature works.
+크게 프로그램을 작성할 때 코드를 정리하는 것이 점점 더 중요해집니다. 관련 기능을 그룹화하고 구분된 기능으로 코드를 분리하면 특정 기능을 구현하는 코드를 찾고 그 기능이 어떻게 작동하는지 변경하는 위치를 명확하게 파악할 수 있습니다.
 
-The programs we’ve written so far have been in one module in one file. As a
-project grows, you should organize code by splitting it into multiple modules
-and then multiple files. A package can contain multiple binary crates and
-optionally one library crate. As a package grows, you can extract parts into
-separate crates that become external dependencies. This chapter covers all
-these techniques. For very large projects comprising a set of interrelated
-packages that evolve together, Cargo provides *workspaces*, which we’ll cover
-in the [“Cargo Workspaces”][workspaces]<!-- ignore --> section in Chapter 14.
+지금까지 작성한 프로그램은 하나의 파일에서 하나의 모듈에 있었습니다. 프로젝트가 커질수록 여러 모듈과 여러 파일로 코드를 분할하여 정리해야 합니다. 패키지는 여러 바이너리 크레이트와 선택적으로 하나의 라이브러리 크레이트를 포함할 수 있습니다. 패키지가 커지면 별도의 크레이트로 추출하여 외부 의존성으로 만들 수 있습니다. 이 장에서는 이러한 모든 기술을 다룹니다. 관련된 패키지 집합으로 구성된 매우 큰 프로젝트의 경우 Cargo는 *작업 공간*을 제공하며, 이는 제14장의 [\u201cCargo 작업 공간\u201d][workspaces]<!-- ignore --> 섹션에서 다룹니다.
 
-We’ll also discuss encapsulating implementation details, which lets you reuse
-code at a higher level: once you’ve implemented an operation, other code can
-call your code via its public interface without having to know how the
-implementation works. The way you write code defines which parts are public for
-other code to use and which parts are private implementation details that you
-reserve the right to change. This is another way to limit the amount of detail
-you have to keep in your head.
+또한 구현 세부 사항을 캡슐화하는 방법에 대해 설명합니다. 이를 통해 고급 수준에서 코드를 재사용할 수 있습니다. 특정 작업을 구현한 후 다른 코드는 구현 방식을 알지 못하고도 공개 인터페이스를 통해 코드를 호출할 수 있습니다. 코드를 작성하는 방식은 다른 코드가 사용할 수 있는 공개 부분과 구현 세부 사항(변경할 권리가 있는)이라는 사실을 정의합니다. 이는 머릿속에 유지해야 하는 세부 사항의 양을 제한하는 또 다른 방법입니다.
 
-A related concept is scope: the nested context in which code is written has a
-set of names that are defined as “in scope.” When reading, writing, and
-compiling code, programmers and compilers need to know whether a particular
-name at a particular spot refers to a variable, function, struct, enum, module,
-constant, or other item and what that item means. You can create scopes and
-change which names are in or out of scope. You can’t have two items with the
-same name in the same scope; tools are available to resolve name conflicts.
+범위라는 관련 개념은 코드가 작성되는 중첩된 맥락에서 정의된 이름의 집합입니다. 읽고 작성하고 코드를 컴파일할 때 프로그래머와 컴파일러는 특정 위치에서 특정 이름이 변수, 함수, 구조체, 열거형, 모듈, 상수 또는 다른 항목을 가리키는지, 그리고 그 항목이 무엇을 의미하는지 알아야 합니다. 범위를 만들고 어떤 이름이 포함되고 있는지 변경할 수 있습니다. 동일한 범위 내에서 동일한 이름을 가진 항목을 두 개를 가질 수 없습니다. 도구는 이름 충돌을 해결하는 데 사용됩니다.
 
-Rust has a number of features that allow you to manage your code’s
-organization, including which details are exposed, which details are private,
-and what names are in each scope in your programs. These features, sometimes
-collectively referred to as the *module system*, include:
+Rust는 코드의 구성을 관리하는 데 사용할 수 있는 여러 가지 기능을 제공하며, 노출되는 세부 사항, 개인적인 세부 사항 및 프로그램의 각 범위에 있는 이름을 포함합니다. 이러한 기능은 때때로 *모듈 시스템*이라고 총칭되며 다음과 같습니다.
 
-* **Packages:** A Cargo feature that lets you build, test, and share crates
-* **Crates:** A tree of modules that produces a library or executable
-* **Modules** and **use:** Let you control the organization, scope, and
-  privacy of paths
-* **Paths:** A way of naming an item, such as a struct, function, or module
+* **패키지:** Cargo 기능으로 크레이트를 빌드, 테스트 및 공유할 수 있도록 합니다.
+* **크레이트:** 라이브러리 또는 실행 가능한 파일을 생성하는 모듈 트리
+* **모듈** 및 **use:** 경로의 구성, 범위 및 개인 접근 제어를 사용합니다.
+* **경로:** 구조체, 함수 또는 모듈과 같은 항목을 명명하는 방법
 
-In this chapter, we’ll cover all these features, discuss how they interact, and
-explain how to use them to manage scope. By the end, you should have a solid
-understanding of the module system and be able to work with scopes like a pro!
+이 장에서는 이러한 모든 기능을 다룹니다. 상호 작용하는 방식을 설명하고 범위를 관리하는 방법을 이해하도록 돕습니다. 이 장을 마치면 모듈 시스템에 대한 견고한 이해를 갖고 범위를 전문가처럼 다룰 수 있을 것입니다!
 
 [workspaces]: ch14-03-cargo-workspaces.html

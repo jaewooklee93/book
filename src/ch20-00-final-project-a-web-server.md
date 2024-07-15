@@ -1,33 +1,21 @@
-# Final Project: Building a Multithreaded Web Server
+## 최종 프로젝트: 다중 스레드 웹 서버 구축
 
-It’s been a long journey, but we’ve reached the end of the book. In this
-chapter, we’ll build one more project together to demonstrate some of the
-concepts we covered in the final chapters, as well as recap some earlier
-lessons.
+긴 여정이었지만, 책의 끝에 도달했습니다. 이
+장에서는 마지막 몇 개의 장에서 다룬 개념을 보여주는 한 가지 더 프로젝트를 함께 구축하고, 이전에 배운
+수업을 복습할 것입니다.
 
-For our final project, we’ll make a web server that says “hello” and looks like
-Figure 20-1 in a web browser.
+최종 프로젝트로는 웹 브라우저에서 "hello"라고 말하고 20-1 그림과 같은 웹 서버를 만들 것입니다.
 
 ![hello from rust](img/trpl20-01.png)
 
-<span class="caption">Figure 20-1: Our final shared project</span>
+<span class=\"caption\">Figure 20-1: 우리의 최종 공동 프로젝트</span>
 
-Here is our plan for building the web server:
+웹 서버를 구축하는 계획은 다음과 같습니다.
 
-1. Learn a bit about TCP and HTTP.
-2. Listen for TCP connections on a socket.
-3. Parse a small number of HTTP requests.
-4. Create a proper HTTP response.
-5. Improve the throughput of our server with a thread pool.
+1. TCP와 HTTP에 대해 조금 알아봅니다.
+2. 소켓에서 TCP 연결을 수신합니다.
+3. 소수의 HTTP 요청을 분석합니다.
+4. 올바른 HTTP 응답을 생성합니다.
+5. 스레드 풀을 사용하여 서버의 처리량을 향상시킵니다.
 
-Before we get started, we should mention one detail: the method we’ll use won’t
-be the best way to build a web server with Rust. Community members have
-published a number of production-ready crates available on
-[crates.io](https://crates.io/) that provide more complete web server and
-thread pool implementations than we’ll build. However, our intention in this
-chapter is to help you learn, not to take the easy route. Because Rust is a
-systems programming language, we can choose the level of abstraction we want to
-work with and can go to a lower level than is possible or practical in other
-languages. We’ll therefore write the basic HTTP server and thread pool manually
-so you can learn the general ideas and techniques behind the crates you might
-use in the future.
+시작하기 전에 한 가지 중요한 사항을 언급해야 합니다. 사용할 방법은 Rust로 웹 서버를 구축하는 가장 좋은 방법이 아닙니다. [crates.io](https://crates.io/)에 게시된 여러 개의 생산 준비용 crate가 웹 서버 및 스레드 풀 구현을 제공합니다. 그러나 이 장의 목적은 배우는 데 도움을 주는 것입니다. Rust는 시스템 프로그래밍 언어이기 때문에 원하는 수준의 추상화를 선택하고 다른 언어에서는 불가능하거나 실용적이지 않은 수준으로 낮출 수 있습니다. 따라서 기본 HTTP 서버와 스레드 풀을 수동으로 작성하여 미래에 사용할 수 있는 crate의 일반적인 개념과 기술을 이해하실 수 있도록 합니다.

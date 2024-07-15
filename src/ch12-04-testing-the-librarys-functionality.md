@@ -1,41 +1,23 @@
-## Developing the Library’s Functionality with Test-Driven Development
+## 라이브러리 기능 개발: 테스트 기반 개발
 
-Now that we’ve extracted the logic into *src/lib.rs* and left the argument
-collecting and error handling in *src/main.rs*, it’s much easier to write tests
-for the core functionality of our code. We can call functions directly with
-various arguments and check return values without having to call our binary
-from the command line.
+이제 논리를 *src/lib.rs* 로 추출하고 *src/main.rs* 에서 인자 수집 및 오류 처리를 남겼으므로 코드의 핵심 기능을 위한 테스트를 작성하는 것이 훨씬 쉬워졌습니다. 명령줄에서 바이너리를 호출하지 않고 다양한 인자로 함수를 직접 호출하고 반환 값을 확인할 수 있습니다.
 
-In this section, we’ll add the searching logic to the `minigrep` program
-using the test-driven development (TDD) process with the following steps:
+이 섹션에서는 테스트 기반 개발(TDD) 프로세스를 사용하여 `minigrep` 프로그램에 검색 논리를 추가합니다. 다음 단계를 따릅니다.
 
-1. Write a test that fails and run it to make sure it fails for the reason you
-   expect.
-2. Write or modify just enough code to make the new test pass.
-3. Refactor the code you just added or changed and make sure the tests
-   continue to pass.
-4. Repeat from step 1!
+1. 실패하는 테스트를 작성하고 실행하여 예상하는 이유로 실패하는지 확인합니다.
+2. 새 테스트를 통과하도록 충분히 코드를 작성하거나 수정합니다.
+3. 작성하거나 변경한 코드를 리팩터링하여 테스트가 계속 통과하는지 확인합니다.
+4. 1단계부터 반복합니다!
 
-Though it’s just one of many ways to write software, TDD can help drive code
-design. Writing the test before you write the code that makes the test pass
-helps to maintain high test coverage throughout the process.
+TDD는 여러 가지 방법 중 하나이지만, 코드 설계를 촉진하는 데 도움이 될 수 있습니다. 테스트를 코드 작성 전에 작성하면 프로세스 전체에서 높은 테스트 커버리지를 유지하는 데 도움이 됩니다.
 
-We’ll test drive the implementation of the functionality that will actually do
-the searching for the query string in the file contents and produce a list of
-lines that match the query. We’ll add this functionality in a function called
-`search`.
+실제로 검색 문자열을 파일 내용에서 검색하고 일치하는 줄 목록을 생성하는 기능을 테스트 드라이브합니다. 이 기능을 `search` 함수로 구현합니다.
 
-### Writing a Failing Test
+### 실패하는 테스트 작성
 
-Because we don’t need them anymore, let’s remove the `println!` statements from
-*src/lib.rs* and *src/main.rs* that we used to check the program’s behavior.
-Then, in *src/lib.rs*, add a `tests` module with a test function, as we did in
-[Chapter 11][ch11-anatomy]<!-- ignore -->. The test function specifies the
-behavior we want the `search` function to have: it will take a query and the
-text to search, and it will return only the lines from the text that contain
-the query. Listing 12-15 shows this test, which won’t compile yet.
+*src/lib.rs* 와 *src/main.rs* 에서 프로그램의 동작을 확인하기 위해 사용했던 `println!` 문을 제거합니다. 그런 다음 *src/lib.rs* 에 [Chapter 11][ch11-anatomy]<!-- ignore -->에서와 같이 테스트 모듈과 테스트 함수를 추가합니다. 테스트 함수는 `search` 함수가 어떤 동작을 해야 하는지 명시합니다. 즉, 검색 문자열과 검색할 텍스트를 받아 텍스트에서 검색 문자열이 포함된 줄만 반환해야 합니다. Listing 12-15는 이 테스트를 보여주며, 아직 컴파일되지 않습니다.
 
-<Listing number="12-15" file-name="src/lib.rs" caption="Creating a failing test for the `search` function we wish we had">
+<Listing number=\"12-15\" file-name=\"src/lib.rs\" caption=\"`search` 함수를 테스트하려고 하는데 아직 존재하지 않는 테스트\">
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-15/src/lib.rs:here}}
@@ -43,21 +25,12 @@ the query. Listing 12-15 shows this test, which won’t compile yet.
 
 </Listing>
 
-This test searches for the string `"duct"`. The text we’re searching is three
-lines, only one of which contains `"duct"` (Note that the backslash after the
-opening double quote tells Rust not to put a newline character at the beginning
-of the contents of this string literal). We assert that the value returned from
-the `search` function contains only the line we expect.
+이 테스트는 `\"duct\"` 문자열을 검색합니다. 검색하는 텍스트는 세 줄이며, 그 중 하나만에 `\"duct\"`가 포함되어 있습니다. (참고로, 열린 따옴표 뒤에 백슬래시가 있는 것은 Rust가 문자열 리터럴의 시작 부분에 줄 바꿈 문자를 삽입하지 않도록 하는 것입니다.) 우리는 `search` 함수에서 반환된 값이 우리가 기대하는 줄만 포함한다고 주장합니다.
 
-We aren’t yet able to run this test and watch it fail because the test doesn’t
-even compile: the `search` function doesn’t exist yet! In accordance with TDD
-principles, we’ll add just enough code to get the test to compile and run by
-adding a definition of the `search` function that always returns an empty
-vector, as shown in Listing 12-16. Then the test should compile and fail
-because an empty vector doesn’t match a vector containing the line `"safe,
-fast, productive."`
+우리는 아직 테스트를 실행하고 실패하는 것을 볼 수 없습니다. 테스트는 컴파일되지 않습니다. `search` 함수가 아직 존재하지 않기 때문입니다! TDD 원칙에 따라 `search` 함수가 컴파일되고 실행되도록 충분한 코드를 추가합니다. Listing 12-16에 나와 있는 것처럼 항상 빈 벡터를 반환하는 `search` 함수의 정의를 추가합니다. 그러면 테스트가 컴파일되고 `\"safe,
+fast, productive.\" ` 줄을 포함하는 벡터가 아닌 빈 벡터를 반환하기 때문에 실패합니다.
 
-<Listing number="12-16" file-name="src/lib.rs" caption="Defining just enough of the `search` function so our test will compile">
+<Listing number=\"12-16\" file-name=\"src/lib.rs\" caption=\"`search` 함수를 정의하여 테스트가 컴파일되도록 합니다\">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-16/src/lib.rs:here}}
@@ -65,172 +38,93 @@ fast, productive."`
 
 </Listing>
 
-Notice that we need to define an explicit lifetime `'a` in the signature of
-`search` and use that lifetime with the `contents` argument and the return
-value. Recall in [Chapter 10][ch10-lifetimes]<!-- ignore --> that the lifetime
-parameters specify which argument lifetime is connected to the lifetime of the
-return value. In this case, we indicate that the returned vector should contain
-string slices that reference slices of the argument `contents` (rather than the
-argument `query`).
+`search` 함수의 시그니처에서 명시적으로 `'a`라는 라이프타임을 정의하고 `contents` 인자와 반환 값에 해당 라이프타임을 사용하는 것을 알 수 있습니다. [Chapter 10][ch10-lifetimes]<!-- ignore -->에서 기억하시면 라이프타임 매개변수는 어떤 인자 라이프타임이 반환 값의 라이프타임에 연결되어 있는지 지정합니다. 이 경우, `search` 함수에서 반환되는 벡터가 `contents` 인자에 전달된 데이터와 동일한 기간 동안 유효해야 함을 나타냅니다.
 
-In other words, we tell Rust that the data returned by the `search` function
-will live as long as the data passed into the `search` function in the
-`contents` argument. This is important! The data referenced *by* a slice needs
-to be valid for the reference to be valid; if the compiler assumes we’re making
-string slices of `query` rather than `contents`, it will do its safety checking
-incorrectly.
+즉, `search` 함수에서 반환되는 데이터가 `search` 함수에 `contents` 인자로 전달된 데이터와 동일한 기간 동안 유효하다는 것을 Rust에 알려줍니다. 슬라이스에 의해 참조되는 데이터가 참조가 유효하도록 해야 하기 때문입니다. 만약 컴파일러가 우리가 `search` 함수에서 반환하는 슬라이스가 `contents` 인자의 데이터보다 오래 유효하다고 가정한다면, 오류가 발생할 것입니다.
 
-If we forget the lifetime annotations and try to compile this function, we’ll
-get this error:
+Rust는 인수와 반환 값을 연결하는 데 있어서 명확한 규칙을 가지고 있습니다. 이러한 규칙은 라이프타임을 사용하여 정의됩니다. 라이프타임은 변수가 유효한 동안의 기간을 나타냅니다.
 
-```console
-{{#include ../listings/ch12-an-io-project/output-only-02-missing-lifetimes/output.txt}}
+예를 들어, `search` 함수는 `contents`라는 문자열을 인수로 받고, `contents` 안에 있는 문자열 부분을 반환합니다. 이 경우, `contents`의 라이프타임은 `search` 함수가 실행되는 동안 유효해야 합니다.
+
+하지만 `search` 함수에서 `query`라는 문자열 슬라이스를 사용하는 경우, `contents`가 아닌 `query`의 라이프타임을 사용해야 합니다. 이렇게 하지 않으면 Rust는 어떤 인수를 사용해야 하는지 알 수 없기 때문에 오류가 발생합니다.
+
+다음은 `search` 함수의 예시입니다.
+
+```rust
+fn search(contents: &str, query: &str) -> Vec<&str> {
+    let mut results = Vec::new();
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+    results
+}
 ```
 
-Rust can’t possibly know which of the two arguments we need, so we need to tell
-it explicitly. Because `contents` is the argument that contains all of our text
-and we want to return the parts of that text that match, we know `contents` is
-the argument that should be connected to the return value using the lifetime
-syntax.
+이 함수는 `contents` 문자열을 줄 단위로 반복하고, 각 줄이 `query` 문자열을 포함하는지 확인합니다. 포함된다면, 해당 줄을 `results` 벡터에 추가합니다. 마지막으로, `results` 벡터를 반환합니다.
 
-Other programming languages don’t require you to connect arguments to return
-values in the signature, but this practice will get easier over time. You might
-want to compare this example with the [“Validating References with
-Lifetimes”][validating-references-with-lifetimes]<!-- ignore --> section in
-Chapter 10.
+이 함수를 테스트하려면 다음과 같은 테스트 코드를 사용할 수 있습니다.
 
-Now let’s run the test:
-
-```console
-{{#include ../listings/ch12-an-io-project/listing-12-16/output.txt}}
+```rust
+#[test]
+fn test_search() {
+    let contents = "This is a test string.
+This is another test string.";
+    let query = "test";
+    let results = search(contents, query);
+    assert_eq!(results.len(), 2);
+}
 ```
 
-Great, the test fails, exactly as we expected. Let’s get the test to pass!
+이 테스트 코드는 `search` 함수를 호출하고, 반환된 결과가 `2`개인지 확인합니다.
 
-### Writing Code to Pass the Test
+이 예시를 통해 Rust에서 인수와 반환 값을 연결하는 방법을 이해할 수 있습니다. 라이프타임을 사용하여 변수의 유효성을 명확하게 정의함으로써, Rust는 코드의 안전성을 보장합니다.
 
-Currently, our test is failing because we always return an empty vector. To fix
-that and implement `search`, our program needs to follow these steps:
 
-* Iterate through each line of the contents.
-* Check whether the line contains our query string.
-* If it does, add it to the list of values we’re returning.
-* If it doesn’t, do nothing.
-* Return the list of results that match.
-
-Let’s work through each step, starting with iterating through lines.
-
-#### Iterating Through Lines with the `lines` Method
-
-Rust has a helpful method to handle line-by-line iteration of strings,
-conveniently named `lines`, that works as shown in Listing 12-17. Note this
-won’t compile yet.
-
-<Listing number="12-17" file-name="src/lib.rs" caption="Iterating through each line in `contents`">
-
-```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-17/src/lib.rs:here}}
-```
-
-</Listing>
-
-The `lines` method returns an iterator. We’ll talk about iterators in depth in
-[Chapter 13][ch13-iterators]<!-- ignore -->, but recall that you saw this way
-of using an iterator in [Listing 3-5][ch3-iter]<!-- ignore -->, where we used a
-`for` loop with an iterator to run some code on each item in a collection.
-
-#### Searching Each Line for the Query
-
-Next, we’ll check whether the current line contains our query string.
-Fortunately, strings have a helpful method named `contains` that does this for
-us! Add a call to the `contains` method in the `search` function, as shown in
-Listing 12-18. Note this still won’t compile yet.
-
-<Listing number="12-18" file-name="src/lib.rs" caption="Adding functionality to see whether the line contains the string in `query`">
-
-```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-18/src/lib.rs:here}}
-```
-
-</Listing>
-
-At the moment, we’re building up functionality. To get it to compile, we need
-to return a value from the body as we indicated we would in the function
-signature.
-
-#### Storing Matching Lines
-
-To finish this function, we need a way to store the matching lines that we want
-to return. For that, we can make a mutable vector before the `for` loop and
-call the `push` method to store a `line` in the vector. After the `for` loop,
-we return the vector, as shown in Listing 12-19.
-
-<Listing number="12-19" file-name="src/lib.rs" caption="Storing the lines that match so we can return them">
-
-```rust,ignore
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-19/src/lib.rs:here}}
-```
-
-</Listing>
-
-Now the `search` function should return only the lines that contain `query`,
-and our test should pass. Let’s run the test:
+이제 `search` 함수는 `query`를 포함하는 줄만 반환해야 하며, 테스트가 통과해야 합니다. 테스트를 실행해 보겠습니다.
 
 ```console
 {{#include ../listings/ch12-an-io-project/listing-12-19/output.txt}}
 ```
 
-Our test passed, so we know it works!
+테스트가 통과했으므로 작동한다는 것을 알 수 있습니다.
 
-At this point, we could consider opportunities for refactoring the
-implementation of the search function while keeping the tests passing to
-maintain the same functionality. The code in the search function isn’t too bad,
-but it doesn’t take advantage of some useful features of iterators. We’ll
-return to this example in [Chapter 13][ch13-iterators]<!-- ignore -->, where
-we’ll explore iterators in detail, and look at how to improve it.
+이제 `search` 함수의 구현을 재작성하면서 테스트가 통과하도록 유지하여 동일한 기능을 유지할 수 있는 기회를 고려할 수 있습니다. `search` 함수의 코드는 그렇게 나쁘지 않지만, 이터레이터의 유용한 기능을 활용하지는 않습니다. 이 예제는 [Chapter 13][ch13-iterators]<!-- ignore -->에서 자세히 살펴보고 개선하는 방법을 알아보겠습니다.
 
-#### Using the `search` Function in the `run` Function
+#### `run` 함수에서 `search` 함수 사용
 
-Now that the `search` function is working and tested, we need to call `search`
-from our `run` function. We need to pass the `config.query` value and the
-`contents` that `run` reads from the file to the `search` function. Then `run`
-will print each line returned from `search`:
+이제 `search` 함수가 작동하고 테스트가 완료되었으므로 `run` 함수에서 `search`를 호출해야 합니다. `run` 함수는 `config.query` 값과 `run`이 파일에서 읽는 `contents`를 `search` 함수에 전달해야 합니다. 그러면 `run`은 `search`에서 반환된 각 줄을 출력합니다.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class=\"filename\">Filename: src/lib.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/no-listing-02-using-search-in-run/src/lib.rs:here}}
 ```
 
-We’re still using a `for` loop to return each line from `search` and print it.
+여전히 `search`에서 각 줄을 반환하고 출력하기 위해 `for` 루프를 사용하고 있습니다.
 
-Now the entire program should work! Let’s try it out, first with a word that
-should return exactly one line from the Emily Dickinson poem, “frog”:
+이제 전체 프로그램이 작동해야 합니다. \u201cfrog\u201d라는 단어로 시작하여 Emily Dickinson 시에서 정확히 한 줄만 반환해야 하는 단어로 시도해 보겠습니다.
 
 ```console
 {{#include ../listings/ch12-an-io-project/no-listing-02-using-search-in-run/output.txt}}
 ```
 
-Cool! Now let’s try a word that will match multiple lines, like “body”:
+멋지네요! 이제 \u201cbody\u201d와 같은 여러 줄에 일치하는 단어로 시도해 보겠습니다.
 
 ```console
 {{#include ../listings/ch12-an-io-project/output-only-03-multiple-matches/output.txt}}
 ```
 
-And finally, let’s make sure that we don’t get any lines when we search for a
-word that isn’t anywhere in the poem, such as “monomorphization”:
+마지막으로, 시에 없는 단어인 \u201cmonomorphization\u201d과 같은 단어를 검색하면 줄이 없도록 확인해 보겠습니다.
 
 ```console
 {{#include ../listings/ch12-an-io-project/output-only-04-no-matches/output.txt}}
 ```
 
-Excellent! We’ve built our own mini version of a classic tool and learned a lot
-about how to structure applications. We’ve also learned a bit about file input
-and output, lifetimes, testing, and command line parsing.
+훌륭합니다! 우리는 고전 도구의 미니 버전을 만들고 많은 것을 배우었습니다. 파일 입력 및 출력, 라이프타임, 테스트 및 명령줄 분석에 대해서도 약간 배웠습니다.
 
-To round out this project, we’ll briefly demonstrate how to work with
-environment variables and how to print to standard error, both of which are
-useful when you’re writing command line programs.
+이 프로젝트를 마무리하기 위해 환경 변수와 표준 오류로 출력하는 방법을 간단히 보여드리겠습니다. 이 두 가지는 명령줄 프로그램을 작성할 때 유용합니다.
 
 [validating-references-with-lifetimes]:
 ch10-03-lifetime-syntax.html#validating-references-with-lifetimes

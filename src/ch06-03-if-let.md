@@ -1,83 +1,48 @@
-## Concise Control Flow with `if let`
+## `if let`을 사용한 간결한 제어 흐름
 
-The `if let` syntax lets you combine `if` and `let` into a less verbose way to
-handle values that match one pattern while ignoring the rest. Consider the
-program in Listing 6-6 that matches on an `Option<u8>` value in the
-`config_max` variable but only wants to execute code if the value is the `Some`
-variant.
+`if let` 구문은 `if`와 `let`를 결합하여 하나의 패턴에 맞는 값을 처리하면서 나머지를 무시하는 더 간결한 방법을 제공합니다. 6-6번 목록의 프로그램을 참조하여 `Option<u8>` 값인 `config_max` 변수에 대해 `match`를 사용하여 처리하는 것을 살펴보겠습니다.
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-06/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 6-6: A `match` that only cares about executing
-code when the value is `Some`</span>
+<span class=\"caption\">Listing 6-6: `Some`일 때만 코드를 실행하는 `match`</span>
 
-If the value is `Some`, we print out the value in the `Some` variant by binding
-the value to the variable `max` in the pattern. We don’t want to do anything
-with the `None` value. To satisfy the `match` expression, we have to add `_ =>
-()` after processing just one variant, which is annoying boilerplate code to
-add.
+만약 값이 `Some`이라면, 패턴에서 `max` 변수에 값을 바인딩하여 `Some` 변수 내의 값을 출력합니다. `None` 값에 대해서는 아무것도 하지 않습니다. `match` 표현식을 만족하기 위해 `_ => ()`를 추가해야 하는데, 이는 불필요한 boilerplate 코드입니다.
 
-Instead, we could write this in a shorter way using `if let`. The following
-code behaves the same as the `match` in Listing 6-6:
+대신 `if let`을 사용하여 이를 더 간결하게 작성할 수 있습니다. 다음 코드는 6-6번 목록의 `match`와 동일한 동작을 수행합니다.
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-12-if-let/src/main.rs:here}}
 ```
 
-The syntax `if let` takes a pattern and an expression separated by an equal
-sign. It works the same way as a `match`, where the expression is given to the
-`match` and the pattern is its first arm. In this case, the pattern is
-`Some(max)`, and the `max` binds to the value inside the `Some`. We can then
-use `max` in the body of the `if let` block in the same way we used `max` in
-the corresponding `match` arm. The code in the `if let` block isn’t run if the
-value doesn’t match the pattern.
+`if let` 구문은 패턴과 등호 기호로 연결된 표현식을 받습니다. `match`와 동일하게 작동하며, 표현식이 `match`에 주어지고 패턴이 첫 번째 팔입니다. 이 경우 패턴은 `Some(max)`이며, `max`는 `Some` 안의 값에 바인딩됩니다. 그런 다음 `if let` 블록의 코드를 사용하여 `max`를 `match`의 해당하는 `match` 팔에서 사용하는 것과 동일하게 사용할 수 있습니다. `if let` 블록의 코드는 값이 패턴에 맞지 않으면 실행되지 않습니다.
 
-Using `if let` means less typing, less indentation, and less boilerplate code.
-However, you lose the exhaustive checking that `match` enforces. Choosing
-between `match` and `if let` depends on what you’re doing in your particular
-situation and whether gaining conciseness is an appropriate trade-off for
-losing exhaustive checking.
+`if let`을 사용하면 입력량이 줄어들고 들여쓰기가 줄어들고 불필요한 boilerplate 코드가 줄어듭니다. 그러나 `match`가 강제하는 완전한 검사를 잃게 됩니다. `match`와 `if let` 중 선택은 특정 상황에서 작업하고 간결성을 얻는 것이 완전한 검사를 잃는 것과의 적절한 거래인지 여부에 따라 달라집니다.
 
-In other words, you can think of `if let` as syntax sugar for a `match` that
-runs code when the value matches one pattern and then ignores all other values.
+즉, `if let`은 `match`에 대해 패턴에 맞는 값을 처리하고 나머지 값을 무시하는 문법 설탕으로 생각할 수 있습니다.
 
-We can include an `else` with an `if let`. The block of code that goes with the
-`else` is the same as the block of code that would go with the `_` case in the
-`match` expression that is equivalent to the `if let` and `else`. Recall the
-`Coin` enum definition in Listing 6-4, where the `Quarter` variant also held a
-`UsState` value. If we wanted to count all non-quarter coins we see while also
-announcing the state of the quarters, we could do that with a `match`
-expression, like this:
+`if let`에 `else`를 포함할 수 있습니다. `else`와 함께 있는 코드 블록은 `match` 표현식의 `_` 사례와 동일한 코드 블록입니다. `if let`과 `else`에 해당하는 `match` 표현식을 생각해 보세요.
+
+6-4번 목록에서 정의된 `Coin` enum을 다시 생각해 보겠습니다. `Quarter` 변수는 `UsState` 값도 포함하고 있습니다. `match` 표현식을 사용하여 모든 쿼터가 아닌 동전을 세면서 동시에 쿼터의 상태를 알리는 경우, 다음과 같이 작성할 수 있습니다.
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-13-count-and-announce-match/src/main.rs:here}}
 ```
 
-Or we could use an `if let` and `else` expression, like this:
+또는 `if let`과 `else` 표현식을 사용하여 다음과 같이 작성할 수 있습니다.
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-14-count-and-announce-if-let-else/src/main.rs:here}}
 ```
 
-If you have a situation in which your program has logic that is too verbose to
-express using a `match`, remember that `if let` is in your Rust toolbox as well.
+프로그램의 논리가 `match`를 사용하여 표현하기에는 너무 복잡한 경우, `if let`도 Rust 도구 상자에 있습니다. 
 
-## Summary
+## 요약
 
-We’ve now covered how to use enums to create custom types that can be one of a
-set of enumerated values. We’ve shown how the standard library’s `Option<T>`
-type helps you use the type system to prevent errors. When enum values have
-data inside them, you can use `match` or `if let` to extract and use those
-values, depending on how many cases you need to handle.
+이제 enum을 사용하여 하나의 집합의 명시된 값 중 하나일 수 있는 사용자 정의 유형을 만드는 방법을 익혔습니다. 표준 라이브러리의 `Option<T>` 유형이 유형 시스템을 사용하여 오류를 방지하는 방법을 보여드렸습니다. enum 값에 데이터가 포함되어 있는 경우, `match` 또는 `if let`을 사용하여 해당 값을 추출하고 사용할 수 있습니다. 필요한 사례의 수에 따라 `match` 또는 `if let`을 사용할 수 있습니다.
 
-Your Rust programs can now express concepts in your domain using structs and
-enums. Creating custom types to use in your API ensures type safety: the
-compiler will make certain your functions only get values of the type each
-function expects.
+이제 Rust 프로그램에서 도메인 개념을 구조체와 enum을 사용하여 표현할 수 있습니다. API에 사용자 정의 유형을 만들면 유형 안전성이 보장됩니다. 컴파일러는 각 함수가 기대하는 유형의 값만 받도록 합니다.
 
-In order to provide a well-organized API to your users that is straightforward
-to use and only exposes exactly what your users will need, let’s now turn to
-Rust’s modules.
+사용자에게 직관적이고 사용하기 쉬운 잘 정리된 API를 제공하기 위해 필요한 것만 노출하는 것은 중요합니다. 이를 위해 Rust의 모듈을 사용해 보겠습니다.
 

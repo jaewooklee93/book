@@ -1,192 +1,107 @@
-## Using `Box<T>` to Point to Data on the Heap
+## `Box<T>`를 사용하여 힙에 데이터를 가리키기
 
-The most straightforward smart pointer is a *box*, whose type is written
-`Box<T>`. Boxes allow you to store data on the heap rather than the stack. What
-remains on the stack is the pointer to the heap data. Refer to Chapter 4 to
-review the difference between the stack and the heap.
+가장 직관적인 스마트 포인터는 `Box<T>` 타입으로, `Box`라고 합니다. `Box`는 데이터를 스택 대신 힙에 저장할 수 있도록 합니다. 스택에는 힙 데이터를 가리키는 포인터만 남습니다. 스택과 힙의 차이점은 제4장을 참조하세요.
 
-Boxes don’t have performance overhead, other than storing their data on the
-heap instead of on the stack. But they don’t have many extra capabilities
-either. You’ll use them most often in these situations:
+`Box`는 힙에 데이터를 저장하는 것 외에는 성능 오버헤드가 없습니다. 하지만 많은 추가 기능도 없습니다. 다음과 같은 상황에서 가장 자주 사용합니다.
 
-* When you have a type whose size can’t be known at compile time and you want
-  to use a value of that type in a context that requires an exact size
-* When you have a large amount of data and you want to transfer ownership but
-  ensure the data won’t be copied when you do so
-* When you want to own a value and you care only that it’s a type that
-  implements a particular trait rather than being of a specific type
+* 컴파일 시에 크기가 알 수 없는 타입이 있을 때, 해당 타입의 값을 정확한 크기가 필요한 맥락에서 사용하고 싶을 때
+* 많은 양의 데이터가 있고 소유권을 전달하지만 복사하지 않고 전달하고 싶을 때
+* 특정 타입이 아니라 특정 트레이트를 구현하는 타입이라고만 알고 소유하고 싶을 때
 
-We’ll demonstrate the first situation in the [“Enabling Recursive Types with
-Boxes”](#enabling-recursive-types-with-boxes)<!-- ignore --> section. In the
-second case, transferring ownership of a large amount of data can take a long
-time because the data is copied around on the stack. To improve performance in
-this situation, we can store the large amount of data on the heap in a box.
-Then, only the small amount of pointer data is copied around on the stack,
-while the data it references stays in one place on the heap. The third case is
-known as a *trait object*, and Chapter 17 devotes an entire section, [“Using
-Trait Objects That Allow for Values of Different Types,”][trait-objects]<!--
-ignore --> just to that topic. So what you learn here you’ll apply again in
-Chapter 17!
+`Box`를 사용하여 재귀적 타입을 가능하게 하는 부분은 [\u201c재귀적 타입을 활성화하는 방법\u201d](#enabling-recursive-types-with-boxes)<!-- ignore --> 섹션에서 보여줍니다. 두 번째 경우, 많은 양의 데이터의 소유권을 전달하는 것은 데이터가 스택에서 복사되기 때문에 오랜 시간이 걸릴 수 있습니다. 이 상황에서 성능을 향상시키려면 `Box`에 힙에 큰 양의 데이터를 저장할 수 있습니다. 그러면 스택에서 작은 양의 포인터 데이터만 복사되고, 데이터가 가리키는 데이터는 힙의 한 곳에 유지됩니다. 세 번째 경우는 *트레이트 객체*로 알려져 있으며, 제17장은 [\u201c다른 타입의 값을 허용하는 트레이트 객체 사용\u201d][trait-objects]<!-- ignore -->라는 전체 섹션을 할애했습니다. 따라서 여기에서 배운 내용은 제17장에서 다시 적용할 수 있습니다!
 
-### Using a `Box<T>` to Store Data on the Heap
+### `Box<T>`를 사용하여 힙에 데이터를 저장하기
 
-Before we discuss the heap storage use case for `Box<T>`, we’ll cover the
-syntax and how to interact with values stored within a `Box<T>`.
+`Box<T>`의 힙 저장 사용 사례를 설명하기 전에 구문과 `Box<T>` 내에 저장된 값과 상호 작용하는 방법을 살펴보겠습니다.
 
-Listing 15-1 shows how to use a box to store an `i32` value on the heap:
+표 15-1은 `Box`를 사용하여 힙에 `i32` 값을 저장하는 방법을 보여줍니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-01/src/main.rs}}
 ```
 
-<span class="caption">Listing 15-1: Storing an `i32` value on the heap using a
-box</span>
+<span class=\"caption\">표 15-1: `Box`를 사용하여 힙에 `i32` 값을 저장하기</span>
 
-We define the variable `b` to have the value of a `Box` that points to the
-value `5`, which is allocated on the heap. This program will print `b = 5`; in
-this case, we can access the data in the box similar to how we would if this
-data were on the stack. Just like any owned value, when a box goes out of
-scope, as `b` does at the end of `main`, it will be deallocated. The
-deallocation happens both for the box (stored on the stack) and the data it
-points to (stored on the heap).
+`b` 변수를 정의하여 `5` 값을 가리키는 `Box`의 값을 할당합니다. 이 프로그램은 `b = 5`를 출력합니다. 이 경우, `Box` 내의 데이터에 액세스하는 방법은 데이터가 스택에 있었다면과 동일합니다. 다른 소유된 값과 마찬가지로, `Box`가 `main` 함수의 범위를 벗어나면(즉, `b`가 끝나면) 해당 `Box`와 가리키는 데이터가 모두 해제됩니다.
 
-Putting a single value on the heap isn’t very useful, so you won’t use boxes by
-themselves in this way very often. Having values like a single `i32` on the
-stack, where they’re stored by default, is more appropriate in the majority of
-situations. Let’s look at a case where boxes allow us to define types that we
-wouldn’t be allowed to if we didn’t have boxes.
+단일 값을 힙에 저장하는 것은 그리 유용하지 않으므로, 대부분의 경우 `Box`를 이러한 방식으로 사용하지 않습니다. 스택에 저장되는 단일 `i32` 값과 같은 값은 스택에 저장하는 것이 더 적절합니다. 재귀적 타입을 정의하여 `Box`가 가능하게 해주는 경우를 살펴보겠습니다.
 
-### Enabling Recursive Types with Boxes
+### 재귀적 타입을 활성화하는 방법
 
-A value of *recursive type* can have another value of the same type as part of
-itself. Recursive types pose an issue because at compile time Rust needs to
-know how much space a type takes up. However, the nesting of values of
-recursive types could theoretically continue infinitely, so Rust can’t know how
-much space the value needs. Because boxes have a known size, we can enable
-recursive types by inserting a box in the recursive type definition.
+*재귀적 타입*의 값은 같은 타입의 다른 값을 포함할 수 있습니다. 재귀적 타입은 컴파일 시점에 Rust가 타입이 얼마나 많은 공간을 차지하는지 알아야 하기 때문에 문제가 됩니다. 그러나 재귀적 타입의 값의 nesting은 이론적으로 무한히 계속될 수 있기 때문에 Rust는 얼마나 많은 공간이 필요한지 알 수 없습니다. `Box`는 알려진 크기를 가지기 때문에 재귀적 타입을 활성화하려면 `Box`를 재귀적 타입 정의에 삽입할 수 있습니다.
 
-As an example of a recursive type, let’s explore the *cons list*. This is a data
-type commonly found in functional programming languages. The cons list type
-we’ll define is straightforward except for the recursion; therefore, the
-concepts in the example we’ll work with will be useful any time you get into
-more complex situations involving recursive types.
+재귀적 타입의 예로서 *cons 리스트*를 살펴보겠습니다. 이는 함수형 프로그래밍 언어에서 흔히 볼 수 있는 데이터 유형입니다. 우리가 정의할 `cons 리스트` 유형은 재귀적이기 때문에 개념이 유용합니다.
 
-#### More Information About the Cons List
+#### cons 리스트에 대한 자세한 내용
 
-A *cons list* is a data structure that comes from the Lisp programming language
-and its dialects and is made up of nested pairs, and is the Lisp version of a
-linked list. Its name comes from the `cons` function (short for “construct
-function”) in Lisp that constructs a new pair from its two arguments. By
-calling `cons` on a pair consisting of a value and another pair, we can
-construct cons lists made up of recursive pairs.
+*cons 리스트*는 Lisp 프로그래밍 언어에서 나온 데이터 구조입니다. "
 
-For example, here’s a pseudocode representation of a cons list containing the
-list 1, 2, 3 with each pair in parentheses:
+
+그리고 그 다이어렉트리와는 달리, 컨스 리스트는 쌍으로 이루어진 쌍의 중첩으로 구성되며, Lisp 버전의 연결 리스트입니다. 이름은 Lisp의 `cons` 함수( "구성 함수"의 약자)에서 유래되었으며, 이 함수는 두 인수로부터 새로운 쌍을 생성합니다. 쌍으로 구성된 값과 다른 쌍에 `cons`를 호출하면 `cons` 리스트를 생성할 수 있습니다. 이 리스트는 재귀적인 쌍으로 구성됩니다.
+
+예를 들어, 1, 2, 3를 포함하는 컨스 리스트의 가상 코드 표현은 다음과 같습니다. 각 쌍은 괄호로 묶여 있습니다.
 
 ```text
 (1, (2, (3, Nil)))
+
 ```
 
-Each item in a cons list contains two elements: the value of the current item
-and the next item. The last item in the list contains only a value called `Nil`
-without a next item. A cons list is produced by recursively calling the `cons`
-function. The canonical name to denote the base case of the recursion is `Nil`.
-Note that this is not the same as the “null” or “nil” concept in Chapter 6,
-which is an invalid or absent value.
+컨스 리스트의 각 항목에는 현재 항목의 값과 다음 항목이 포함됩니다. 리스트의 마지막 항목에는 `Nil`이라는 값만 포함되어 있으며 다음 항목이 없습니다. 컨스 리스트는 `cons` 함수를 재귀적으로 호출하여 생성됩니다. 재귀의 기본 사례를 나타내는 표준 이름은 `Nil`입니다. 이것이 제6장의 "null" 또는 "nil" 개념과 동일하지 않음을 유의하십시오. "null" 또는 "nil"은 유효하지 않거나 없는 값입니다.
 
-The cons list isn’t a commonly used data structure in Rust. Most of the time
-when you have a list of items in Rust, `Vec<T>` is a better choice to use.
-Other, more complex recursive data types *are* useful in various situations,
-but by starting with the cons list in this chapter, we can explore how boxes
-let us define a recursive data type without much distraction.
+컨스 리스트는 Rust에서 일반적으로 사용되는 데이터 구조는 아닙니다. 대부분의 경우 Rust에서 항목 목록을 가질 때 `Vec<T>`가 더 나은 선택입니다. 다른, 더 복잡한 재귀 데이터 유형은 다양한 상황에서 유용하지만, 이 장에서 컨스 리스트를 시작함으로써 상자를 사용하여 재귀 데이터 유형을 정의하는 방법을 탐구할 수 있습니다.
 
-Listing 15-2 contains an enum definition for a cons list. Note that this code
-won’t compile yet because the `List` type doesn’t have a known size, which
-we’ll demonstrate.
+표 15-2에는 컨스 리스트 데이터 구조를 나타내는 `enum` 정의가 포함되어 있습니다. 이 코드는 아직 컴파일되지 않을 것입니다. `List` 유형은 알려진 크기를 가지지 않기 때문입니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-02/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-2: The first attempt at defining an enum to
-represent a cons list data structure of `i32` values</span>
+<span class=\"caption\">표 15-2: `i32` 값의 컨스 리스트를 나타내는 `enum`을 정의하는 첫 번째 시도</span>
 
-> Note: We’re implementing a cons list that holds only `i32` values for the
-> purposes of this example. We could have implemented it using generics, as we
-> discussed in Chapter 10, to define a cons list type that could store values of
-> any type.
+> 참고: 이 예제에서는 `i32` 값만 저장하는 컨스 리스트를 구현했습니다. 제10장에서 논의했듯이, 일반화를 사용하여 어떤 유형의 값을 저장할 수 있는 컨스 리스트 유형을 정의할 수도 있습니다.
 
-Using the `List` type to store the list `1, 2, 3` would look like the code in
-Listing 15-3:
+`List` 유형을 사용하여 `1, 2, 3` 리스트를 저장하는 것은 표 15-3과 같습니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-03/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-3: Using the `List` enum to store the list `1,
-2, 3`</span>
+<span class=\"caption\">표 15-3: `List` `enum`을 사용하여 `1, 2, 3` 리스트를 저장하는 방법</span>
 
-The first `Cons` value holds `1` and another `List` value. This `List` value is
-another `Cons` value that holds `2` and another `List` value. This `List` value
-is one more `Cons` value that holds `3` and a `List` value, which is finally
-`Nil`, the non-recursive variant that signals the end of the list.
+첫 번째 `Cons` 값은 `1`과 다른 `List` 값을 포함합니다. 이 `List` 값은 또 다른 `Cons` 값을 포함하며 `2`와 다른 `List` 값을 포함합니다. 이 `List` 값은 `3`을 포함하는 또 다른 `Cons` 값이며 마지막 `List` 값은 `Nil`입니다. `Nil`은 리스트의 끝을 나타내는 재귀적이지 않은 변형입니다.
 
-If we try to compile the code in Listing 15-3, we get the error shown in
-Listing 15-4:
+표 15-3의 코드를 컴파일하려고 하면 표 15-4에 표시된 오류가 발생합니다.
 
 ```console
 {{#include ../listings/ch15-smart-pointers/listing-15-03/output.txt}}
 ```
 
-<span class="caption">Listing 15-4: The error we get when attempting to define
-a recursive enum</span>
+<span class=\"caption\">표 15-4: 재귀 `enum`을 정의하려고 할 때 발생하는 오류</span>
 
-The error shows this type “has infinite size.” The reason is that we’ve defined
-`List` with a variant that is recursive: it holds another value of itself
-directly. As a result, Rust can’t figure out how much space it needs to store a
-`List` value. Let’s break down why we get this error. First, we’ll look at how
-Rust decides how much space it needs to store a value of a non-recursive type.
+오류 메시지에서 이 유형은 "무한 크기"를 가지고 있음을 알 수 있습니다. 이는 `List`를 재귀적으로 정의했기 때문입니다. 즉, `List` 값이 직접 다른 `List` 값을 포함하기 때문입니다. 따라서 Rust는 `List` 값을 저장할 공간을 얼마나 필요로 하는지 알 수 없습니다. 이 오류가 발생하는 이유를 자세히 살펴보기 위해 Rust가 비재귀 유형의 크기를 계산하는 방식을 먼저 살펴보겠습니다.
 
-#### Computing the Size of a Non-Recursive Type
+#### 비재귀 유형의 크기를 계산하는 방법
 
-Recall the `Message` enum we defined in Listing 6-2 when we discussed enum
-definitions in Chapter 6:
+제6장에서 유효하지 않거나 없는 값을 나타내는 `enum`을 정의할 때 `Message` `enum`을 사용했습니다.
 
 ```rust
-{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-02/src/main.rs:here}}
 ```
 
-To determine how much space to allocate for a `Message` value, Rust goes
-through each of the variants to see which variant needs the most space. Rust
-sees that `Message::Quit` doesn’t need any space, `Message::Move` needs enough
-space to store two `i32` values, and so forth. Because only one variant will be
-used, the most space a `Message` value will need is the space it would take to
-store the largest of its variants.
+## Box를 사용하여 알 수 있는 크기의 재귀형 만들기
 
-Contrast this with what happens when Rust tries to determine how much space a
-recursive type like the `List` enum in Listing 15-2 needs. The compiler starts
-by looking at the `Cons` variant, which holds a value of type `i32` and a value
-of type `List`. Therefore, `Cons` needs an amount of space equal to the size of
-an `i32` plus the size of a `List`. To figure out how much memory the `List`
-type needs, the compiler looks at the variants, starting with the `Cons`
-variant. The `Cons` variant holds a value of type `i32` and a value of type
-`List`, and this process continues infinitely, as shown in Figure 15-1.
+```rust
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-05/src/main.rs}}
+```
 
-<img alt="An infinite Cons list" src="img/trpl15-01.svg" class="center" style="width: 50%;" />
+Rust는 `Message` 값에 얼마나 많은 공간을 할당해야 하는지 결정하기 위해 각 변형을 살펴봅니다. Rust는 `Message::Quit`가 공간을 필요로 하지 않는다는 것을 알고, `Message::Move`는 두 개의 `i32` 값을 저장할 만큼의 공간이 필요하며, 이와 같이 계속합니다. 단 하나의 변형만 사용될 것이기 때문에 `Message` 값이 필요로 하는 최대 공간은 그 변형 중 가장 큰 변형이 차지하는 공간과 같습니다.
 
-<span class="caption">Figure 15-1: An infinite `List` consisting of infinite
-`Cons` variants</span>
-
-#### Using `Box<T>` to Get a Recursive Type with a Known Size
-
-Because Rust can’t figure out how much space to allocate for recursively
-defined types, the compiler gives an error with this helpful suggestion:
+Listing 15-2의 `List` enum과 같은 재귀형의 경우 Rust가 얼마나 많은 공간을 할당해야 하는지 결정하려고 할 때는 컴파일러가 오류를 발생시키고 다음과 같은 도움말을 제공합니다.
 
 <!-- manual-regeneration
 after doing automatic regeneration, look at listings/ch15-smart-pointers/listing-15-03/output.txt and copy the relevant line
@@ -199,57 +114,30 @@ help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle
   |               ++++    +
 ```
 
-In this suggestion, “indirection” means that instead of storing a value
-directly, we should change the data structure to store the value indirectly by
-storing a pointer to the value instead.
+이 제안에서 \u201cindirection\u201d은 값을 직접 저장하는 대신, 포인터를 사용하여 값을 간접적으로 저장하는 것을 의미합니다.
 
-Because a `Box<T>` is a pointer, Rust always knows how much space a `Box<T>`
-needs: a pointer’s size doesn’t change based on the amount of data it’s
-pointing to. This means we can put a `Box<T>` inside the `Cons` variant instead
-of another `List` value directly. The `Box<T>` will point to the next `List`
-value that will be on the heap rather than inside the `Cons` variant.
-Conceptually, we still have a list, created with lists holding other lists, but
-this implementation is now more like placing the items next to one another
-rather than inside one another.
+`Box<T>`는 포인터이기 때문에 Rust는 `Box<T>`가 필요로 하는 공간을 항상 알고 있습니다. 즉, `Box<T>`가 가리키는 데이터의 양에 관계없이 포인터의 크기는 변하지 않습니다. 이는 `Cons` 변형 안에 `Box<T>`를 넣을 수 있음을 의미합니다. `Box<T>`는 힙에 있는 다음 `List` 값을 가리키는 포인터가 될 것입니다. 즉, `Cons` 변형 내부에 값이 들어있는 것처럼 보이지만, 실제로는 값들이 서로 인접해 있는 것과 같습니다.
 
-We can change the definition of the `List` enum in Listing 15-2 and the usage
-of the `List` in Listing 15-3 to the code in Listing 15-5, which will compile:
+Listing 15-2의 `List` enum 정의와 Listing 15-3의 `List` 사용을 Listing 15-5와 같이 변경하면 컴파일이 가능합니다.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class=\"filename\">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-05/src/main.rs}}
 ```
 
-<span class="caption">Listing 15-5: Definition of `List` that uses `Box<T>` in
-order to have a known size</span>
+<span class=\"caption\">Listing 15-5: `Box<T>`를 사용하여 알 수 있는 크기를 가진 `List`의 정의</span>
 
-The `Cons` variant needs the size of an `i32` plus the space to store the
-box’s pointer data. The `Nil` variant stores no values, so it needs less space
-than the `Cons` variant. We now know that any `List` value will take up the
-size of an `i32` plus the size of a box’s pointer data. By using a box, we’ve
-broken the infinite, recursive chain, so the compiler can figure out the size
-it needs to store a `List` value. Figure 15-2 shows what the `Cons` variant
-looks like now.
+`Cons` 변형은 `i32`의 크기와 `Box`의 포인터 데이터 크기를 필요로 합니다. `Nil` 변형은 값을 저장하지 않으므로 `Cons` 변형보다 적은 공간을 차지합니다. 이제 `List` 값이 `i32`의 크기와 `Box`의 포인터 데이터 크기만큼 공간을 차지한다는 것을 알 수 있습니다. `Box`를 사용함으로써 무한한 재귀적인 연결을 끊었기 때문에 컴파일러가 `List` 값을 저장하기 위해 필요한 크기를 알 수 있습니다. Figure 15-2는 `Cons` 변형이 이제 어떻게 보이는지 보여줍니다.
 
-<img alt="A finite Cons list" src="img/trpl15-02.svg" class="center" />
+<img alt=\"A finite Cons list\" src=\"img/trpl15-02.svg\" class=\"center\" />
 
-<span class="caption">Figure 15-2: A `List` that is not infinitely sized
-because `Cons` holds a `Box`</span>
+<h1>박스</h1>
 
-Boxes provide only the indirection and heap allocation; they don’t have any
-other special capabilities, like those we’ll see with the other smart pointer
-types. They also don’t have the performance overhead that these special
-capabilities incur, so they can be useful in cases like the cons list where the
-indirection is the only feature we need. We’ll look at more use cases for boxes
-in Chapter 17, too.
+<span class=\"caption\">그림 15-2: `Cons`가 `Box`를 갖고 있기 때문에 무한한 크기를 가진 것이 아닌 `List`</span>
 
-The `Box<T>` type is a smart pointer because it implements the `Deref` trait,
-which allows `Box<T>` values to be treated like references. When a `Box<T>`
-value goes out of scope, the heap data that the box is pointing to is cleaned
-up as well because of the `Drop` trait implementation. These two traits will be
-even more important to the functionality provided by the other smart pointer
-types we’ll discuss in the rest of this chapter. Let’s explore these two traits
-in more detail.
+박스는 단지 간접 지정과 힙 할당을 제공합니다. 다른 특별한 기능은 없습니다. 이러한 특별한 기능은 나중에 다른 스마트 포인터 유형에서 볼 수 있습니다. 또한 이러한 특별한 기능이 발생시키는 성능 오버헤드가 없기 때문에, 간접 지정만이 필요한 경우(예: `cons` 리스트)에 유용할 수 있습니다. 박스의 다른 사용 사례는 제17장에서도 살펴볼 것입니다.
+
+`Box<T>` 유형은 `Deref` 트레이트를 구현하기 때문에 스마트 포인터입니다. 이 트레이트는 `Box<T>` 값이 참조와 같이 처리될 수 있도록 합니다. `Box<T>` 값이 범위를 벗어날 때, 박스가 가리키는 힙 데이터도 `Drop` 트레이트 구현 덕분에 함께 정리됩니다. 이 두 트레이트는 이 장에서 나중에 논의할 다른 스마트 포인터 유형의 기능에 더욱 중요합니다. 두 트레이트를 자세히 살펴보겠습니다.
 
 [trait-objects]: ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types

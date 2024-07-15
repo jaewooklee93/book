@@ -1,29 +1,15 @@
-# Patterns and Matching
+## 패턴과 매칭
 
-*Patterns* are a special syntax in Rust for matching against the structure of
-types, both complex and simple. Using patterns in conjunction with `match`
-expressions and other constructs gives you more control over a program’s
-control flow. A pattern consists of some combination of the following:
+*패턴*은 Rust에서 복잡하고 간단한 유형의 구조에 맞춰 매칭하는 데 사용되는 특수한 문법입니다. `match` 표현식과 다른 구조와 함께 패턴을 사용하면 프로그램의 제어 흐름에 대한 더 많은 제어를 얻을 수 있습니다. 패턴은 다음과 같은 조합으로 구성됩니다.
 
-* Literals
-* Destructured arrays, enums, structs, or tuples
-* Variables
-* Wildcards
-* Placeholders
+* 리터럴
+* 해체된 배열, 열거형, 구조체 또는 튜플
+* 변수
+* 와일드카드
+* 플레이스홀더
 
-Some example patterns include `x`, `(a, 3)`, and `Some(Color::Red)`. In the
-contexts in which patterns are valid, these components describe the shape of
-data. Our program then matches values against the patterns to determine whether
-it has the correct shape of data to continue running a particular piece of code.
+예를 들어 `x`, `(a, 3)`, `Some(Color::Red)`와 같은 패턴이 있습니다. 패턴이 유효한 맥락에서 이러한 구성 요소는 데이터의 형태를 설명합니다. 프로그램은 데이터의 형태가 일치하는지 확인하여 특정 코드 조각을 실행할지 여부를 결정합니다.
 
-To use a pattern, we compare it to some value. If the pattern matches the
-value, we use the value parts in our code. Recall the `match` expressions in
-Chapter 6 that used patterns, such as the coin-sorting machine example. If the
-value fits the shape of the pattern, we can use the named pieces. If it
-doesn’t, the code associated with the pattern won’t run.
+패턴을 사용하려면 값과 비교합니다. 패턴이 값과 일치하면 코드에서 값 부분을 사용할 수 있습니다. 6장에서 패턴을 사용한 `match` 표현식을 기억하세요. 예를 들어 동전 분류기 예제와 같습니다. 값이 패턴의 형태에 맞으면 명명된 부분을 사용할 수 있습니다. 맞지 않으면 패턴과 연결된 코드가 실행되지 않습니다.
 
-This chapter is a reference on all things related to patterns. We’ll cover the
-valid places to use patterns, the difference between refutable and irrefutable
-patterns, and the different kinds of pattern syntax that you might see. By the
-end of the chapter, you’ll know how to use patterns to express many concepts in
-a clear way.
+이 장은 패턴과 관련된 모든 내용에 대한 참조입니다. 패턴을 사용할 수 있는 유효한 위치, 반박 가능한 패턴과 반박 불가능한 패턴의 차이, 그리고 볼 수 있는 다양한 종류의 패턴 문법을 다룹니다. 이 장의 끝까지 다니면 패턴을 사용하여 많은 개념을 명확하게 표현하는 방법을 알게 될 것입니다.

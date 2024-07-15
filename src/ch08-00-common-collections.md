@@ -1,25 +1,13 @@
-# Common Collections
+## 일반적인 컬렉션
 
-Rust’s standard library includes a number of very useful data structures called
-*collections*. Most other data types represent one specific value, but
-collections can contain multiple values. Unlike the built-in array and tuple
-types, the data these collections point to is stored on the heap, which means
-the amount of data does not need to be known at compile time and can grow or
-shrink as the program runs. Each kind of collection has different capabilities
-and costs, and choosing an appropriate one for your current situation is a
-skill you’ll develop over time. In this chapter, we’ll discuss three
-collections that are used very often in Rust programs:
+Rust의 표준 라이브러리에는 여러 가지 유용한 데이터 구조인 *컬렉션*이 포함되어 있습니다. 대부분의 다른 데이터 유형은 하나의 특정 값을 나타내지만, 컬렉션은 여러 값을 포함할 수 있습니다. 내장된 배열과 튜플 유형과 달리, 이러한 컬렉션이 가리키는 데이터는 힙에 저장되므로, 데이터의 양은 컴파일 시에 알 필요가 없으며 프로그램 실행 중에 증가하거나 감소할 수 있습니다. 각 유형의 컬렉션은 다른 기능과 비용을 가지며, 현재 상황에 적합한 것을 선택하는 것은 시간이 지남에 따라 익히는 기술입니다. 이 장에서는 Rust 프로그램에서 자주 사용되는 세 가지 컬렉션에 대해 논의합니다.
 
-* A *vector* allows you to store a variable number of values next to each other.
-* A *string* is a collection of characters. We’ve mentioned the `String` type
-  previously, but in this chapter we’ll talk about it in depth.
-* A *hash map* allows you to associate a value with a specific key. It’s a
-  particular implementation of the more general data structure called a *map*.
+* **벡터(vector)**는 서로 인접한 위치에 변수 개수의 값을 저장할 수 있도록 합니다.
+* **문자열(string)**은 문자의 컬렉션입니다. 이전에 `String` 유형에 대해 언급했지만, 이 장에서는 자세히 설명합니다.
+* **해시맵(hash map)**은 특정 키와 값을 연결할 수 있도록 합니다. 이는 더 일반적인 데이터 구조인 *맵*의 특정 구현입니다.
 
-To learn about the other kinds of collections provided by the standard library,
-see [the documentation][collections].
+표준 라이브러리에서 제공하는 다른 유형의 컬렉션에 대해 알아보려면 [문서](../std/collections/index.html)를 참조하십시오.
 
-We’ll discuss how to create and update vectors, strings, and hash maps, as well
-as what makes each special.
+벡터, 문자열, 해시맵을 생성하고 업데이트하는 방법, 그리고 각각의 특징에 대해 설명합니다.
 
-[collections]: ../std/collections/index.html
+[문서]: ../std/collections/index.html

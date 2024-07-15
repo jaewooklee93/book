@@ -1,38 +1,24 @@
-## How to Write Tests
+## 테스트 작성 방법
 
-Tests are Rust functions that verify that the non-test code is functioning in
-the expected manner. The bodies of test functions typically perform these three
-actions:
+테스트는 Rust 함수로, 비테스트 코드가 예상대로 작동하는지 확인합니다.
+테스트 함수의 본문은 일반적으로 다음 세 가지 작업을 수행합니다.
 
-* Set up any needed data or state.
-* Run the code you want to test.
-* Assert that the results are what you expect.
+* 필요한 데이터 또는 상태를 설정합니다.
+* 테스트하려는 코드를 실행합니다.
+* 결과가 기대하는 대로인지 확인합니다.
 
-Let’s look at the features Rust provides specifically for writing tests that
-take these actions, which include the `test` attribute, a few macros, and the
-`should_panic` attribute.
+Rust가 테스트 작성에 제공하는 기능을 살펴보겠습니다. 이 기능에는 `test` 속성, 몇 가지 매크로, 그리고 `should_panic` 속성이 포함됩니다.
 
-### The Anatomy of a Test Function
+### 테스트 함수의 구조
 
-At its simplest, a test in Rust is a function that’s annotated with the `test`
-attribute. Attributes are metadata about pieces of Rust code; one example is
-the `derive` attribute we used with structs in Chapter 5. To change a function
-into a test function, add `#[test]` on the line before `fn`. When you run your
-tests with the `cargo test` command, Rust builds a test runner binary that runs
-the annotated functions and reports on whether each test function passes or
-fails.
+Rust에서 가장 간단한 테스트는 `test` 속성으로 표시된 함수입니다.
+속성은 Rust 코드에 대한 메타데이터입니다. 예를 들어, 5장에서 구조체와 함께 사용한 `derive` 속성은 그 예시입니다. 함수를 테스트 함수로 변경하려면 `fn` 줄 바로 앞에 `#[test]`를 추가합니다. `cargo test` 명령어로 테스트를 실행하면 Rust는 테스트 함수를 실행하고 각 테스트 함수가 통과하거나 실패하는지 보고합니다.
 
-Whenever we make a new library project with Cargo, a test module with a test
-function in it is automatically generated for us. This module gives you a
-template for writing your tests so you don’t have to look up the exact
-structure and syntax every time you start a new project. You can add as many
-additional test functions and as many test modules as you want!
+Cargo로 새 라이브러리 프로젝트를 만들 때마다 테스트 모듈이 자동으로 생성되며, 테스트 함수가 포함되어 있습니다. 이 모듈은 테스트를 작성할 때 필요한 정확한 구조와 문법을 템플릿으로 제공하여 매번 새 프로젝트를 시작할 때 찾아보지 않아도 됩니다. 테스트 함수와 테스트 모듈을 추가할 수 있습니다!
 
-We’ll explore some aspects of how tests work by experimenting with the template
-test before we actually test any code. Then we’ll write some real-world tests
-that call some code that we’ve written and assert that its behavior is correct.
+테스트가 어떻게 작동하는지 이해하기 위해 템플릿 테스트를 실험해 보겠습니다. 그런 다음 작성한 코드를 테스트하고 동작이 올바른지 확인하는 실제 테스트를 작성할 것입니다.
 
-Let’s create a new library project called `adder` that will add two numbers:
+`adder`라는 이름의 새 라이브러리 프로젝트를 만들어 두 개의 숫자를 더하는 코드를 작성해 보겠습니다.
 
 ```console
 $ cargo new adder --lib
@@ -40,18 +26,17 @@ $ cargo new adder --lib
 $ cd adder
 ```
 
-The contents of the *src/lib.rs* file in your `adder` library should look like
-Listing 11-1.
+`adder` 라이브러리의 *src/lib.rs* 파일의 내용은 11-1번 목록과 같습니다.
 
-<Listing number="11-1" file-name="src/lib.rs" caption="The code generated automatically by `cargo new`">
+<Listing number=\"11-1\" file-name=\"src/lib.rs\" caption=\"`cargo new`가 자동으로 생성한 코드\">
 
 <!-- manual-regeneration
 cd listings/ch11-writing-automated-tests
 rm -rf listing-11-01
 cargo new listing-11-01 --lib --name adder
 cd listing-11-01
-echo "$ cargo test" > output.txt
-RUSTFLAGS="-A unused_variables -A dead_code" RUST_TEST_THREADS=1 cargo test >> output.txt 2>&1
+echo \"$ cargo test\" > output.txt
+RUSTFLAGS=\"-A unused_variables -A dead_code\" RUST_TEST_THREADS=1 cargo test >> output.txt 2>&1
 git diff output.txt # commit any relevant changes; discard irrelevant ones
 cd ../../..
 -->
@@ -62,21 +47,13 @@ cd ../../..
 
 </Listing>
 
-For now, let’s focus solely on the `it_works` function. Note the `#[test]`
-annotation: this attribute indicates this is a test function, so the test
-runner knows to treat this function as a test. We might also have non-test
-functions in the `tests` module to help set up common scenarios or perform
-common operations, so we always need to indicate which functions are tests.
+지금은 `it_works` 함수에만 집중해 보겠습니다. `#[test]` 속성을 확인하십시오. 이 속성은 이 함수가 테스트 함수임을 나타내므로 테스트 런너가 이 함수를 테스트로 처리하도록 알립니다. `tests` 모듈에는 일반적인 시나리오를 설정하거나 일반적인 작업을 수행하는 비테스트 함수가 있을 수도 있습니다. 따라서 테스트 함수인지 여부를 명확히 나타내는 것이 중요합니다.
 
-The example function body uses the `assert_eq!` macro to assert that `result`,
-which contains the result of adding 2 and 2, equals 4. This assertion serves as
-an example of the format for a typical test. Let’s run it to see that this test
-passes.
+예시 함수 본문은 `assert_eq!` 매크로를 사용하여 `result` (2와 2를 더한 결과)가 4와 같다는 것을 확인합니다. 이러한 주장은 일반적인 테스트 형식의 예입니다. 실행하여 이 테스트가 통과하는지 확인해 보겠습니다.
 
-The `cargo test` command runs all tests in our project, as shown in Listing
-11-2.
+`cargo test` 명령어는 프로젝트의 모든 테스트를 실행합니다. 11-2번 목록에 나와 있는 것처럼 테스트가 컴파일되고 실행됩니다.
 
-<Listing number="11-2" caption="The output from running the automatically generated test">
+<Listing number=\"11-2\" caption=\"자동으로 생성된 테스트를 실행한 결과\">
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/listing-11-01/output.txt}}
@@ -84,59 +61,40 @@ The `cargo test` command runs all tests in our project, as shown in Listing
 
 </Listing>
 
-Cargo compiled and ran the test. We see the line `running 1 test`. The next
-line shows the name of the generated test function, called `tests::it_works`,
-and that the result of running that test is `ok`. The overall summary `test
-result: ok.` means that all the tests passed, and the portion that reads `1
-passed; 0 failed` totals the number of tests that passed or failed.
+Cargo는 테스트를 컴파일하고 실행했습니다. `running 1 test` 라인을 볼 수 있습니다. 다음 줄은 `tests::it_works`라는 생성된 테스트 함수의 이름을 보여주며, 이 함수를 실행한 결과가 `ok`임을 나타냅니다. `test result: ok.` 라는 전체 요약은 모든 테스트가 통과했다는 것을 의미하며, `1 passed; 0 failed` 라는 부분은 통과하거나 실패한 테스트 수를 총합합니다.
 
-It’s possible to mark a test as ignored so it doesn’t run in a particular
-instance; we’ll cover that in the [“Ignoring Some Tests Unless Specifically
-Requested”][ignoring]<!-- ignore --> section later in this chapter. Because we
-haven’t done that here, the summary shows `0 ignored`.
+특정 인스턴스에서 실행되지 않도록 테스트를 무시할 수 있습니다. 이를 `#[ignore]` 속성을 사용하여 설정할 수 있습니다. 이를 자세히 설명하는 내용은 이 장의 [\u201c특정 요청이 없는 한 테스트를 무시하는 방법\u201d][ignoring]<!-- ignore --> 섹션에서 다룹니다. 테스트를 무시하지 않는 한, 테스트를 실행하고 결과를 확인하는 것은 Rust 프로그램을 개발하는 데 필수적인 부분입니다.
 
-The `0 measured` statistic is for benchmark tests that measure performance.
-Benchmark tests are, as of this writing, only available in nightly Rust. See
-[the documentation about benchmark tests][bench] to learn more.
+아직 해보지 않았습니다. 요약은 `0 무시됨`을 보여줍니다.
 
-We can pass an argument to the `cargo test` command to run only tests whose
-name matches a string; this is called *filtering* and we’ll cover that in the
-[“Running a Subset of Tests by Name”][subset]<!-- ignore --> section. Here we
-haven’t filtered the tests being run, so the end of the summary shows `0
-filtered out`.
+`0 측정됨` 통계는 성능을 측정하는 벤치마크 테스트에 대한 것입니다.
+벤치마크 테스트는 현재까지 밤용 Rust에서만 사용 가능합니다. 자세한 내용은
+[벤치마크 테스트에 대한 설명][bench]을 참조하십시오.
 
-The next part of the test output starting at `Doc-tests adder` is for the
-results of any documentation tests. We don’t have any documentation tests yet,
-but Rust can compile any code examples that appear in our API documentation.
-This feature helps keep your docs and your code in sync! We’ll discuss how to
-write documentation tests in the [“Documentation Comments as
-Tests”][doc-comments]<!-- ignore --> section of Chapter 14. For now, we’ll
-ignore the `Doc-tests` output.
+`cargo test` 명령어에 인수를 전달하여 이름이 문자열과 일치하는 테스트만 실행할 수 있습니다. 이를 *필터링*이라고 하며, 이는
+[\u201c테스트 이름별 실행\u201d][subset]<!-- ignore --> 섹션에서 다룰 것입니다. 여기서는 테스트를 필터링하지 않았으므로 요약의 끝 부분에 `0
+필터링됨`이 표시됩니다.
 
-Let’s start to customize the test to our own needs. First, change the name of
-the `it_works` function to a different name, such as `exploration`, like so:
+`Doc-tests adder`로 시작하는 테스트 출력의 다음 부분은 모든 문서 테스트의 결과입니다. 아직 문서 테스트가 없지만, Rust는 API 문서에 나타나는 모든 코드 예제를 컴파일할 수 있습니다.
+이 기능은 문서와 코드를 동기화하는 데 도움이 됩니다! [\u201c문서 코멘트를 테스트로 사용하기\u201d][doc-comments]<!-- ignore --> 챕터 14의 섹션에서 문서 테스트를 작성하는 방법에 대해 설명하겠습니다. 지금은 `Doc-tests` 출력을 무시하겠습니다.
 
-<span class="filename">Filename: src/lib.rs</span>
+자, 테스트를 우리의 필요에 맞게 사용하도록 변경해 보겠습니다. 먼저 `it_works` 함수의 이름을 `exploration`과 같은 다른 이름으로 변경하십시오.
+
+<span class=\"filename\">Filename: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/src/lib.rs}}
 ```
 
-Then run `cargo test` again. The output now shows `exploration` instead of
-`it_works`:
+다음으로 `cargo test`를 다시 실행하십시오. 출력은 이제 `exploration` 대신 `it_works`를 보여줍니다:
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/output.txt}}
 ```
 
-Now we’ll add another test, but this time we’ll make a test that fails! Tests
-fail when something in the test function panics. Each test is run in a new
-thread, and when the main thread sees that a test thread has died, the test is
-marked as failed. In Chapter 9, we talked about how the simplest way to panic
-is to call the `panic!` macro. Enter the new test as a function named
-`another`, so your *src/lib.rs* file looks like Listing 11-3.
+이제 `another`라는 이름의 새로운 테스트를 추가하겠습니다. 하지만 이번에는 실패하는 테스트를 만들겠습니다! 테스트는 테스트 함수에서 panic이 발생하면 실패합니다. 각 테스트는 새로운 스레드에서 실행되며, 메인 스레드가 테스트 스레드가 죽었다는 것을 알게 되면 테스트가 실패로 표시됩니다. 9장에서는 `panic!` 매크로를 호출하는 것이 panic하는 가장 간단한 방법이라고 설명했습니다. `another`라는 이름의 새로운 테스트를 추가하여 *src/lib.rs* 파일이 11-3번째 목록과 같도록 하십시오.
 
-<Listing number="11-3" file-name="src/lib.rs" caption="Adding a second test that will fail because we call the `panic!` macro">
+<Listing number=\"11-3\" file-name=\"src/lib.rs\" caption=\"`panic!` 매크로를 호출하여 실패하는 두 번째 테스트를 추가\">
 
 ```rust,panics,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-03/src/lib.rs}}
@@ -144,10 +102,9 @@ is to call the `panic!` macro. Enter the new test as a function named
 
 </Listing>
 
-Run the tests again using `cargo test`. The output should look like Listing
-11-4, which shows that our `exploration` test passed and `another` failed.
+다시 `cargo test`를 사용하여 테스트를 실행하십시오. 출력은 11-4번째 목록과 같아야 하며, `exploration` 테스트가 통과하고 `another` 테스트가 실패했습니다.
 
-<Listing number="11-4" caption="Test results when one test passes and one test fails">
+<Listing number=\"11-4\" caption=\"하나의 테스트가 통과하고 하나의 테스트가 실패할 때 테스트 결과\">
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/listing-11-03/output.txt}}
@@ -160,37 +117,19 @@ rg panicked listings/ch11-writing-automated-tests/listing-11-03/output.txt
 check the line number of the panic matches the line number in the following paragraph
  -->
 
-Instead of `ok`, the line `test tests::another` shows `FAILED`. Two new
-sections appear between the individual results and the summary: the first
-displays the detailed reason for each test failure. In this case, we get the
-details that `another` failed because it `panicked at 'Make this test fail'` on
-line 17 in the *src/lib.rs* file. The next section lists just the names of all
-the failing tests, which is useful when there are lots of tests and lots of
-detailed failing test output. We can use the name of a failing test to run just
-that test to more easily debug it; we’ll talk more about ways to run tests in
-the [“Controlling How Tests Are Run”][controlling-how-tests-are-run]<!-- ignore
---> section.
+`ok` 대신 `test tests::another` 줄에는 `FAILED`가 표시됩니다. 각 테스트 실패의 자세한 이유를 표시하는 두 개의 새로운 섹션이 개별 결과와 요약 사이에 나타납니다. 이 경우 `another`가 `panic at 'Make this test fail'`에서 실패했다는 세부 정보를 얻습니다. 17번째 줄에서 *src/lib.rs* 파일에서. 다음 섹션은 모든 실패 테스트의 이름만 나열하며, 많은 테스트와 많은 자세한 실패 테스트 출력이 있는 경우 유용합니다. 실패 테스트의 이름을 사용하여 해당 테스트만 실행하여 더 쉽게 디버깅할 수 있습니다. 테스트 실행 방법에 대해서는 [\u201c테스트 실행 방식 제어\u201d][controlling-how-tests-are-run]<!-- ignore --> 섹션에서 자세히 설명합니다.
 
-The summary line displays at the end: overall, our test result is `FAILED`. We
-had one test pass and one test fail.
+요약 줄은 다음과 같이 표시됩니다. 전체적으로 테스트 결과는 `FAILED`입니다. 하나의 테스트가 통과하고 하나의 테스트가 실패했습니다.
 
-Now that you’ve seen what the test results look like in different scenarios,
-let’s look at some macros other than `panic!` that are useful in tests.
+이제 테스트 결과가 다양한 시나리오에서 어떻게 표시되는지 보았으므로,테스트에 유용한 `panic!` 이외의 몇 가지 매크로를 살펴보겠습니다.
 
-### Checking Results with the `assert!` Macro
+### `assert!` 매크로를 사용하여 결과 확인
 
-The `assert!` macro, provided by the standard library, is useful when you want
-to ensure that some condition in a test evaluates to `true`. We give the
-`assert!` macro an argument that evaluates to a Boolean. If the value is
-`true`, nothing happens and the test passes. If the value is `false`, the
-`assert!` macro calls `panic!` to cause the test to fail. Using the `assert!`
-macro helps us check that our code is functioning in the way we intend.
+표준 라이브러리에서 제공되는 `assert!` 매크로는 테스트에서 특정 조건이 `true`로 평가되는지 확인할 때 유용합니다. `assert!` 매크로에 불린 값을 평가하는 논리 표현을 전달합니다. 값이 `true`이면 아무런 일이 일어나지 않고 테스트가 통과합니다. 값이 `false`이면 `assert!` 매크로가 `panic!`를 호출하여 테스트를 실패하게 합니다. `assert!` 매크로를 사용하면 코드가 의도한 방식으로 작동하는지 확인하는 데 도움이 됩니다.
 
-In Chapter 5, Listing 5-15, we used a `Rectangle` struct and a `can_hold`
-method, which are repeated here in Listing 11-5. Let’s put this code in the
-*src/lib.rs* file, then write some tests for it using the `assert!` macro.
+5장에서 Listing 5-15에서 사용한 `Rectangle` 구조체와 `can_hold` 메서드는 Listing 11-5에 다시 나와 있습니다. 이 코드를 *src/lib.rs* 파일에 넣고 `assert!` 매크로를 사용하여 테스트를 작성해 보겠습니다.
 
-<Listing number="11-5" file-name="src/lib.rs" caption="The `Rectangle` struct and its `can_hold` method from Chapter 5">
+<Listing number=\"11-5\" file-name=\"src/lib.rs\" caption=\"5장에서 가져온 `Rectangle` 구조체와 `can_hold` 메서드\">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-05/src/lib.rs}}
@@ -198,13 +137,9 @@ method, which are repeated here in Listing 11-5. Let’s put this code in the
 
 </Listing>
 
-The `can_hold` method returns a Boolean, which means it’s a perfect use case
-for the `assert!` macro. In Listing 11-6, we write a test that exercises the
-`can_hold` method by creating a `Rectangle` instance that has a width of 8 and
-a height of 7 and asserting that it can hold another `Rectangle` instance that
-has a width of 5 and a height of 1.
+`can_hold` 메서드는 불린 값을 반환하므로 `assert!` 매크로를 사용하는 데 완벽한 경우입니다. Listing 11-6에서 `can_hold` 메서드를 테스트하는 테스트를 작성합니다. 8의 너비와 7의 높이를 가진 `Rectangle` 인스턴스를 생성하고 5의 너비와 1의 높이를 가진 다른 `Rectangle` 인스턴스를 포함할 수 있는지 확인합니다.
 
-<Listing number="11-6" file-name="src/lib.rs" caption="A test for `can_hold` that checks whether a larger rectangle can indeed hold a smaller rectangle">
+<Listing number=\"11-6\" file-name=\"src/lib.rs\" caption=\"`can_hold`을 테스트하는 테스트: 더 큰 사각형이 더 작은 사각형을 포함할 수 있는지 확인\">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-06/src/lib.rs:here}}
@@ -212,221 +147,135 @@ has a width of 5 and a height of 1.
 
 </Listing>
 
-Note the `use super::*;` line inside the `tests` module. The `tests` module is
-a regular module that follows the usual visibility rules we covered in Chapter
-7 in the [“Paths for Referring to an Item in the Module
-Tree”][paths-for-referring-to-an-item-in-the-module-tree]<!-- ignore -->
-section. Because the `tests` module is an inner module, we need to bring the
-code under test in the outer module into the scope of the inner module. We use
-a glob here, so anything we define in the outer module is available to this
-`tests` module.
+`tests` 모듈 내부의 `use super::*;` 줄을 주의하십시오. `tests` 모듈은 7장에서 [\u201c모듈 트리에서 항목을 참조하는 경로\u201d][paths-for-referring-to-an-item-in-the-module-tree]<!-- ignore -->
+섹션에서 다룬 일반 모듈입니다. `tests` 모듈이 내부 모듈이기 때문에 외부 모듈에서 테스트 코드를 가져와 내부 모듈의 범위 내에 가져와야 합니다. 여기서는 모든 것을 가져오기 위해 글로브를 사용합니다.
 
-We’ve named our test `larger_can_hold_smaller`, and we’ve created the two
-`Rectangle` instances that we need. Then we called the `assert!` macro and
-passed it the result of calling `larger.can_hold(&smaller)`. This expression is
-supposed to return `true`, so our test should pass. Let’s find out!
+테스트를 `larger_can_hold_smaller`로 명명했으며, 테스트에 필요한 두 개의 `Rectangle` 인스턴스를 생성했습니다. 그런 다음 `assert!` 매크로를 호출하고 `larger.can_hold(&smaller)` 호출의 결과를 전달했습니다. 이 표현은 `true`를 반환해야 하므로 테스트는 통과해야 합니다. 확인해 보겠습니다!
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/listing-11-06/output.txt}}
 ```
 
-It does pass! Let’s add another test, this time asserting that a smaller
-rectangle cannot hold a larger rectangle:
+테스트가 통과했습니다! `can_hold` 함수에서 더 작은 사각형이 더 큰 사각형을 포함할 수 없다는 것을 확인하는 또 다른 테스트를 추가해 보겠습니다.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class=\"filename\">Filename: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/src/lib.rs:here}}
 ```
 
-Because the correct result of the `can_hold` function in this case is `false`,
-we need to negate that result before we pass it to the `assert!` macro. As a
-result, our test will pass if `can_hold` returns `false`:
+이 경우 `can_hold` 함수의 올바른 결과는 `false`이므로 `assert!` 매크로에 전달하기 전에 그 결과를 반전해야 합니다. 따라서 `can_hold`이 `false`를 반환하면 테스트가 통과합니다.
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/output.txt}}
 ```
 
-Two tests that pass! Now let’s see what happens to our test results when we
-introduce a bug in our code. We’ll change the implementation of the `can_hold`
-method by replacing the greater-than sign with a less-than sign when it
-compares the widths:
+두 개의 테스트가 통과했습니다! 이제 코드에 버그를 도입하여 테스트 결과가 어떻게 변하는지 살펴보겠습니다. 너비를 비교할 때 `>` 기호를 `<` 기호로 바꿔 `can_hold` 메서드의 구현을 변경합니다.
 
 ```rust,not_desired_behavior,noplayground
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/src/lib.rs:here}}
+## 테스트 작성하기
+
+이번 장에서는 Rust에서 자동화된 테스트를 작성하는 방법을 살펴봅니다. 테스트는 코드의 정확성을 검증하고 유지보수를 돕는 데 필수적입니다. Rust는 테스트 작성을 위한 강력한 도구를 제공합니다.
+
+### 테스트 작성하기
+
+Rust의 테스트 프레임워크는 `cargo test` 명령어를 사용하여 테스트를 실행합니다. 테스트 파일은 일반적으로 `tests.rs` 파일로 구성되며, 테스트 함수는 `test` 함수 이름으로 시작해야 합니다.
+
+예를 들어, 다음은 `add_two` 함수를 테스트하는 `tests.rs` 파일의 예입니다.
+
+```rust
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/tests.rs}}
 ```
 
-Running the tests now produces the following:
+이 테스트 파일을 실행하면 `cargo test` 명령어를 사용하여 테스트가 실행되고 결과가 표시됩니다.
+
+### 테스트 실패 시 출력
+
+테스트가 실패하면 실패 원인과 함께 자세한 정보가 출력됩니다. 예를 들어, `add_two` 함수가 2를 더하는 대신 3을 더하는 경우 테스트가 실패하고 다음과 같은 출력이 표시됩니다.
 
 ```console
-{{#include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/output.txt}}
+{{#include ../listings/ch11-writing-automated-tests/no-listing-01-bug-in-add-two/output.txt}}
 ```
 
-Our tests caught the bug! Because `larger.width` is `8` and `smaller.width` is
-`5`, the comparison of the widths in `can_hold` now returns `false`: 8 is not
-less than 5.
+### `assert!` 매크로
 
-### Testing Equality with the `assert_eq!` and `assert_ne!` Macros
+Rust에서 테스트를 작성하는 데 사용되는 가장 기본적인 매크로는 `assert!` 매크로입니다. 이 매크로는 주어진 조건이 참이라는 것을 확인합니다. 만약 조건이 거짓이면 테스트가 실패하고 `assertion failed` 메시지가 출력됩니다.
 
-A common way to verify functionality is to test for equality between the result
-of the code under test and the value you expect the code to return. You could
-do this by using the `assert!` macro and passing it an expression using the
-`==` operator. However, this is such a common test that the standard library
-provides a pair of macros—`assert_eq!` and `assert_ne!`—to perform this test
-more conveniently. These macros compare two arguments for equality or
-inequality, respectively. They’ll also print the two values if the assertion
-fails, which makes it easier to see *why* the test failed; conversely, the
-`assert!` macro only indicates that it got a `false` value for the `==`
-expression, without printing the values that led to the `false` value.
+예를 들어, `add_two` 함수가 2를 더하는지 확인하려면 다음과 같은 코드를 사용할 수 있습니다.
 
-In Listing 11-7, we write a function named `add_two` that adds `2` to its
-parameter, then we test this function using the `assert_eq!` macro.
-
-<Listing number="11-7" file-name="src/lib.rs" caption="Testing the function `add_two` using the `assert_eq!` macro">
-
-```rust,noplayground
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-07/src/lib.rs}}
+```rust
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/tests.rs:here}}
 ```
 
-</Listing>
+### `assert_eq!` 및 `assert_ne!` 매크로
 
-Let’s check that it passes!
+`assert_eq!` 매크로는 두 값이 같으면 테스트를 통과시키고 다르면 테스트를 실패시킵니다. `assert_ne!` 매크로는 두 값이 다르면 테스트를 통과시키고 같으면 테스트를 실패시킵니다.
 
-```console
-{{#include ../listings/ch11-writing-automated-tests/listing-11-07/output.txt}}
+예를 들어, `add_two` 함수가 2를 더하는지 확인하려면 다음과 같은 코드를 사용할 수 있습니다.
+
+```rust
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-02/src/tests.rs}}
 ```
 
-We create a variable named `result` that holds the result of calling
-`add_two(2)`. Then we pass `result` and `4` as the arguments to `assert_eq!`.
-The output line for this test is `test tests::it_adds_two ... ok`, and the `ok`
-text indicates that our test passed!
+### 테스트의 중요성
 
-Let’s introduce a bug into our code to see what `assert_eq!` looks like when it
-fails. Change the implementation of the `add_two` function to instead add `3`:
+테스트는 코드의 정확성을 검증하고 유지보수를 돕는 데 필수적입니다. 테스트를 작성함으로써 코드의 오류를 조기에 발견하고 수정할 수 있으며, 코드를 변경할 때 코드의 정확성을 유지할 수 있습니다.
 
-```rust,not_desired_behavior,noplayground
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-04-bug-in-add-two/src/lib.rs:here}}
-```
+## 다음 단계
 
-Run the tests again:
+이 장에서는 Rust에서 자동화된 테스트를 작성하는 기본적인 개념을 살펴보았습니다. 다음 장에서는 더욱 복잡한 테스트를 작성하는 방법을 살펴보겠습니다.값이 *될 것* 이지만, 우리는 값이 *확실히* *되어서는 안 된다는 것을 알고 있습니다.
+예를 들어, 입력을 어떤 방식으로 변경하는지가 주 실행 날짜에 따라 달라지는 함수를 테스트하는 경우, 함수의 출력이 입력과 같지 않다는 것을 확인하는 것이 가장 좋습니다.
 
-```console
-{{#include ../listings/ch11-writing-automated-tests/no-listing-04-bug-in-add-two/output.txt}}
-```
+표면적으로 `assert_eq!` 및 `assert_ne!` 매크로는 `==` 및 `!=` 연산자를 사용합니다. 검사가 실패하면 이러한 매크로는 디버그 형식을 사용하여 인수를 출력하므로 비교되는 값은 `PartialEq` 및 `Debug` 트레이트를 구현해야 합니다. 기본형 타입과 대부분의 표준 라이브러리 타입은 이러한 트레이트를 구현합니다. 자신이 정의한 구조체 및 열거형의 경우 `PartialEq`를 구현하여 해당 유형의 등식을 확인해야 합니다. `Debug`를 구현하여 검사가 실패할 때 값을 출력해야 합니다. 두 트레이트 모두 도출 가능한 트레이트이므로(제5장의 5-12번 목록에서 언급됨) 일반적으로 구조체 또는 열거형 정의에 `#[derive(PartialEq, Debug)]` 애너테이션을 추가하는 것만으로 충분합니다. 자세한 내용은 부록 C, [\u201c도출 가능한 트레이트,\u201d][derivable-traits]<!-- ignore -->를 참조하십시오.
 
-Our test caught the bug! The `it_adds_two` test failed, and the message tells
-us ``assertion `left == right` failed`` and what the `left` and `right` values
-are. This message helps us start debugging: the `left` argument, where we had
-the result of calling `add_two(2)`, was `5` but the `right` argument was `4`.
-You can imagine that this would be especially helpful when we have a lot of
-tests going on.
+### 사용자 정의 오류 메시지 추가
 
-Note that in some languages and test frameworks, the parameters to equality
-assertion functions are called `expected` and `actual`, and the order in which
-we specify the arguments matters. However, in Rust, they’re called `left` and
-`right`, and the order in which we specify the value we expect and the value
-the code produces doesn’t matter. We could write the assertion in this test as
-`assert_eq!(4, result)`, which would produce the same failure message
-that displays `` assertion failed: `(left == right)` ``.
+`assert!`, `assert_eq!` 및 `assert_ne!` 매크로에 선택적으로 사용할 수 있는 사용자 정의 메시지를 추가할 수 있습니다. `format!` 매크로(제8장의 [\u201c`+` 연산자 또는 `format!` 매크로를 사용한 연결\u201d][concatenation-with-the--operator-or-the-format-macro]<!-- ignore --> 섹션에서 설명됨)에 전달되는 모든 인수는 `format!` 매크로에 전달되므로 `{}` 플레이스홀더와 플레이스홀더에 들어갈 값을 포함하는 형식 문자열을 전달할 수 있습니다. 사용자 정의 메시지는 어떤 검사를 의미하는지 설명하는 데 유용합니다. 테스트가 실패하면 문제가 있는 코드에 대한 더 나은 이해를 얻을 수 있습니다.
 
-The `assert_ne!` macro will pass if the two values we give it are not equal and
-fail if they’re equal. This macro is most useful for cases when we’re not sure
-what a value *will* be, but we know what the value definitely *shouldn’t* be.
-For example, if we’re testing a function that is guaranteed to change its input
-in some way, but the way in which the input is changed depends on the day of
-the week that we run our tests, the best thing to assert might be that the
-output of the function is not equal to the input.
+예를 들어, 이름으로 사람들을 인사하는 함수가 있고 함수에 전달하는 이름이 출력에 나타나는지 테스트하려고 합니다.
 
-Under the surface, the `assert_eq!` and `assert_ne!` macros use the operators
-`==` and `!=`, respectively. When the assertions fail, these macros print their
-arguments using debug formatting, which means the values being compared must
-implement the `PartialEq` and `Debug` traits. All primitive types and most of
-the standard library types implement these traits. For structs and enums that
-you define yourself, you’ll need to implement `PartialEq` to assert equality of
-those types. You’ll also need to implement `Debug` to print the values when the
-assertion fails. Because both traits are derivable traits, as mentioned in
-Listing 5-12 in Chapter 5, this is usually as straightforward as adding the
-`#[derive(PartialEq, Debug)]` annotation to your struct or enum definition. See
-Appendix C, [“Derivable Traits,”][derivable-traits]<!-- ignore --> for more
-details about these and other derivable traits.
-
-### Adding Custom Failure Messages
-
-You can also add a custom message to be printed with the failure message as
-optional arguments to the `assert!`, `assert_eq!`, and `assert_ne!` macros. Any
-arguments specified after the required arguments are passed along to the
-`format!` macro (discussed in Chapter 8 in the [“Concatenation with the `+`
-Operator or the `format!`
-Macro”][concatenation-with-the--operator-or-the-format-macro]<!-- ignore -->
-section), so you can pass a format string that contains `{}` placeholders and
-values to go in those placeholders. Custom messages are useful for documenting
-what an assertion means; when a test fails, you’ll have a better idea of what
-the problem is with the code.
-
-For example, let’s say we have a function that greets people by name and we
-want to test that the name we pass into the function appears in the output:
-
-<span class="filename">Filename: src/lib.rs</span>
+<span class=\"filename\">Filename: src/lib.rs</span>
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-05-greeter/src/lib.rs}}
 ```
 
-The requirements for this program haven’t been agreed upon yet, and we’re
-pretty sure the `Hello` text at the beginning of the greeting will change. We
-decided we don’t want to have to update the test when the requirements change,
-so instead of checking for exact equality to the value returned from the
-`greeting` function, we’ll just assert that the output contains the text of the
-input parameter.
+이 프로그램의 요구 사항은 아직 합의되지 않았으며, 인사의 시작 부분인 `Hello` 텍스트가 변경될 것으로 예상됩니다. 요구 사항이 변경될 때 테스트를 업데이트해야 하는 상황을 피하기 위해 `greeting` 함수에서 반환되는 값과 정확히 일치하는지 확인하는 대신, 출력에 입력 파라미터의 텍스트가 포함되어 있는지 확인합니다.
 
-Now let’s introduce a bug into this code by changing `greeting` to exclude
-`name` to see what the default test failure looks like:
+이제 `greeting` 함수를 수정하여 `name`을 제외하고 버그를 도입하여 기본 테스트 실패 결과를 살펴보겠습니다.
 
 ```rust,not_desired_behavior,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-06-greeter-with-bug/src/lib.rs:here}}
 ```
 
-Running this test produces the following:
+이 테스트를 실행하면 다음과 같은 결과가 나타납니다.
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/no-listing-06-greeter-with-bug/output.txt}}
 ```
 
-This result just indicates that the assertion failed and which line the
-assertion is on. A more useful failure message would print the value from the
-`greeting` function. Let’s add a custom failure message composed of a format
-string with a placeholder filled in with the actual value we got from the
-`greeting` function:
+이 결과는 검사가 실패했고 검사가 있는 줄이 무엇인지만 나타냅니다. 더 유용한 오류 메시지는 `greeting` 함수에서 가져온 값을 출력합니다. `greeting` 함수에서 가져온 값으로 채워진 형식 문자열을 사용하여 사용자 정의 오류 메시지를 추가해 보겠습니다.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-07-custom-failure-message/src/lib.rs:here}}
 ```
 
-Now when we run the test, we’ll get a more informative error message:
+이제 테스트를 실행하면 더 자세한 오류 메시지가 표시됩니다.
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/no-listing-07-custom-failure-message/output.txt}}
 ```
 
-We can see the value we actually got in the test output, which would help us
-debug what happened instead of what we were expecting to happen.
+테스트 출력에서 실제로 얻은 값을 볼 수 있습니다. 이는 예상되는 값이 아닌 실제로 발생한 문제를 파악하는 데 도움이 됩니다.
 
-### Checking for Panics with `should_panic`
+### `should_panic`을 사용하여 Panic 검사
 
-In addition to checking return values, it’s important to check that our code
-handles error conditions as we expect. For example, consider the `Guess` type
-that we created in Chapter 9, Listing 9-13. Other code that uses `Guess`
-depends on the guarantee that `Guess` instances will contain only values
-between 1 and 100. We can write a test that ensures that attempting to create a
-`Guess` instance with a value outside that range panics.
+반환값을 확인하는 것 외에도 코드가 예상대로 오류 조건을 처리하는지 확인하는 것이 중요합니다. 예를 들어, 9장에서 소개한 `Guess` 유형을 생각해 보세요. 다른 코드가 `Guess`를 사용하는 경우 `Guess` 인스턴스에는 1부터 100까지의 값만 포함되어 있다는 보장에 의존합니다. `Guess` 인스턴스를 생성하려고 할 때 범위 밖의 값을 사용하면 `panic`하는지 확인하는 테스트를 작성할 수 있습니다.
 
-We do this by adding the attribute `should_panic` to our test function. The
-test passes if the code inside the function panics; the test fails if the code
-inside the function doesn’t panic.
+`should_panic` 속성을 테스트 함수에 추가하여 이를 수행합니다. 테스트 함수 내부의 코드가 `panic`하면 테스트가 통과하고, 테스트 함수 내부의 코드가 `panic`하지 않으면 테스트가 실패합니다.
 
-Listing 11-8 shows a test that checks that the error conditions of `Guess::new`
-happen when we expect them to.
+11-8번 목록은 `Guess::new`의 오류 조건이 예상대로 발생하는지 확인하는 테스트를 보여줍니다.
 
-<Listing number="11-8" file-name="src/lib.rs" caption="Testing that a condition will cause a `panic!`">
+<Listing number=\"11-8\" file-name=\"src/lib.rs\" caption=\"특정 조건이 `panic!`를 유발하는지 테스트\">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-08/src/lib.rs}}
@@ -434,41 +283,29 @@ happen when we expect them to.
 
 </Listing>
 
-We place the `#[should_panic]` attribute after the `#[test]` attribute and
-before the test function it applies to. Let’s look at the result when this test
-passes:
+`#[should_panic]` 속성은 `#[test]` 속성 뒤에 테스트 함수에 적용되는 위치에 배치합니다. 테스트가 통과할 때 나타나는 결과를 살펴보겠습니다.
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/listing-11-08/output.txt}}
 ```
 
-Looks good! Now let’s introduce a bug in our code by removing the condition
-that the `new` function will panic if the value is greater than 100:
+잘 되었습니다! 이제 테스트가 실패하는 경우를 살펴보기 위해 코드에 버그를 추가해 보겠습니다. `new` 함수가 값이 100보다 클 경우 `panic`하지 않도록 조건을 제거합니다.
 
 ```rust,not_desired_behavior,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-08-guess-with-bug/src/lib.rs:here}}
 ```
 
-When we run the test in Listing 11-8, it will fail:
+11-8번 목록의 테스트를 실행하면 실패합니다.
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/no-listing-08-guess-with-bug/output.txt}}
 ```
 
-We don’t get a very helpful message in this case, but when we look at the test
-function, we see that it’s annotated with `#[should_panic]`. The failure we got
-means that the code in the test function did not cause a panic.
+이 경우에는 매우 도움이 되는 메시지가 나타나지 않습니다. 하지만 테스트 함수를 살펴보면 `#[should_panic]` 속성이 적용되어 있는 것을 알 수 있습니다. 테스트가 실패한 것은 테스트 함수 내부의 코드가 `panic`하지 않았기 때문입니다.
 
-Tests that use `should_panic` can be imprecise. A `should_panic` test would
-pass even if the test panics for a different reason from the one we were
-expecting. To make `should_panic` tests more precise, we can add an optional
-`expected` parameter to the `should_panic` attribute. The test harness will
-make sure that the failure message contains the provided text. For example,
-consider the modified code for `Guess` in Listing 11-9 where the `new` function
-panics with different messages depending on whether the value is too small or
-too large.
+`should_panic`을 사용하는 테스트는 정확도가 떨어질 수 있습니다. `should_panic` 테스트는 테스트가 예상했던 이유와 다른 이유로 `panic`하더라도 통과할 수 있습니다. `should_panic` 테스트의 정확도를 높이기 위해 `expected` 매개변수를 추가할 수 있습니다. 테스트 래퍼는 실패 메시지에 제공된 텍스트가 포함되어 있는지 확인합니다. 예를 들어, 11-9번 목록에서 `Guess::new` 함수가 값이 너무 작거나 너무 클 때 다른 메시지로 `panic`하는 경우를 생각해 보세요.
 
-<Listing number="11-9" file-name="src/lib.rs" caption="Testing for a `panic!` with a panic message containing a specified substring">
+<Listing number=\"11-9\" file-name=\"src/lib.rs\" caption=\"특정 문자열을 포함하는 `panic!`를 테스트\">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-09/src/lib.rs:here}}
@@ -476,62 +313,46 @@ too large.
 
 </Listing>
 
-This test will pass because the value we put in the `should_panic` attribute’s
-`expected` parameter is a substring of the message that the `Guess::new`
-function panics with. We could have specified the entire panic message that we
-expect, which in this case would be `Guess value must be less than or equal to
-100, got 200`. What you choose to specify depends on how much of the panic
-message is unique or dynamic and how precise you want your test to be. In this
-case, a substring of the panic message is enough to ensure that the code in the
-test function executes the `else if value > 100` case.
+이 테스트는 `should_panic` 속성의 `expected` 매개변수에 입력한 값이 `Guess::new` 함수가 `panic`할 때 나타나는 메시지의 부분 문자열이기 때문에 통과합니다. 우리는 `panic` 메시지의 전체 내용을 지정할 수도 있습니다. 이 경우 `Guess value must be less than or equal to 100, got 200`가 될 것입니다. 어떤 부분을 지정할지는 `panic` 메시지가 얼마나 고유하거나 동적이며 테스트가 얼마나 정확해야 하는지에 따라 다릅니다. 이 경우 `panic` 메시지의 부분 문자열만으로도 테스트 함수 내부의 코드가 `else if value > 100` 블록을 실행하는지 확인하는 데 충분합니다.
 
-To see what happens when a `should_panic` test with an `expected` message
-fails, let’s again introduce a bug into our code by swapping the bodies of the
-`if value < 1` and the `else if value > 100` blocks:
+`expected` 메시지가 포함된 `should_panic` 테스트가 실패하는 경우를 보려면 코드에 다시 버그를 추가하여 `if value < 1`과 `else if value > 100` 블록의 내용을 바꿉니다.
 
 ```rust,ignore,not_desired_behavior
+"
+
+
+```## 테스트 작성하기
+
+이전에 작성한 `guess` 함수를 테스트하는 데 사용할 수 있는 `should_panic` 어트리뷰트를 사용해 보겠습니다. 이 어트리뷰트는 테스트가 멈추고 에러 메시지를 출력하는 것을 기대하는 경우에 유용합니다.
+
+```rust
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-09-guess-with-panic-msg-bug/src/lib.rs:here}}
 ```
 
-This time when we run the `should_panic` test, it will fail:
+이 코드를 실행하면 다음과 같은 출력을 얻을 수 있습니다.
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/no-listing-09-guess-with-panic-msg-bug/output.txt}}
 ```
 
-The failure message indicates that this test did indeed panic as we expected,
-but the panic message did not include the expected string `less than or equal
-to 100`. The panic message that we did get in this case was `Guess value must
-be greater than or equal to 1, got 200.` Now we can start figuring out where
-our bug is!
+이 출력은 테스트가 예상대로 `panic`을 일으켰음을 보여줍니다. 하지만 `panic` 메시지에 `100 이하`라는 문자열이 포함되어 있지 않습니다. 대신 `Guess value must
+be greater than or equal to 1, got 200.`라는 메시지를 얻었습니다. 이제 버그의 원인을 파악하기 시작할 수 있습니다!
 
-### Using `Result<T, E>` in Tests
+### 테스트에서 `Result<T, E>` 사용하기
 
-Our tests so far all panic when they fail. We can also write tests that use
-`Result<T, E>`! Here’s the test from Listing 11-1, rewritten to use `Result<T,
-E>` and return an `Err` instead of panicking:
+지금까지 작성한 테스트는 모두 실패 시 `panic`을 일으켰습니다. `Result<T, E>`를 사용하여 테스트를 작성할 수도 있습니다. 다음은 Listing 11-1에서 가져온 테스트를 `Result<T, E>`를 사용하여 다시 작성한 것입니다.
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-10-result-in-tests/src/lib.rs:here}}
 ```
 
-The `it_works` function now has the `Result<(), String>` return type. In the
-body of the function, rather than calling the `assert_eq!` macro, we return
-`Ok(())` when the test passes and an `Err` with a `String` inside when the test
-fails.
+`it_works` 함수는 이제 `Result<(), String>` 반환형을 가지고 있습니다. 함수 내부에서 `assert_eq!` 매크로를 호출하는 대신, 테스트가 통과하면 `Ok(())`을 반환하고, 테스트가 실패하면 `Err`와 `String`을 포함하여 반환합니다.
 
-Writing tests so they return a `Result<T, E>` enables you to use the question
-mark operator in the body of tests, which can be a convenient way to write
-tests that should fail if any operation within them returns an `Err` variant.
+`Result<T, E>`를 사용하여 테스트를 작성하면 테스트 내부에서 질문표시 연산자를 사용할 수 있습니다. 질문표시 연산자는 `Err` 변형을 반환하는 작업이 있는 경우 테스트를 실패시키는 데 유용한 방법입니다.
 
-You can’t use the `#[should_panic]` annotation on tests that use `Result<T,
-E>`. To assert that an operation returns an `Err` variant, *don’t* use the
-question mark operator on the `Result<T, E>` value. Instead, use
-`assert!(value.is_err())`.
+`Result<T, E>`를 사용하는 테스트에는 `#[should_panic]` 어트리뷰트를 사용할 수 없습니다. `Err` 변형을 반환하는지 확인하려면 `Result<T, E>` 값에 질문표시 연산자를 사용하지 마세요. 대신 `assert!(value.is_err())`을 사용하세요.
 
-Now that you know several ways to write tests, let’s look at what is happening
-when we run our tests and explore the different options we can use with `cargo
-test`.
+이제 여러 가지 테스트 작성 방법을 알고 있으므로, 테스트 실행 시 발생하는 일을 살펴보고 `cargo test`를 사용하여 테스트를 실행할 때 사용할 수 있는 다양한 옵션을 탐색해 보겠습니다.
 
 [concatenation-with-the--operator-or-the-format-macro]:
 ch08-02-strings.html#concatenation-with-the--operator-or-the-format-macro
