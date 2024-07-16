@@ -167,7 +167,7 @@ children: RefCell { value: [] } }] } })
  이유와 `Weak<T>`를 사용하여 이를 방지하는 방법을 살펴보았습니다.
 
 이 장이 관심을 끌었고 스마트 포인터를 직접 구현하고 싶다면,
- [\u201cThe Rustonomicon\u201d][nomicon]을 참조하십시오.
+ [“The Rustonomicon”][nomicon]을 참조하십시오.
 
 다음으로 Rust에서의 병렬 처리에 대해 알아보겠습니다. 몇 가지 새로운
  스마트 포인터를 배우게 될 것입니다.

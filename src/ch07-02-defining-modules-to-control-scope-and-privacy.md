@@ -23,13 +23,13 @@
 
 ```text
 backyard
-\u251c\u2500\u2500 Cargo.lock
-\u251c\u2500\u2500 Cargo.toml
-\u2514\u2500\u2500 src
-    \u251c\u2500\u2500 garden
-    \u2502\u00a0\u00a0 \u2514\u2500\u2500 vegetables.rs
-    \u251c\u2500\u2500 garden.rs
-    \u2514\u2500\u2500 main.rs
+├── Cargo.lock
+├── Cargo.toml
+└── src
+    ├── garden
+    │   └── vegetables.rs
+    ├── garden.rs
+    └── main.rs
 ```
 
 이 경우 크레이트 루트 파일은 *src/main.rs*이며 다음과 같이 구성되어 있습니다.
@@ -97,14 +97,14 @@ Listing 7-2는 Listing 7-1의 구조의 모듈 트리를 보여줍니다.
 
 ```text
 crate
- \u2514\u2500\u2500 front_of_house
-     \u251c\u2500\u2500 hosting
-     \u2502   \u251c\u2500\u2500 add_to_waitlist
-     \u2502   \u2514\u2500\u2500 seat_at_table
-     \u2514\u2500\u2500 serving
-         \u251c\u2500\u2500 take_order
-         \u251c\u2500\u2500 serve_order
-         \u2514\u2500\u2500 take_payment
+ └── front_of_house
+     ├── hosting
+     │   ├── add_to_waitlist
+     │   └── seat_at_table
+     └── serving
+         ├── take_order
+         ├── serve_order
+         └── take_payment
 ```
 
 <span class=\"caption\">Listing 7-2: Listing 7-1의 코드에 대한 모듈 트리</span>

@@ -30,7 +30,7 @@ Rust에서 고유한 주석 스타일은 두 개의 슬래시로 주석을 시�
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-25-comments-above-line/src/main.rs}}
 ```
 
-Rust에는 또 다른 종류의 주석인 문서 주석이 있습니다. 이 주석은 제14장의 [\u201cCrates.io에 crate 게시하기\u201d][publishing]<!-- ignore -->
+Rust에는 또 다른 종류의 주석인 문서 주석이 있습니다. 이 주석은 제14장의 [“Crates.io에 crate 게시하기”][publishing]<!-- ignore -->
  섹션에서 논의할 것입니다.
 
 [publishing]: ch14-02-publishing-to-crates-io.html

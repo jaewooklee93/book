@@ -12,4 +12,4 @@ Rust는 이러한 장벽을 허물고, 친숙하고 정교한 도구 세트를 �
 
 이 책은 Rust의 사용자를 위한 잠재력을 완전히 받아들입니다. 사용자의 Rust 지식뿐만 아니라 일반적으로 프로그래머로서의 능력과 자신감을 향상시키는 데 도움이 되도록 친절하고 접근하기 쉬운 텍스트입니다. 따라서 뛰어들고 배우려는 준비를 하고, Rust 커뮤니티에 오신 것을 환영합니다!
 
-\u2014 Nicholas Matsakis and Aaron Turon
+— Nicholas Matsakis and Aaron Turon

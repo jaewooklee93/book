@@ -120,7 +120,7 @@
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/src/lib.rs}}
 ```
 
-`size` 매개변수의 유형으로 `usize`를 선택했습니다. 왜냐하면 음수의 스레드 수는 의미가 없기 때문입니다. 또한 이 `4`를 스레드의 컬렉션의 요소 수로 사용할 것이라는 것을 알고 있기 때문입니다. `usize` 유형은 제3장의 [\u201c정수 유형\u201d][integer-types]<!--
+`size` 매개변수의 유형으로 `usize`를 선택했습니다. 왜냐하면 음수의 스레드 수는 의미가 없기 때문입니다. 또한 이 `4`를 스레드의 컬렉션의 요소 수로 사용할 것이라는 것을 알고 있기 때문입니다. `usize` 유형은 제3장의 [“정수 유형”][integer-types]<!--
 ignore --> 섹션에서 논의된 것처럼 스레드 수를 나타내는 데 적합합니다.
 
 다음과 같이 코드를 다시 확인해 보겠습니다.
@@ -129,9 +129,9 @@ ignore --> 섹션에서 논의된 것처럼 스레드 수를 나타내는 데 �
 {{#include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/output.txt}}
 ```
 
-이제 오류는 `ThreadPool`에 `execute` 메서드가 없기 때문에 발생합니다. [\u201c유한 개수의 스레드 생성\u201d](#creating-a-finite-number-of-threads)<!-- ignore --> 섹션에서 우리가 스레드 풀이 `thread::spawn`과 유사한 인터페이스를 가져야 한다고 결정했기 때문에 이를 기억하십시오. `execute` 함수를 구현하여 주어진 콜로저를 가져와 풀에서 실행할 수 있는 여유가 있는 스레드에 전달하도록 하겠습니다.
+이제 오류는 `ThreadPool`에 `execute` 메서드가 없기 때문에 발생합니다. [“유한 개수의 스레드 생성”](#creating-a-finite-number-of-threads)<!-- ignore --> 섹션에서 우리가 스레드 풀이 `thread::spawn`과 유사한 인터페이스를 가져야 한다고 결정했기 때문에 이를 기억하십시오. `execute` 함수를 구현하여 주어진 콜로저를 가져와 풀에서 실행할 수 있는 여유가 있는 스레드에 전달하도록 하겠습니다.
 
-`ThreadPool`의 `execute` 메서드를 콜로저를 매개변수로 받도록 정의합니다. 제13장의 [\u201c콜로저를 움직이고 `Fn` 트레이트\u201d][fn-traits]<!-- ignore --> 섹션에서 기억하시면 콜로저를 매개변수로 사용할 때 `Fn`, `FnMut`, `FnOnce` 세 가지 다른 트레이트를 사용할 수 있습니다. 여기에서 어떤 종류의 콜로저를 사용해야 하는지 결정해야 합니다. 표준 라이브러리 `thread::spawn` 구현과 유사한 작업을 수행할 것이라는 것을 알고 있으므로 `thread::spawn`의 매개변수에 대한 서명의 경계를 살펴볼 수 있습니다. 문서는 다음과 같이 보여줍니다.
+`ThreadPool`의 `execute` 메서드를 콜로저를 매개변수로 받도록 정의합니다. 제13장의 [“콜로저를 움직이고 `Fn` 트레이트”][fn-traits]<!-- ignore --> 섹션에서 기억하시면 콜로저를 매개변수로 사용할 때 `Fn`, `FnMut`, `FnOnce` 세 가지 다른 트레이트를 사용할 수 있습니다. 여기에서 어떤 종류의 콜로저를 사용해야 하는지 결정해야 합니다. 표준 라이브러리 `thread::spawn` 구현과 유사한 작업을 수행할 것이라는 것을 알고 있으므로 `thread::spawn`의 매개변수에 대한 서명의 경계를 살펴볼 수 있습니다. 문서는 다음과 같이 보여줍니다.
 
 ```rust,ignore
 pub fn spawn<F, T>(f: F) -> JoinHandle<T>
@@ -161,7 +161,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 
 컴파일됩니다! 하지만 브라우저에서 `cargo run`을 시도하고 브라우저에서 요청을 보내면, 이 장의 처음에 본 오류 메시지를 브라우저에서 볼 것입니다. 우리 라이브러리가 `execute`에 전달된 클로저를 호출하지 않습니다!
 
-> 참고: Haskell과 Rust와 같은 엄격한 컴파일러를 사용하는 언어에 대해 들을 수 있는 말은 \u201c컴파일이 되면 작동한다\u201d입니다. 하지만 이 말은 항상 사실은 아닙니다. 우리 프로젝트는 컴파일되지만 실제로 아무것도 하지 않습니다! 만약 실제 완전한 프로젝트를 구축하고 있다면, 코드가 컴파일되고 우리가 원하는 동작을 하는지 확인하기 위해 단위 테스트를 작성하는 것이 좋을 때입니다.
+> 참고: Haskell과 Rust와 같은 엄격한 컴파일러를 사용하는 언어에 대해 들을 수 있는 말은 “컴파일이 되면 작동한다”입니다. 하지만 이 말은 항상 사실은 아닙니다. 우리 프로젝트는 컴파일되지만 실제로 아무것도 하지 않습니다! 만약 실제 완전한 프로젝트를 구축하고 있다면, 코드가 컴파일되고 우리가 원하는 동작을 하는지 확인하기 위해 단위 테스트를 작성하는 것이 좋을 때입니다.
 
 #### `new`에서 스레드 수를 검증
 
@@ -188,7 +188,7 @@ pub fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {
 
 이제 스레드 풀에 저장할 유효한 스레드 수를 알고 있으므로, 스레드를 생성하고
 `ThreadPool` 구조체에 저장하기 전에 스레드를 저장하는 방법을 살펴보겠습니다.
-스레드를 어떻게 \u201c저장\u201d 하는지 알아보겠습니다. `thread::spawn` 함수의
+스레드를 어떻게 “저장” 하는지 알아보겠습니다. `thread::spawn` 함수의
 구조를 다시 살펴보겠습니다.
 
 ```rust,ignore
@@ -341,7 +341,7 @@ Chapter 16에서 다룬 스레드 안전한 스마트 포인터를 기억하세�
 
 #### `execute` 메서드 구현
 
-마지막으로 `ThreadPool`의 `execute` 메서드를 구현해야 합니다. `Job`를 구현 방식을 변경하여 `execute`가 받는 closure의 유형을 갖는 트레이트 객체로 변경합니다. Chapter 19의 [\u201cCreating Type Synonyms with Type Aliases\u201d][creating-type-synonyms-with-type-aliases]<!-- ignore -->
+마지막으로 `ThreadPool`의 `execute` 메서드를 구현해야 합니다. `Job`를 구현 방식을 변경하여 `execute`가 받는 closure의 유형을 갖는 트레이트 객체로 변경합니다. Chapter 19의 [“Creating Type Synonyms with Type Aliases”][creating-type-synonyms-with-type-aliases]<!-- ignore -->
 섹션에서 설명했듯이, 타입 별칭은 긴 타입을 간결하게 만들어 사용하기 쉽게 합니다. Listing 20-19를 참조하세요.
 
 <span class=\"filename\">Filename: src/lib.rs</span>

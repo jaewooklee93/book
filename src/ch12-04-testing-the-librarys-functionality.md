@@ -104,19 +104,19 @@ This is another test string.";
 
 여전히 `search`에서 각 줄을 반환하고 출력하기 위해 `for` 루프를 사용하고 있습니다.
 
-이제 전체 프로그램이 작동해야 합니다. \u201cfrog\u201d라는 단어로 시작하여 Emily Dickinson 시에서 정확히 한 줄만 반환해야 하는 단어로 시도해 보겠습니다.
+이제 전체 프로그램이 작동해야 합니다. “frog”라는 단어로 시작하여 Emily Dickinson 시에서 정확히 한 줄만 반환해야 하는 단어로 시도해 보겠습니다.
 
 ```console
 {{#include ../listings/ch12-an-io-project/no-listing-02-using-search-in-run/output.txt}}
 ```
 
-멋지네요! 이제 \u201cbody\u201d와 같은 여러 줄에 일치하는 단어로 시도해 보겠습니다.
+멋지네요! 이제 “body”와 같은 여러 줄에 일치하는 단어로 시도해 보겠습니다.
 
 ```console
 {{#include ../listings/ch12-an-io-project/output-only-03-multiple-matches/output.txt}}
 ```
 
-마지막으로, 시에 없는 단어인 \u201cmonomorphization\u201d과 같은 단어를 검색하면 줄이 없도록 확인해 보겠습니다.
+마지막으로, 시에 없는 단어인 “monomorphization”과 같은 단어를 검색하면 줄이 없도록 확인해 보겠습니다.
 
 ```console
 {{#include ../listings/ch12-an-io-project/output-only-04-no-matches/output.txt}}

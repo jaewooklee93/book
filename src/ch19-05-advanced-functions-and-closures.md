@@ -37,9 +37,9 @@
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-16-map-function/src/main.rs:here}}
 ```
 
-이전에 [\u201c고급 트레이트\u201d][advanced-traits]<!-- ignore --> 섹션에서 언급한 것처럼, `to_string`과 같은 여러 함수가 있는 경우 완전히 명시된 문법을 사용해야 합니다. 여기서는 `ToString` 트레이트에서 구현된 `to_string` 함수를 사용하고 있습니다. `Display`를 구현하는 모든 유형에 대해 표준 라이브러리가 구현했습니다.
+이전에 [“고급 트레이트”][advanced-traits]<!-- ignore --> 섹션에서 언급한 것처럼, `to_string`과 같은 여러 함수가 있는 경우 완전히 명시된 문법을 사용해야 합니다. 여기서는 `ToString` 트레이트에서 구현된 `to_string` 함수를 사용하고 있습니다. `Display`를 구현하는 모든 유형에 대해 표준 라이브러리가 구현했습니다.
 
-제6장의 [\u201cEnum 값\u201d][enum-values]<!-- ignore --> 섹션에서 기억하시면 우리가 정의한 각 `enum` 변이의 이름은 초기화 함수가 되기도 합니다. 이 초기화 함수를 함수 포인터로 사용하여 클로저를 기대하는 메서드의 인수로 지정할 수 있습니다.
+제6장의 [“Enum 값”][enum-values]<!-- ignore --> 섹션에서 기억하시면 우리가 정의한 각 `enum` 변이의 이름은 초기화 함수가 되기도 합니다. 이 초기화 함수를 함수 포인터로 사용하여 클로저를 기대하는 메서드의 인수로 지정할 수 있습니다.
 
 ```rust
 ## 고급 함수와 클로저
@@ -74,7 +74,7 @@
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-19-returns-closure-trait-object/src/lib.rs}}
 ```
 
-이 코드는 컴파일됩니다. 추상형 객체에 대한 자세한 내용은 제17장의 [\u201c다양한 유형의 값을 허용하는 추상형 객체 사용\u201d]<!--
+이 코드는 컴파일됩니다. 추상형 객체에 대한 자세한 내용은 제17장의 [“다양한 유형의 값을 허용하는 추상형 객체 사용”]<!--
 ignore --> 섹션을 참조하세요.
 
 다음으로 매크로를 살펴보겠습니다!

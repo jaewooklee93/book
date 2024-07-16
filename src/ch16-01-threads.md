@@ -143,7 +143,7 @@ hi number 4 from the main thread!
 
 ### `move` Closure를 사용하여 스레드
 
-`thread::spawn`에 전달되는 closure에 `move` 키워드를 사용하는 경우가 많습니다. 이는 closure가 사용하는 값에 대한 소유권을 가져와서 메인 스레드에서 생성된 값의 소유권을 다른 스레드로 전달하기 때문입니다. 13장의 `\u201cCapturing References or Moving Ownership\u201d` 부분에서 `move`를 closure의 맥락에서 논의했습니다. 이제 `move`와 `thread::spawn`의 상호 작용에 더 집중해 보겠습니다.
+`thread::spawn`에 전달되는 closure에 `move` 키워드를 사용하는 경우가 많습니다. 이는 closure가 사용하는 값에 대한 소유권을 가져와서 메인 스레드에서 생성된 값의 소유권을 다른 스레드로 전달하기 때문입니다. 13장의 `“Capturing References or Moving Ownership”` 부분에서 `move`를 closure의 맥락에서 논의했습니다. 이제 `move`와 `thread::spawn`의 상호 작용에 더 집중해 보겠습니다.
 
 16-1절에서 보는 것처럼 `thread::spawn`에 전달하는 closure는 인수를 받지 않습니다. 즉, 생성된 스레드에서 메인 스레드의 데이터를 사용하지 않습니다. 생성된 스레드에서 메인 스레드의 데이터를 사용하려면 생성된 스레드의 closure가 필요한 값을 캡처해야 합니다. 16-3번 목록은 메인 스레드에서 벡터를 생성하고 생성된 스레드에서 사용하려는 시도를 보여줍니다. 그러나 아직 작동하지 않습니다. 다음은 이유입니다.
 

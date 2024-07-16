@@ -1,7 +1,7 @@
 ## 고급 트레이트
 
-Chapter 10의 [\u201c트레이트: 공통
-동작 정의\u201d][traits-defining-shared-behavior]<!-- ignore --> 섹션에서 처음 트레이트를 다루었지만, 더
+Chapter 10의 [“트레이트: 공통
+동작 정의”][traits-defining-shared-behavior]<!-- ignore --> 섹션에서 처음 트레이트를 다루었지만, 더
 심층적인 내용은 살펴보지 않았습니다. Rust에 대해 더 많이 알게 되었으므로, 이제
 구체적인 내용을 살펴볼 수 있습니다.
 
@@ -89,7 +89,7 @@ trait Add<Rhs=Self> {
 
 `Point`에 대해 `Add`를 구현할 때는 `Rhs`에 기본값을 사용했습니다. 왜냐하면 두 `Point` 인스턴스를 더하고 싶었기 때문입니다. `Rhs` 타입을 기본값 대신 사용하여 사용자 정의하는 `Add` 트레이트 구현의 예를 살펴보겠습니다.
 
-`Millimeters`와 `Meters`라는 두 개의 구조체가 있습니다. 이 구조체는 다른 단위의 값을 저장합니다. 이러한 기존 타입을 다른 구조체로 감싸는 것을 *새로운 타입 패턴*이라고 합니다. 이 패턴에 대한 자세한 내용은 [\u201cUsing the Newtype Pattern to Implement External Traits on External Types\u201d][newtype]<!-- ignore --> 섹션에서 설명합니다. `Millimeters`와 `Meters`를 더하고 `Add` 트레이트를 구현하여 `Millimeters`를 `Meters`로 변환하는 방법을 살펴보겠습니다. `Add` 트레이트를 `Millimeters`에 구현하여 `Meters`를 `Rhs`로 지정하면 다음과 같습니다.
+`Millimeters`와 `Meters`라는 두 개의 구조체가 있습니다. 이 구조체는 다른 단위의 값을 저장합니다. 이러한 기존 타입을 다른 구조체로 감싸는 것을 *새로운 타입 패턴*이라고 합니다. 이 패턴에 대한 자세한 내용은 [“Using the Newtype Pattern to Implement External Traits on External Types”][newtype]<!-- ignore --> 섹션에서 설명합니다. `Millimeters`와 `Meters`를 더하고 `Add` 트레이트를 구현하여 `Millimeters`를 `Meters`로 변환하는 방법을 살펴보겠습니다. `Add` 트레이트를 `Millimeters`에 구현하여 `Meters`를 `Rhs`로 지정하면 다음과 같습니다.
 
 <span class=\"filename\">Filename: src/lib.rs</span>
 
@@ -303,7 +303,7 @@ fn main() {
 
 ### 새로운 유형 패턴을 사용하여 외부 유형에 외부 트레이트를 구현하는 방법
 
-Chapter 10의 [\u201cType에 트레이트를 구현하는 방법\u201d][implementing-a-trait-on-a-type]<!-- ignore --> 섹션에서 언급했듯이, 트레이트 또는 유형이 우리의 crate에 국지적이거나, 우리는 유형에 트레이트를 직접 구현할 수 없습니다. 이 제약을 우회하는 방법은 *새로운 유형 패턴*을 사용하는 것입니다. 새로운 유형 패턴은 튜플 구조체를 사용하여 새로운 유형을 만들고, 이 튜플 구조체는 우리가 트레이트를 구현하려는 유형을 하나의 필드로 감싸는 것을 의미합니다. 그러면 래퍼 유형은 우리의 crate에 국지적이므로 우리는 래퍼 유형에 트레이트를 구현할 수 있습니다. *Newtype*는 Haskell 프로그래밍 언어에서 유래된 용어입니다. 이 패턴을 사용하는 경우 런타임 성능 손실이 없으며, 컴파일 시간에 래퍼 유형은 생략됩니다.
+Chapter 10의 [“Type에 트레이트를 구현하는 방법”][implementing-a-trait-on-a-type]<!-- ignore --> 섹션에서 언급했듯이, 트레이트 또는 유형이 우리의 crate에 국지적이거나, 우리는 유형에 트레이트를 직접 구현할 수 없습니다. 이 제약을 우회하는 방법은 *새로운 유형 패턴*을 사용하는 것입니다. 새로운 유형 패턴은 튜플 구조체를 사용하여 새로운 유형을 만들고, 이 튜플 구조체는 우리가 트레이트를 구현하려는 유형을 하나의 필드로 감싸는 것을 의미합니다. 그러면 래퍼 유형은 우리의 crate에 국지적이므로 우리는 래퍼 유형에 트레이트를 구현할 수 있습니다. *Newtype*는 Haskell 프로그래밍 언어에서 유래된 용어입니다. 이 패턴을 사용하는 경우 런타임 성능 손실이 없으며, 컴파일 시간에 래퍼 유형은 생략됩니다.
 
 예를 들어, 우리가 `Vec<T>`에 `Display` 트레이트를 구현하고 싶다고 가정해 보겠습니다. 하지만 `Display` 트레이트와 `Vec<T>` 유형은 우리의 crate 외부에서 정의되어 있기 때문에 트레이트를 직접 구현할 수 없습니다. `Wrapper` 구조체를 만들어 `Display` 트레이트를 구현할 수 있습니다.
  `Vec<T>` 인스턴스를 갖는 타입이라면, `Display`를 `Wrapper`에 구현하고 `Vec<T>` 값을 사용할 수 있습니다. Listing 19-23과 같이 보여줍니다.

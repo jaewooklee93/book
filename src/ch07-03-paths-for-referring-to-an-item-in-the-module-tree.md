@@ -14,7 +14,7 @@ Rust 에 항목이 어디에 있는지 보여주려면 파일 시스템을 탐�
 
 `eat_at_restaurant` 함수에서 `add_to_waitlist` 함수를 호출하는 두 가지 방법을 보여드리겠습니다. 이 경로는 올바르지만, 이 예제가 컴파일되지 않게 하는 다른 문제가 있습니다. 잠시 후에 설명하겠습니다.
 
-`eat_at_restaurant` 함수는 우리의 라이브러리 crate의 공개 API의 일부이므로 `pub` 키워드로 표시합니다. [\u201c`pub` 키워드로 경로를 노출하는 방법\u201d][pub]<!-- ignore --> 섹션에서 `pub`에 대해 자세히 알아보겠습니다.
+`eat_at_restaurant` 함수는 우리의 라이브러리 crate의 공개 API의 일부이므로 `pub` 키워드로 표시합니다. [“`pub` 키워드로 경로를 노출하는 방법”][pub]<!-- ignore --> 섹션에서 `pub`에 대해 자세히 알아보겠습니다.
 
 <span class=\"filename\">Filename: src/lib.rs</span>
 

@@ -49,12 +49,12 @@ Rust에서 통합 테스트는 라이브러리 외부에 있습니다. 라이브
 
 ```text
 adder
-\u251c\u2500\u2500 Cargo.lock
-\u251c\u2500\u2500 Cargo.toml
-\u251c\u2500\u2500 src
-\u2502\u00a0\u00a0 \u2514\u2500\u2500 lib.rs
-\u2514\u2500\u2500 tests
-    \u2514\u2500\u2500 integration_test.rs
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── lib.rs
+└── tests
+    └── integration_test.rs
 ```
 
 11-13번 목록의 코드를 *tests/integration_test.rs* 파일에 입력합니다.
@@ -115,17 +115,17 @@ adder
 `common`이 테스트 결과에 `running 0 tests`로 표시되는 것은 원치 않는 결과입니다. 우리는 다른 통합 테스트 파일과 공유하려는 코드가 있을 뿐입니다. `common`이 테스트 출력에 나타나지 않도록 하려면, `tests/common.rs` 대신 `tests/common/mod.rs`를 만들어야 합니다. 프로젝트 디렉토리가 이제 다음과 같습니다.
 
 ```text
-\u251c\u2500\u2500 Cargo.lock
-\u251c\u2500\u2500 Cargo.toml
-\u251c\u2500\u2500 src
-\u2502\u00a0\u00a0 \u2514\u2500\u2500 lib.rs
-\u2514\u2500\u2500 tests
-    \u251c\u2500\u2500 common
-    \u2502\u00a0\u00a0 \u2514\u2500\u2500 mod.rs
-    \u2514\u2500\u2500 integration_test.rs
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── lib.rs
+└── tests
+    ├── common
+    │   └── mod.rs
+    └── integration_test.rs
 ```
 
-이것은 Rust에서도 이해하는 더 오래된 파일 이름 규칙입니다. 7장의 [\u201cAlternate File Paths\u201d][alt-paths]<!-- ignore --> 섹션에서 언급했듯이, 이러한 파일 이름을 사용하면 `common` 모듈을 통합 테스트 파일로 취급하지 않습니다. `setup` 함수 코드를 `tests/common/mod.rs`로 이동하고 `tests/common.rs` 파일을 삭제하면 테스트 출력에서 해당 섹션이 사라집니다.
+이것은 Rust에서도 이해하는 더 오래된 파일 이름 규칙입니다. 7장의 [“Alternate File Paths”][alt-paths]<!-- ignore --> 섹션에서 언급했듯이, 이러한 파일 이름을 사용하면 `common` 모듈을 통합 테스트 파일로 취급하지 않습니다. `setup` 함수 코드를 `tests/common/mod.rs`로 이동하고 `tests/common.rs` 파일을 삭제하면 테스트 출력에서 해당 섹션이 사라집니다.
 
 `tests` 디렉토리의 하위 디렉토리에 있는 파일은 별도의 crate로 컴파일되지 않으며 테스트 출력에서도 섹션이 나타나지 않습니다.
 

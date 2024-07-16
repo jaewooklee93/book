@@ -481,7 +481,7 @@ let guess: u32 = guess.trim().parse().expect(\"Please type a number!\");
 
 또한 이 예제 프로그램에서 `u32` 어노테이션과 `secret_number`와의 비교는 Rust가 `secret_number`도 `u32`가 되어야 한다고 추론하도록 합니다. 이제 비교는 같은 유형의 두 값 사이에서 이루어집니다! 
 
-`parse` 메서드는 논리적으로 숫자로 변환할 수 있는 문자열만 작동하며, 쉽게 오류를 일으킬 수 있습니다. 예를 들어 문자열에 `A\ud83d\udc4d%`가 포함되어 있다면 숫자로 변환할 방법이 없습니다. 변환에 실패할 수 있기 때문에 `parse` 메서드는 `Result` 유형을 반환합니다. 이전에 언급된 것처럼 `read_line` 메서드도 `Result` 유형을 반환합니다. ([\u201c`Result`를 사용하여 발생할 수 있는 오류 처리\u201d](#handling-potential-failure-with-result)<!-- 무시 -->) 우리는 이 `Result`를 `expect` 메서드를 사용하여 동일하게 처리합니다. 만약 `parse`가 문자열에서 숫자를 만들 수 없어 `Err` `Result` 변형을 반환하면 `expect` 호출은 게임을 종료시키고 우리가 제공한 메시지를 출력합니다. `parse`가 문자열을 숫자로 성공적으로 변환하면 `Ok` 변형의 `Result`를 반환하고 `expect`는 `Ok` 값에서 원하는 숫자를 반환합니다.
+`parse` 메서드는 논리적으로 숫자로 변환할 수 있는 문자열만 작동하며, 쉽게 오류를 일으킬 수 있습니다. 예를 들어 문자열에 `A👍%`가 포함되어 있다면 숫자로 변환할 방법이 없습니다. 변환에 실패할 수 있기 때문에 `parse` 메서드는 `Result` 유형을 반환합니다. 이전에 언급된 것처럼 `read_line` 메서드도 `Result` 유형을 반환합니다. ([“`Result`를 사용하여 발생할 수 있는 오류 처리”](#handling-potential-failure-with-result)<!-- 무시 -->) 우리는 이 `Result`를 `expect` 메서드를 사용하여 동일하게 처리합니다. 만약 `parse`가 문자열에서 숫자를 만들 수 없어 `Err` `Result` 변형을 반환하면 `expect` 호출은 게임을 종료시키고 우리가 제공한 메시지를 출력합니다. `parse`가 문자열을 숫자로 성공적으로 변환하면 `Ok` 변형의 `Result`를 반환하고 `expect`는 `Ok` 값에서 원하는 숫자를 반환합니다.
 
 이제 프로그램을 실행해 보겠습니다.
 

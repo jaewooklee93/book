@@ -28,7 +28,7 @@ Rust와 Cargo는 게시된 패키지를 다른 사람들이 쉽게 찾고 사용
 
 #### 일반적으로 사용되는 섹션
 
-14-1번 표에서 `# Examples` Markdown 제목을 사용하여 HTML에서 제목이 \u201cExamples\u201d인 섹션을 만들었습니다. crate 작성자는 일반적으로 설명서에서 다음과 같은 섹션을 사용합니다.
+14-1번 표에서 `# Examples` Markdown 제목을 사용하여 HTML에서 제목이 “Examples”인 섹션을 만들었습니다. crate 작성자는 일반적으로 설명서에서 다음과 같은 섹션을 사용합니다.
 
 * **Panics**: 설명서에 있는 함수가 panic할 수 있는 상황을 나열합니다. 프로그램이 panic하지 않도록 하려는 함수 호출자는 이러한 상황에서 함수를 호출하지 않도록 해야 합니다.
 * **Errors**: 함수가 `Result`를 반환하는 경우, 발생할 수 있는 오류 유형과 이러한 오류가 반환되는 조건을 설명하는 것이 도움이 될 수 있습니다. 이렇게 하면 호출자는 다양한 유형의 오류를 다르게 처리하는 코드를 작성할 수 있습니다.
@@ -240,7 +240,7 @@ license = \"MIT OR Apache-2.0\"
 [dependencies]
 ```
 
-[Cargo\u2019s documentation](https://doc.rust-lang.org/cargo/) 에서는 다른 메타데이터를 지정하여 다른 사람들이 크레이트를 더 쉽게 찾고 사용할 수 있도록 하는 방법에 대한 설명을 제공합니다.
+[Cargo’s documentation](https://doc.rust-lang.org/cargo/) 에서는 다른 메타데이터를 지정하여 다른 사람들이 크레이트를 더 쉽게 찾고 사용할 수 있도록 하는 방법에 대한 설명을 제공합니다.
 
 ### Crates.io로 게시
 
