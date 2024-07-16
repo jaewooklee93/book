@@ -29,7 +29,7 @@ cargo run > output.txt 2>&1
 cd ../../..
 -->
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 {{#include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/Cargo.toml}}
@@ -37,7 +37,7 @@ cd ../../..
 
 1장에서 보았듯이 `cargo new`는 "Hello, world!" 프로그램을 생성합니다. *src/main.rs* 파일을 확인해 보세요:
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/src/main.rs}}
@@ -236,7 +236,7 @@ Cargo는 외부 crate를 관리하는 데 탁월합니다. `rand`를 사용하�
 * ch14-03-cargo-workspaces.md
 -->
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 {{#include ../listings/ch02-guessing-game-tutorial/listing-02-02/Cargo.toml:8:}}
@@ -454,7 +454,7 @@ You guessed: 5
 
 결국, 프로그램이 입력으로 읽는 문자열을 숫자 타입으로 변환하여 비교해야 합니다. 이를 위해 `main` 함수 본문에 다음 줄을 추가합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-03-convert-string-to-number/src/main.rs:here}}
@@ -512,7 +512,7 @@ Too big!
 
 `loop` 키워드는 무한 루프를 만듭니다. 사용자에게 더 많은 추측 기회를 제공하기 위해 루프를 추가합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-04-looping/src/main.rs:here}}
@@ -562,7 +562,7 @@ quit를 입력하면 게임이 종료되지만, 다른 숫자가 아닌 입력�
 
 정답을 맞췄을 때 사용자가 게임에서 이기도록 `break` 문을 추가하여 프로그램을 만들겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-05-quitting/src/main.rs:here}}

@@ -12,13 +12,13 @@
 
 `aggregator`라는 이름의 미디어 애그리게이터 라이브러리 크레이트에서 `NewsArticle` 또는 `Tweet` 인스턴스에 저장된 데이터의 요약을 표시할 수 있는 도구를 만들고 싶습니다. 이를 위해 각 유형에서 요약을 요청하고 `summarize` 메서드를 호출하여 요약을 가져오려고 합니다. 10-12번 목록은 이 동작을 표현하는 공개 `Summary` 트레이트의 정의를 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-12/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 10-12: `Summary` 트레이트의 정의는 `summarize` 메서드를 제공합니다</span>
+Listing 10-12: `Summary` 트레이트의 정의는 `summarize` 메서드를 제공합니다
 
 여기서 `trait` 키워드를 사용하여 트레이트를 선언하고 트레이트의 이름은 `Summary`입니다. 또한 이 트레이트를 `pub`로 선언하여 이 크레이트에 의존하는 크레이트에서도 이 트레이트를 사용할 수 있도록 합니다. 괄호 안에는 트레이트를 구현하는 유형의 동작을 설명하는 메서드 서명을 선언합니다. 이 경우 `fn summarize(&self) -> String`입니다.
 
@@ -30,13 +30,13 @@
 
 이제 `Summary` 트레이트의 메서드 서명을 정의했으므로, 미디어 애그리게이터에서 `NewsArticle`과 `Tweet` 유형에 트레이트를 구현할 수 있습니다. 10-13번 목록은 헤드라인, 저자, 위치를 사용하여 `summarize`를 구현하는 `NewsArticle` 구조체에 대한 `Summary` 트레이트의 구현을 보여줍니다. `Tweet` 구조체의 경우, 트윗 내용이 이미 280자로 제한된다고 가정하여 사용자 이름을 따라 트윗 전체 내용을 `summarize`로 정의합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-13/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 10-13: `NewsArticle`과 `Tweet` 유형에 `Summary` 트레이트를 구현합니다</span>
+Listing 10-13: `NewsArticle`과 `Tweet` 유형에 `Summary` 트레이트를 구현합니다
 
 유형에 트레이트를 구현하는 것은 일반 메서드를 구현하는 것과 유사합니다. 차이점은 `impl` 뒤에 구현하려는 트레이트 이름을 넣고 `for` 키워드를 사용하여 구현하려는 유형의 이름을 지정하는 것입니다. `impl` 블록 내에서 트레이트 정의가 정의한 메서드 서명을 넣습니다. 각 서명 뒤에 세미콜론 대신 괄호를 사용하여 메서드 몸체를 채웁니다. 이 몸체는 특정 유형에 대한 트레이트 메서드의 구체적인 동작을 나타냅니다.
 
@@ -59,13 +59,13 @@
 
 10-14번 목록에서 `Summary` 트레이트의 `summarize` 메서드에 기본 문자열을 지정하여 10-12번 목록에서만 메서드 서명을 정의했던 것과는 다릅니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-14/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 10-14: 기본 구현을 가진 `Summary` 트레이트를 정의하는 것</span>
+Listing 10-14: 기본 구현을 가진 `Summary` 트레이트를 정의하는 것
 
 `NewsArticle` 인스턴스를 요약하기 위해 기본 구현을 사용하려면 `impl Summary for NewsArticle {}`와 같이 빈 `impl` 블록을 지정합니다.
 
@@ -230,13 +230,13 @@ impl<T> Pair<T> {
 
 는 `impl` 블록의 타입에 대한 별칭입니다. 이 경우 `Pair<T>`입니다. 하지만 다음 `impl` 블록에서는 `Pair<T>`가 내부 타입 `T`가 비교 가능 (`PartialOrd`) 트레이트와 출력 가능 (`Display`) 트레이트를 구현한다면 `cmp_display` 메서드만 구현합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-15/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 10-15: 트레이트 경계 조건에 따라 일반적인 타입의 메서드를 조건적으로 구현</span>
+Listing 10-15: 트레이트 경계 조건에 따라 일반적인 타입의 메서드를 조건적으로 구현
 
 또한, 다른 트레이트를 구현하는 타입에 대해 트레이트를 조건적으로 구현할 수 있습니다. 트레이트 경계 조건을 충족하는 트레이트의 구현은 *일반 구현*이라고 하며 Rust 표준 라이브러리에서 널리 사용됩니다. 예를 들어, 표준 라이브러리는 `Display` 트레이트를 구현하는 모든 타입에 대해 `ToString` 트레이트를 구현합니다. 표준 라이브러리의 `impl` 블록은 다음과 같은 코드와 유사합니다.
 

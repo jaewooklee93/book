@@ -28,13 +28,13 @@ $ cd hello
 
 이제 *src/main.rs* 에 Listing 20-1의 코드를 입력하여 시작합니다. 이 코드는 `127.0.0.1:7878` 주소에서 들어오는 TCP 스트림을 수신합니다. 들어오는 스트림이 있으면 `Connection established!`를 출력합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,no_run
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-01/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 20-1: 들어오는 스트림을 수신하고 스트림을 수신하면 메시지를 출력합니다</span>
+Listing 20-1: 들어오는 스트림을 수신하고 스트림을 수신하면 메시지를 출력합니다
 
 `TcpListener`를 사용하여 `127.0.0.1:7878` 주소에서 TCP 연결을 수신할 수 있습니다. 주소에서 콜론 앞의 부분은 컴퓨터의 IP 주소를 나타내며(이것은 모든 컴퓨터에서 동일하며 저자의 컴퓨터를 특정하지 않습니다), `7878`은 포트입니다. 우리는 이 포트를 두 가지 이유로 선택했습니다. HTTP가 일반적으로 이 포트에서 수신되지 않기 때문에 우리의 서버가 실행 중인 다른 웹 서버와 충돌할 가능성이 낮으며, 7878은 *rust*를 전화로 입력한 것입니다.
 
@@ -66,13 +66,13 @@ $ cd hello
 
 연결을 먼저 얻고 그 연결에 대한 조치를 취하는 것을 분리하기 위해 연결 처리를 위한 새로운 함수를 구현해 보겠습니다. 이 새로운 `handle_connection` 함수에서 우리는 TCP 스트림에서 데이터를 읽고 출력하여 브라우저에서 보낸 데이터를 볼 수 있도록 합니다. 코드를 20-2번 목록과 같이 변경하십시오.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,no_run
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-02/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 20-2: `TcpStream`에서 읽고 데이터를 출력</span>
+Listing 20-2: `TcpStream`에서 읽고 데이터를 출력
 
 `std::io::prelude`와 `std::io::BufReader`를 스코프 안으로 가져와서 스트림에서 읽고 쓰는 데 사용할 수 있는 추상화와 유형에 액세스할 수 있습니다. `main` 함수의 `for` 루프에서 연결을 설정했다는 메시지를 출력하는 대신, 이제 새로운 `handle_connection` 함수를 호출하고 `stream`을 전달합니다.
 
@@ -162,13 +162,13 @@ HTTP/1.1 200 OK\\r\
 
 상태 코드 200은 표준 성공 응답입니다. 이 텍스트는 작은 성공적인 HTTP 응답입니다. 성공적인 요청에 대한 응답으로 이를 스트림에 쓰겠습니다! `handle_connection` 함수에서 요청 데이터를 출력하는 `println!`을 제거하고 20-3번 목록의 코드로 대체하십시오.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,no_run
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-03/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-3: 스트림에 작은 성공적인 HTTP 응답을 쓰기</span>
+Listing 20-3: 스트림에 작은 성공적인 HTTP 응답을 쓰기
 
 첫 번째 새로운 줄은 응답 메시지의 데이터를 저장하는 `response` 변수를 정의합니다. 그런 다음 `as_bytes`를 사용하여 `response`를 바이트로 변환합니다. `stream`의 `write_all` 메서드는 `&[u8]`를 받아 해당 바이트를 연결을 통해 직접 전송합니다. `write_all` 작업이 실패할 수 있으므로 이전과 같이 `unwrap`을 사용하여 오류 결과를 처리합니다. 다시 한번, 실제 응용 프로그램에서는 여기에 오류 처리를 추가해야 합니다.
 
@@ -178,23 +178,23 @@ HTTP/1.1 200 OK\\r\
 
 빈 페이지를 반환하는 기능을 구현하겠습니다. 프로젝트 디렉토리 루트에 *hello.html* 파일을 생성하십시오. *src* 디렉토리에 있는 것이 아닙니다. Listing 20-4에 표시된 HTML을 입력할 수 있습니다.
 
-<span class=\"filename\">Filename: hello.html</span>
+Filename: hello.html
 
 ```html
 {{#include ../listings/ch20-web-server/listing-20-05/hello.html}}
 ```
 
-<span class=\"caption\">Listing 20-4: 응답으로 반환할 샘플 HTML 파일</span>
+Listing 20-4: 응답으로 반환할 샘플 HTML 파일
 
 이것은 제목과 텍스트가 있는 최소한의 HTML5 문서입니다. 서버에서 요청을 받았을 때 이를 반환하려면 `handle_connection`을 Listing 20-5와 같이 수정하여 HTML 파일을 읽고 응답 본문으로 추가하고 전송합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,no_run
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-05/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-5: *hello.html*의 내용을 응답 본문으로 전송하기</span>
+Listing 20-5: *hello.html*의 내용을 응답 본문으로 전송하기
 
 `fs`를 `use` 문에 추가하여 표준 라이브러리의 파일 시스템 모듈을 사용 범위에 포함했습니다. 파일의 내용을 문자열로 읽는 코드는 12장에서 I/O 프로젝트에서 파일의 내용을 읽었을 때 사용했던 것과 유사합니다. Listing 12-4를 참조하십시오.
 
@@ -208,13 +208,13 @@ HTTP/1.1 200 OK\\r\
 
 지금 당장 웹 서버는 클라이언트가 요청하는 내용에 관계없이 파일의 HTML을 반환합니다. 브라우저가 */*를 요청하기 전에 HTML 파일을 반환하는 기능을 추가하고, */*가 아닌 요청에는 오류를 반환하도록 `handle_connection`을 수정해야 합니다. Listing 20-6에 표시된 것처럼 `handle_connection`을 수정하면 됩니다. 이 새로운 코드는 받은 요청의 내용을 */* 요청이라는 것을 알고 있는 형태와 비교하고, 요청을 다르게 처리하기 위해 `if` 및 `else` 블록을 추가합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,no_run
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-06/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-6: */*를 제외한 다른 요청에 대해 다르게 처리하는 방법</span>
+Listing 20-6: */*를 제외한 다른 요청에 대해 다르게 처리하는 방법
 
 HTTP 요청의 첫 번째 줄만 살펴보기 때문에, 전체 요청을 벡터에 읽는 대신 `next`를 호출하여 이터레이터에서 첫 번째 항목을 가져옵니다. 첫 번째 `unwrap`은 `Option`을 처리하고 이터레이터에 항목이 없으면 프로그램을 중지합니다. 두 번째 `unwrap`은 `Result`을 처리하고 Listing 20-2에서 추가된 `map`의 `unwrap`과 동일한 효과를 냅니다.
 
@@ -226,23 +226,23 @@ HTTP 요청의 첫 번째 줄만 살펴보기 때문에, 전체 요청을 벡터
 
 이제 Listing 20-7의 코드를 `else` 블록에 추가하여 요청에 대한 콘텐츠가 찾을 수 없음을 나타내는 404 상태 코드와 함께 응답하는 방법을 알아보겠습니다. 또한 클라이언트에게 응답하는 HTML 페이지를 반환합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,no_run
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-07/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-7: 404 상태 코드와 오류 페이지를 반환하여 요청에 대한 콘텐츠가 찾을 수 없을 때 응답하는 방법</span>
+Listing 20-7: 404 상태 코드와 오류 페이지를 반환하여 요청에 대한 콘텐츠가 찾을 수 없을 때 응답하는 방법
 
 여기서 응답은 404 상태 코드와 `NOT FOUND` 이유 문구를 가진 상태 줄을 가지고 있습니다. 응답 본문은 *404.html* 파일의 HTML입니다. 오류 페이지를 위해 *404.html* 파일을 *hello.html* 옆에 만들어야 합니다. Listing 20-8에 있는 예제 HTML을 사용하거나 원하는 HTML을 사용할 수 있습니다.
 
-<span class=\"filename\">Filename: 404.html</span>
+Filename: 404.html
 
 ```html
 {{#include ../listings/ch20-web-server/listing-20-07/404.html}}
 ```
 
-<span class=\"caption\">Listing 20-8: 페이지에 반환할 샘플 콘텐츠</span>
+Listing 20-8: 페이지에 반환할 샘플 콘텐츠
 
 ## 단일 스레드 웹 서버
 

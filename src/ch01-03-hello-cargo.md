@@ -56,7 +56,7 @@ edition = \"2021\"
 
 이제 *src/main.rs*를 열어보십시오.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 fn main() {

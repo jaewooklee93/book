@@ -25,7 +25,7 @@ $ cargo build --release
 
 Cargo는 프로젝트의 *Cargo.toml* 파일에서 명시적으로 추가하지 않으면 각 프로파일에 적용되는 기본 설정을 가지고 있습니다. `[profile.*]` 섹션을 추가하여 원하는 모든 프로파일을 사용자 정의하면 기본 설정의 일부를 재정의할 수 있습니다. 예를 들어, `dev`와 `release` 프로파일의 `opt-level` 설정의 기본값은 다음과 같습니다.
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 [profile.dev]
@@ -39,7 +39,7 @@ opt-level = 3
 
 *Cargo.toml*에서 다른 값을 추가하여 기본 설정을 재정의할 수 있습니다. 예를 들어, 개발 프로파일에서 최적화 수준 1을 사용하려면 프로젝트의 *Cargo.toml* 파일에 다음 두 줄을 추가할 수 있습니다.
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 [profile.dev]

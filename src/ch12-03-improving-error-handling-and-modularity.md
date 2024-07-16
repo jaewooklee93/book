@@ -226,7 +226,7 @@ Rust는 코드가 `Result` 값을 무시했고, `Result` 값이 오류를 나타
 
 Listing 12-10의 `Config::build`과 유사한 기법을 사용하여 `run`에서 반환되는 오류를 확인하고 처리합니다. 하지만 작은 차이점이 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/no-listing-01-handling-errors-in-main/src/main.rs:here}}

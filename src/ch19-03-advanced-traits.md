@@ -27,9 +27,9 @@ Chapter 10의 [“트레이트: 공통
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-12/src/lib.rs}}
 ```
 
-<span class=\"caption\">19-12번 리스트: `Iterator` 트레이트의 정의
+19-12번 리스트: `Iterator` 트레이트의 정의
 (연관된 유형 `Item`을 포함)
-</span>
+
 
 `Item` 유형은 플레이스홀더이며, `next` 메서드의 정의는 `Option<Self::Item>` 유형을 반환한다는 것을 보여줍니다.
 `Iterator` 트레이트의 구현자는 `Item`에 대한 구체적인 유형을 지정하고, `next` 메서드는 그 구체적인 유형의 `Option`을 반환합니다.
@@ -37,7 +37,7 @@ Chapter 10의 [“트레이트: 공통
 연관된 유형은 유형 매개변수와 유사한 개념처럼 보일 수 있습니다. 유형 매개변수는 함수를 정의할 때 특정 유형을 처리할 수 있는지 알 수 없도록 합니다.
 두 개념의 차이를 이해하기 위해 `Counter`라는 유형에 대한 `Iterator` 트레이트의 구현을 살펴보겠습니다. 이 구현은 `Item` 유형이 `u32`임을 지정합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-22-iterator-on-counter/src/lib.rs:ch19}}
@@ -49,7 +49,7 @@ Chapter 10의 [“트레이트: 공통
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-13/src/lib.rs}}
 ```
 
-<span class=\"caption\">19-13번 리스트: 유형 매개변수를 사용하여 `Iterator` 트레이트를 정의하는 가상 예시</span>
+19-13번 리스트: 유형 매개변수를 사용하여 `Iterator` 트레이트를 정의하는 가상 예시
 
 하지만 유형 매개변수를 사용하면, 각 구현에서 유형을 지정해야 합니다. `Iterator<String>`을 `Counter`에 대해 구현하거나 다른 유형을 구현할 수 있기 때문입니다. 즉, `Iterator` 트레이트에 유형 매개변수가 있으면 `Counter`에 대해 여러 개의 `Iterator` 구현이 있을 수 있습니다. `next` 메서드를 `Counter`에서 호출할 때는 어떤 `Iterator` 구현을 사용할지 유형 지정을 통해 알려야 합니다.
 
@@ -65,13 +65,13 @@ Chapter 10의 [“트레이트: 공통
 
 Rust는 새로운 연산자를 만들거나 임의의 연산자를 오버로드할 수 없습니다. 그러나 `std::ops`에 나열된 연산자와 해당하는 트레이트를 오버로드하여 연산자와 관련된 트레이트를 구현함으로써 오버로드할 수 있습니다. 예를 들어, 19-14번 목록에서 `+` 연산자를 두 `Point` 인스턴스를 더하는 연산자로 오버로드하는 방법을 보여줍니다. 이를 위해 `Point` 구조체에 `Add` 트레이트를 구현합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-14/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 19-14: `Point` 인스턴스에 대한 `+` 연산자 오버로드를 위한 `Add` 트레이트 구현</span>
+Listing 19-14: `Point` 인스턴스에 대한 `+` 연산자 오버로드를 위한 `Add` 트레이트 구현
 
 `add` 메서드는 두 `Point` 인스턴스의 `x` 값과 두 `Point` 인스턴스의 `y` 값을 더하여 새로운 `Point`를 생성합니다. `Add` 트레이트는 `Output`이라는 이름의 연관된 타입을 가지고 있으며, `add` 메서드에서 반환되는 타입을 결정합니다.
 
@@ -91,13 +91,13 @@ trait Add<Rhs=Self> {
 
 `Millimeters`와 `Meters`라는 두 개의 구조체가 있습니다. 이 구조체는 다른 단위의 값을 저장합니다. 이러한 기존 타입을 다른 구조체로 감싸는 것을 *새로운 타입 패턴*이라고 합니다. 이 패턴에 대한 자세한 내용은 [“Using the Newtype Pattern to Implement External Traits on External Types”][newtype]<!-- ignore --> 섹션에서 설명합니다. `Millimeters`와 `Meters`를 더하고 `Add` 트레이트를 구현하여 `Millimeters`를 `Meters`로 변환하는 방법을 살펴보겠습니다. `Add` 트레이트를 `Millimeters`에 구현하여 `Meters`를 `Rhs`로 지정하면 다음과 같습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-15/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 19-15: `Millimeters`에 대한 `Add` 트레이트 구현으로 `Millimeters`를 `Meters`로 더하기</span>
+Listing 19-15: `Millimeters`에 대한 `Add` 트레이트 구현으로 `Millimeters`를 `Meters`로 더하기
 
 `Millimeters`와 `Meters`를 더하려면 `impl Add<Meters>`를 지정하여 `Rhs` 타입 매개변수를 지정합니다. 기본값 대신 사용자 정의된 값을 사용합니다.
 
@@ -118,35 +118,35 @@ Rust에서는 다른 형식의 메서드와 동일한 이름을 가진 형식을
 
 동일한 이름을 가진 메서드를 호출할 때는 Rust에 어떤 메서드를 사용하고 싶은지 알려야 합니다. 19-16번 목록에서 두 개의 형식 `Pilot` 와 `Wizard` 를 정의했는데, 두 형식 모두 `fly` 메서드를 가지고 있습니다. 이제 `Human` 유형에 두 형식 모두를 구현했고, `Human` 유형에 직접 `fly` 메서드가 구현되어 있습니다. 각 `fly` 메서드는 다른 작업을 수행합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-16/src/main.rs:here}}
 ```
 
-<span class=\"caption\">19-16번 목록: 두 개의 형식이 `fly` 메서드를 가지고 있으며 `Human` 유형에 구현되었고, `Human` 유형에 직접 `fly` 메서드가 구현되어 있습니다</span>
+19-16번 목록: 두 개의 형식이 `fly` 메서드를 가지고 있으며 `Human` 유형에 구현되었고, `Human` 유형에 직접 `fly` 메서드가 구현되어 있습니다
 
 `Human` 인스턴스에 `fly` 를 호출하면 컴파일러는 유형에 직접 구현된 메서드를 호출하는 것을 기본으로 합니다. 19-17번 목록을 참조하세요.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-17/src/main.rs:here}}
 ```
 
-<span class=\"caption\">19-17번 목록: `Human` 인스턴스에 `fly` 를 호출하는 경우</span>
+19-17번 목록: `Human` 인스턴스에 `fly` 를 호출하는 경우
 
 이 코드를 실행하면 `*waving arms furiously*` 가 출력되어 Rust가 `Human` 유형에 직접 구현된 `fly` 메서드를 호출했다는 것을 보여줍니다.
 
 `Pilot` 형식 또는 `Wizard` 형식의 `fly` 메서드를 호출하려면 형식 이름을 명시적으로 사용하여 어떤 `fly` 메서드를 호출하고 싶은지 명확히 해야 합니다. 19-18번 목록이 이러한 문법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-18/src/main.rs:here}}
 ```
 
-<span class=\"caption\">19-18번 목록: 어떤 형식의 `fly` 메서드를 호출하고 싶은지 명시적으로 지정하는 경우</span>
+19-18번 목록: 어떤 형식의 `fly` 메서드를 호출하고 싶은지 명시적으로 지정하는 경우
 
 형식 이름을 메서드 이름 앞에 명시하면 Rust가 어떤 `fly` 메서드를 호출해야 하는지 명확해집니다. `Human::fly(&person)` 을 사용할 수도 있지만, 유형을 명확히 구분할 필요가 없는 경우에는 좀 더 길게 작성해야 합니다.
 
@@ -160,14 +160,14 @@ Rust에서는 다른 형식의 메서드와 동일한 이름을 가진 형식을
 
 그러나 `self` 매개변수가 없는 연관 함수는 Rust가 유형을 알 수 없습니다. 여러 유형이나 형식이 동일한 함수 이름을 정의하는 경우 Rust는 완전한 자격명칭을 사용해야 합니다. 예를 들어 19-19번 목록에서 동물 보호소를 위한 형식을 만들고 모든 강아지 새끼에게 이름을 `Spot` 으로 지정합니다. `Animal` 형식은 연관 함수 `baby_name` 을 가지고 있습니다. `Animal` 형식은 `Dog` 구조체에 구현되며, `Dog` 구조체에도 직접 연관 함수 `baby_name` 이 정의되어 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings
 listings/ch19-advanced-features/listing-19-19/src/main.rs}}
 ```
 
-<span class=\"caption\">19-19번 목록: 연관 함수를 가진 형식과 직접 연관 함수를 정의한 구조체</span>
+19-19번 목록: 연관 함수를 가진 형식과 직접 연관 함수를 정의한 구조체
 
 특정 이름을 가진 연관 함수를 구현하는 타입
 
@@ -181,13 +181,13 @@ listings/ch19-advanced-features/listing-19-19/src/main.rs}}
 
 이 출력은 원하는 결과가 아닙니다. `Animal` 트레이트에서 구현한 `baby_name` 함수를 호출하려고 하므로 코드가 `강아지 새끼는 강아지라고 합니다.`를 출력해야 합니다. 19-18번 목록에서 사용한 트레이트 이름을 지정하는 기술은 여기서는 도움이 되지 않습니다. 19-20번 목록의 `main`을 변경하면 컴파일 오류가 발생합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-20/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 19-20: `Animal` 트레이트의 `baby_name` 함수를 호출하려고 하지만 Rust은 어떤 구현을 사용해야 할지 알 수 없습니다.</span>
+Listing 19-20: `Animal` 트레이트의 `baby_name` 함수를 호출하려고 하지만 Rust은 어떤 구현을 사용해야 할지 알 수 없습니다.
 
 `Animal::baby_name`에는 `self` 매개변수가 없으며, `Animal` 트레이트를 구현하는 다른 유형도 있을 수 있기 때문에 Rust은 어떤 `Animal::baby_name` 구현을 원하는지 알 수 없습니다. 다음과 같은 컴파일 오류를 받게 됩니다.
 
@@ -197,13 +197,13 @@ listings/ch19-advanced-features/listing-19-19/src/main.rs}}
 
 `Animal` 트레이트의 `baby_name` 함수를 `Dog`에 대한 구현으로 사용하려면 Rust에게 명확하게 알려야 합니다. 즉, 다른 유형에 대한 `Animal` 구현이 아닌 `Dog`에 대한 구현을 사용해야 합니다. 이를 위해서는 완전한 이름을 사용해야 합니다. 19-21번 목록은 완전한 이름을 사용하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-21/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 19-21: `Dog`에 대한 `Animal` 트레이트의 `baby_name` 함수를 호출하는 데 완전한 이름을 사용합니다.</span>
+Listing 19-21: `Dog`에 대한 `Animal` 트레이트의 `baby_name` 함수를 호출하는 데 완전한 이름을 사용합니다.
 
 이 코드는 원하는 결과를 출력합니다.
 
@@ -267,19 +267,19 @@ fn main() {
 
 `outline_print` 메서드 구현에서 `Display` 트레이트의 기능을 사용하려면 `OutlinePrint` 트레이트가 `Display`를 구현하는 유형에만 작동하도록 지정해야 합니다. 트레이트 정의에서 `OutlinePrint: Display`를 지정하여 이를 수행할 수 있습니다. 이 기술은 트레이트에 트레이트 제약을 추가하는 것과 유사합니다. 19-22번 목록은 `OutlinePrint` 트레이트의 구현을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-22/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 19-22: `OutlinePrint` 트레이트를 구현하는데 `Display` 트레이트의 기능이 필요합니다</span>
+Listing 19-22: `OutlinePrint` 트레이트를 구현하는데 `Display` 트레이트의 기능이 필요합니다
 
 `OutlinePrint`가 `Display` 트레이트를 요구하기 때문에 `to_string` 함수를 사용할 수 있습니다. `to_string` 함수는 `Display` 트레이트를 구현하는 모든 유형에 대해 자동으로 구현됩니다. `Display` 트레이트 이름 뒤에 콜론과 `Display` 트레이트를 추가하지 않고 `to_string` 함수를 사용하려고 하면 `&Self` 유형의 현재 범위에서 `to_string`이라는 이름의 메서드가 없다는 오류가 발생합니다.
 
 `Display` 트레이트를 구현하지 않은 유형인 `Point` 구조체에 `OutlinePrint`를 구현하려고 시도해 보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-02-impl-outlineprint-for-point/src/main.rs:here}}
@@ -293,7 +293,7 @@ fn main() {
 
 `Point`에 `Display`를 구현하여 `OutlinePrint`가 요구하는 제약 조건을 충족하면 `OutlinePrint` 트레이트를 `Point`에 구현할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-03-impl-display-for-point/src/main.rs:here}}
@@ -308,13 +308,13 @@ Chapter 10의 [“Type에 트레이트를 구현하는 방법”][implementing-a
 예를 들어, 우리가 `Vec<T>`에 `Display` 트레이트를 구현하고 싶다고 가정해 보겠습니다. 하지만 `Display` 트레이트와 `Vec<T>` 유형은 우리의 crate 외부에서 정의되어 있기 때문에 트레이트를 직접 구현할 수 없습니다. `Wrapper` 구조체를 만들어 `Display` 트레이트를 구현할 수 있습니다.
  `Vec<T>` 인스턴스를 갖는 타입이라면, `Display`를 `Wrapper`에 구현하고 `Vec<T>` 값을 사용할 수 있습니다. Listing 19-23과 같이 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-23/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 19-23: `Vec<String>` 주변에 `Wrapper` 타입을 생성하여 `Display`를 구현</span>
+Listing 19-23: `Vec<String>` 주변에 `Wrapper` 타입을 생성하여 `Display`를 구현
 
 `Display` 구현은 `self.0`을 사용하여 내부 `Vec<T>`에 액세스합니다. `Wrapper`는 튜플 구조체이고 `Vec<T>`는 튜플에서 인덱스 0에 있는 항목이기 때문입니다. 그런 다음 `Wrapper`에 대한 `Display` 트레이트의 기능을 사용할 수 있습니다.
 

@@ -26,7 +26,7 @@ $ cargo fmt
 
 `rustfix` 도구는 Rust 설치에 포함되어 있으며, 명확한 수정 방법이 있는 컴파일러 경고를 자동으로 수정할 수 있습니다. 이는 원하는 것일 가능성이 높습니다. 이전에 컴파일러 경고를 본 적이 있을 것입니다. 예를 들어 다음 코드를 살펴보십시오.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 fn do_something() {}
@@ -65,7 +65,7 @@ $ cargo fix
 
 *src/main.rs*를 다시 살펴보면 `cargo fix`가 코드를 변경했음을 알 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 fn do_something() {}
@@ -99,7 +99,7 @@ $ cargo clippy
 
 예를 들어, `f{32, 64}::consts::PI`와 같은 수학적 상수의 근사치를 사용하는 프로그램을 작성했다고 가정해 보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 fn main() {
@@ -127,7 +127,7 @@ error: approximate value of `f{32, 64}::consts::PI` found
 프로그램이 상수를 사용하는 것이 더 정확하다는 것입니다.
 코드를 `PI` 상수를 사용하도록 변경해야 합니다. 다음 코드는 Clippy에서 오류나 경고를 발생시키지 않습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 fn main() {

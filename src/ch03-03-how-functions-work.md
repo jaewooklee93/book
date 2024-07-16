@@ -4,7 +4,7 @@
 
 Rust 코드는 함수와 변수 이름에 *뱀 케이스*를 사용하는 것이 일반적인 스타일입니다. 모든 문자는 소문자이고, 단어를 구분하는 데 밑줄을 사용합니다. 다음은 함수 정의 예시를 포함하는 프로그램입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-16-functions/src/main.rs}}
@@ -28,7 +28,7 @@ Rust에서 함수를 정의하려면 `fn`을 입력한 다음 함수 이름과 �
 
 `another_function`의 이 버전에서는 매개변수를 추가합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-17-functions-with-parameters/src/main.rs}}
@@ -46,7 +46,7 @@ Rust에서 함수를 정의하려면 `fn`을 입력한 다음 함수 이름과 �
 
 여러 매개변수를 정의할 때는 쉼표로 매개변수 선언을 구분합니다. 예를 들어 다음과 같습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-18-functions-with-multiple-parameters/src/main.rs}}
@@ -82,7 +82,7 @@ Rust에서 함수를 정의하려면 `fn`을 입력한 다음 함수 이름과 �
 
 문은 값을 반환하지 않습니다. 따라서 다음 코드와 같이 `let` 문을 다른 변수에 할당할 수 없습니다. 오류가 발생합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-19-statements-vs-expressions/src/main.rs}}
@@ -98,7 +98,7 @@ Rust에서 함수를 정의하려면 `fn`을 입력한 다음 함수 이름과 �
 
 표현식은 값을 평가하고 Rust에서 작성하는 대부분의 코드를 구성합니다. `5 + 6`과 같은 산술 연산은 `11`의 값을 평가하는 표현식입니다. 표현식은 문의 일부일 수 있습니다. 3-1번 목록에서 `let y = 6;` 문에서 `6`은 `6`의 값을 평가하는 표현식입니다. 함수를 호출하는 것은 표현식입니다. 매크로를 호출하는 것도 표현식입니다. 괄호로 묶인 새로운 범위 블록 또한 표현식입니다. 예를 들어 다음과 같습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-20-blocks-are-expressions/src/main.rs}}
@@ -121,7 +121,7 @@ Rust에서 함수를 정의하려면 `fn`을 입력한 다음 함수 이름과 �
 함수는 호출하는 코드에 값을 반환할 수 있습니다. 반환 값은 이름을 지정하지 않지만, 화살표(`->`) 뒤에 유형을 선언해야 합니다. Rust에서 함수의 반환 값은 마지막 표현식과 동일합니다.
 함수의 몸체 블록에서 표현식을 반환할 수 있습니다. `return` 키워드를 사용하여 값을 지정하여 함수에서 일찍 반환할 수 있지만, 대부분의 함수는 마지막 표현식을 암시적으로 반환합니다. 다음은 값을 반환하는 함수의 예입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-21-function-return-values/src/main.rs}}
@@ -143,7 +143,7 @@ let x = 5;
 
 다른 예를 살펴보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-22-function-parameter-and-return/src/main.rs}}
@@ -151,7 +151,7 @@ let x = 5;
 
 이 코드를 실행하면 `The value of x is: 6`이 출력됩니다. 하지만 `x + 1` 줄에 세미콜론을 추가하여 표현식에서 문장으로 변경하면 오류가 발생합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-23-statements-dont-return-values/src/main.rs}}

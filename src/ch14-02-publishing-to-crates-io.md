@@ -24,7 +24,7 @@ Rust와 Cargo는 게시된 패키지를 다른 사람들이 쉽게 찾고 사용
 
 <img alt=\"`my_crate`의 `add_one` 함수에 대한 렌더링된 HTML 설명서\" src=\"img/trpl14-01.png\" class=\"center\" />
 
-<span class=\"caption\">그림 14-1: `add_one` 함수에 대한 HTML 설명서</span>
+그림 14-1: `add_one` 함수에 대한 HTML 설명서
 
 #### 일반적으로 사용되는 섹션
 
@@ -76,7 +76,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 <img alt=\"crate 전체에 대한 주석이 포함된 렌더링된 HTML 문서\" src=\"img/trpl14-02.png\" class=\"center\" />
 
-<span class=\"caption\">그림 14-2: `my_crate`의 렌더링된 문서, crate 전체를 설명하는 주석 포함</span>
+그림 14-2: `my_crate`의 렌더링된 문서, crate 전체를 설명하는 주석 포함
 
 항목 내부의 문서 주석은 특히 crate 및 모듈을 설명하는 데 유용합니다. 사용자가 컨테이너의 전체 목적을 이해하도록 돕기 위해 컨테이너에 대한 설명을 추가합니다.
 
@@ -106,8 +106,8 @@ crates를 게시할 때 공개 API의 구조는 중요한 고려 사항입니다
 
 <img alt=\"`art` crate의 문서의 맨 앞 페이지: `kinds`와 `utils` 모듈이 나열됨\" src=\"img/trpl14-03.png\" class=\"center\" />
 
-<span class=\"caption\">그림 14-3: `art` crate의 문서의 맨 앞 페이지
-`kinds`와 `utils` 모듈이 나열됨</span>
+그림 14-3: `art` crate의 문서의 맨 앞 페이지
+`kinds`와 `utils` 모듈이 나열됨
 
 `PrimaryColor`와 `SecondaryColor` 타입 및 `mix` 함수는 맨 앞 페이지에 나열되지 않습니다. `kinds`와 `utils`를 클릭해야 볼 수 있습니다.
 
@@ -137,8 +137,8 @@ crates를 게시할 때 공개 API의 구조는 중요한 고려 사항입니다
 
 <img alt=\"`art` crate의 문서의 맨 앞 페이지: 다시 내보낸 항목이 나열됨\" src=\"img/trpl14-04.png\" class=\"center\" />
 
-<span class=\"caption\">그림 14-4: `art` crate의 문서의 맨 앞 페이지
-다시 내보낸 항목이 나열됨</span>
+그림 14-4: `art` crate의 문서의 맨 앞 페이지
+다시 내보낸 항목이 나열됨
 
 `art` crate 사용자는 여전히 14-3번 목록의 내부 구조를 볼 수 있습니다. 14-4번 목록과 같이 사용할 수도 있습니다. 또는 14-5번 목록과 같이 더 편리한 구조를 사용할 수도 있습니다. 14-6번 목록을 참조하세요.
 
@@ -171,7 +171,7 @@ abcdefghijklmnopqrstuvwxyz012345
 
  crate는 고유한 이름이 필요합니다. 로컬로 crate를 작업하는 동안 crate 이름을 원하는 대로 지정할 수 있습니다. 그러나 crates.io의 crate 이름은 선착순으로 할당됩니다. crate 이름이 사용되면 다른 사람은 해당 이름으로 crate를 게시할 수 없습니다. crate를 게시하기 전에 원하는 이름을 검색하십시오. 이름이 이미 사용된 경우 *Cargo.toml* 파일의 `[package]` 섹션에서 `name` 필드를 편집하여 게시 시 사용할 새로운 이름으로 변경해야 합니다.
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 [package]
@@ -200,7 +200,7 @@ Caused by:
 
  이 오류는 설명과 라이선스가 누락되어 있기 때문에 발생합니다. 사람들이 crate가 무엇을 하는지, 어떤 조건으로 사용할 수 있는지 알 수 없기 때문입니다. *Cargo.toml*에서 검색 결과에 함께 표시될 간단한 문장이나 두 문장으로 구성된 설명을 추가합니다. `license` 필드에는 사람들이 crate를 사용할 수 있는 조건을 명시하는 *라이선스 식별자 값*을 제공해야 합니다. [Linux Foundation의 소프트웨어 패키지 데이터 교환(SPDX)][spdx]에서 사용할 수 있는 식별자 목록을 확인할 수 있습니다. 예를 들어, crate를 MIT 라이선스로 라이선스했다면 `MIT` 식별자를 추가합니다.
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 [package]
@@ -210,7 +210,7 @@ license = \"MIT\"
 
  SPDX에 없는 라이선스를 사용하려면 라이선스 파일을 추가해야 합니다. 라이선스 파일은 `license-file` 필드에 지정됩니다. 예를 들어, crate가 GPL 라이선스를 사용한다면 다음과 같이 추가할 수 있습니다.
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 [package]
@@ -227,7 +227,7 @@ license-file = \"LICENSE\"
 
 유일한 이름, 버전, 설명 및 라이선스가 추가되면 게시를 준비한 프로젝트의 *Cargo.toml* 파일은 다음과 같습니다.
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 [package]

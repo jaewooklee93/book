@@ -53,7 +53,7 @@ $ cargo run -- to poem.txt > output.txt
 
 터미널에 아무런 출력이 없고 *output.txt*에는 결과가 포함됩니다.
 
-<span class=\"filename\">Filename: output.txt</span>
+Filename: output.txt
 
 ```text
 Are you nobody, too?

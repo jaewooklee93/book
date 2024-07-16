@@ -10,13 +10,13 @@
 
 15-14번 목록은 `CustomSmartPointer` 구조체를 보여주는데, 유일한 사용자 정의 기능은 인스턴스가 범위 밖으로 나갈 때 `Dropping CustomSmartPointer!`를 출력하여 Rust가 `drop` 함수를 실행할 때를 보여주는 것입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-14/src/main.rs}}
 ```
 
-<span class=\"caption\">15-14번 목록: 범위 밖으로 나갈 때 클리너 코드를 넣을 `CustomSmartPointer` 구조체</span>
+15-14번 목록: 범위 밖으로 나갈 때 클리너 코드를 넣을 `CustomSmartPointer` 구조체
 
 `Drop` 트레이트는 예시에 포함되어 있으므로 스코프에 가져오지 않아도 됩니다. `CustomSmartPointer`에 `Drop` 트레이트를 구현하고 `drop` 메서드에 `println!`을 호출하는 구현을 제공합니다. `drop` 함수의 본문은 인스턴스가 범위 밖으로 나갈 때 실행할 코드를 넣을 곳입니다. 현재는 시각적으로 Rust가 `drop`를 언제 호출하는지 보여주기 위해 텍스트를 출력하고 있습니다.
 
@@ -38,13 +38,13 @@ Rust는 인스턴스가 범위 밖으로 나갈 때 자동으로 `drop`을 호�
 
 Listing 15-14에서 보여진 `main` 함수를 참고하여 Listing 15-15와 같이 작성하면 컴파일러 오류가 발생합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-15/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-15: `Drop` 트레이트의 `drop` 메서드를 수동으로 호출하여 일찍 정리하려는 시도</span>
+Listing 15-15: `Drop` 트레이트의 `drop` 메서드를 수동으로 호출하여 일찍 정리하려는 시도
 
 이 코드를 컴파일하려고 시도하면 다음과 같은 오류 메시지가 표시됩니다.
 
@@ -60,13 +60,13 @@ Rust는 `drop`를 명시적으로 호출하지 못하게 하는 이유는 Rust�
 
 `std::mem::drop` 함수는 `Drop` 트레이트의 `drop` 메서드와 다릅니다. 값을 강제로 삭제하려면 `drop` 함수를 호출하여 해당 값을 인자로 전달합니다. 이 함수는 prelude에 있으므로 Listing 15-15의 `main` 함수를 수정하여 `drop` 함수를 호출할 수 있습니다. Listing 15-16과 같이:
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-16/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-16: `std::mem::drop`을 사용하여 값이 범위를 벗어나기 전에 명시적으로 삭제</span>
+Listing 15-16: `std::mem::drop`을 사용하여 값이 범위를 벗어나기 전에 명시적으로 삭제
 
 이 코드를 실행하면 다음과 같은 출력이 표시됩니다.
 

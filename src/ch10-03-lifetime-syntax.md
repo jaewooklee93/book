@@ -29,7 +29,7 @@
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-16/src/main.rs}}
 ```
 
-<span class=\"caption\">10-16번 목록: 값이 범위를 벗어난 참조를 사용하려는 시도</span>
+10-16번 목록: 값이 범위를 벗어난 참조를 사용하려는 시도
 
 > 참고: 10-16, 10-17, 10-23번 목록의 예제는 초기값이 없는 변수를 선언하므로
 > 변수 이름이 외부 범위에 존재합니다. 처음에는 이것이 Rust의 null 값이
@@ -65,7 +65,7 @@ Rust 컴파일러에는 모든 보로가 유효한지 확인하기 위해 범위
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-17/src/main.rs}}
 ```
 
-<span class=\"caption\">10-17번 목록: `r`과 `x`의 라이프타임을 `'a`와 `'b`로 표시</span>
+10-17번 목록: `r`과 `x`의 라이프타임을 `'a`와 `'b`로 표시
 
 여기서 `r`의 라이프타임을 `'a`로, `x`의 라이프타임을 `'b`로 표시했습니다.
 내부 `'b` 블록이 외부 `'a` 블록보다 훨씬 작다는 것을 알 수 있습니다.
@@ -78,7 +78,7 @@ Rust 컴파일러에는 모든 보로가 유효한지 확인하기 위해 범위
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-18/src/main.rs}}
 ```
 
-<span class=\"caption\">10-18번 목록: 데이터가 참조보다 더 오래 유효하기 때문에 유효한 참조</span>
+10-18번 목록: 데이터가 참조보다 더 오래 유효하기 때문에 유효한 참조
 
 여기서 `x`는 `'b`라는 라이프타임을 가지고 있으며, 이 경우 `'a`보다 큽니다. 즉, `r`이 `x`를 참조할 수 있습니다. Rust는 `r`의 참조가 항상 유효할 때까지 `x`가 유효하다는 것을 알기 때문입니다.
 
@@ -88,25 +88,25 @@ Rust 컴파일러에는 모든 보로가 유효한지 확인하기 위해 범위
 
 두 문자열 슬라이스의 더 긴 것을 반환하는 함수를 작성합니다. 이 함수는 두 문자열 슬라이스를 받아 하나의 문자열 슬라이스를 반환합니다. `longest` 함수를 구현한 후 10-19번 목록의 코드는 `The longest string is abcd`를 출력해야 합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-19/src/main.rs}}
 ```
 
-<span class=\"caption\">10-19번 목록: `longest` 함수를 호출하여 두 문자열 슬라이스 중 더 긴 것을 찾는 `main` 함수</span>
+10-19번 목록: `longest` 함수를 호출하여 두 문자열 슬라이스 중 더 긴 것을 찾는 `main` 함수
 
 참고로 함수는 문자열 슬라이스를 받고 싶습니다. 문자열 슬라이스는 참조이기 때문입니다. `longest` 함수가 매개변수의 소유권을 가지지 않고 싶습니다. 4장의 "String Slices as Parameters" 섹션을 참조하여 10-19번 목록에서 사용하는 매개변수가 원하는 매개변수인 이유에 대한 자세한 내용을 확인하십시오.
 
 10-20번 목록에 나와 있는 `longest` 함수를 구현하려고 하면 컴파일되지 않습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-20/src/main.rs:here}}
 ```
 
-<span class=\"caption\">10-20번 목록: 컴파일되지 않은 `longest` 함수의 구현. 두 문자열 슬라이스 중 더 긴 것을 반환하지만 아직 컴파일되지 않습니다.</span>
+10-20번 목록: 컴파일되지 않은 `longest` 함수의 구현. 두 문자열 슬라이스 중 더 긴 것을 반환하지만 아직 컴파일되지 않습니다.
 
 대신 다음과 같은 라이프타임에 대한 오류 메시지를 받습니다.
 
@@ -138,13 +138,13 @@ Rust 컴파일러에는 모든 보로가 유효한지 확인하기 위해 범위
 
 우리는 반환 참조가 두 매개변수 모두 유효할 때만 유효하도록 서명을 표현하고 싶습니다. 이것이 매개변수의 라이프타임과 반환 값 간의 관계입니다. `'a` 라는 이름을 지정한 후 각 참조에 추가합니다. Listing 10-21 에서 보여주는 것처럼
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-21/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 10-21: `longest` 함수 정의가 서명에서 모든 참조가 같은 라이프타임 `'a` 를 가져야 한다는 것을 명시합니다.</span>
+Listing 10-21: `longest` 함수 정의가 서명에서 모든 참조가 같은 라이프타임 `'a` 를 가져야 한다는 것을 명시합니다.
 
 이 코드는 컴파일되어 `main` 함수와 함께 사용할 때 원하는 결과를 생성합니다. Listing 10-19 에서 확인할 수 있습니다.
 
@@ -160,25 +160,25 @@ Rust 컴파일러에는 모든 보로가 유효한지 확인하기 위해 범위
 
 `longest` 함수가 라이프타임 애너테이션을 통해 어떻게 제한되는지 살펴보겠습니다. 다양한 구체적인 라이프타임을 가진 참조를 전달하는 방법을 살펴보겠습니다. 10-22번 목록은 간단한 예입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-22/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 10-22: 다양한 구체적인 라이프타임을 가진 `String` 값의 참조를 사용하는 `longest` 함수</span>
+Listing 10-22: 다양한 구체적인 라이프타임을 가진 `String` 값의 참조를 사용하는 `longest` 함수
 
 이 예제에서 `string1`은 외부 범위의 끝까지 유효하며, `string2`는 내부 범위의 끝까지 유효하며, `result`는 내부 범위의 끝까지 유효한 것을 참조합니다. 이 코드를 실행하면 보로 체커가 승인하여 컴파일되고 `가장 긴 문자열은 긴 문자열입니다`를 출력합니다.
 
 다음으로, `result` 참조의 라이프타임이 두 개의 인수의 라이프타임 중 더 작은 라이프타임이어야 한다는 것을 보여주는 예제를 살펴보겠습니다. `result` 변수의 선언을 내부 범위 외부로 이동하지만, `string2`에 대한 값을 할당하는 부분은 `string2`가 있는 내부 범위 안에 남겨둡니다. 그런 다음 `println!`을 내부 범위가 끝난 후 외부 범위로 이동합니다. 10-23번 목록의 코드는 컴파일되지 않습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-23/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 10-23: `string2`가 범위를 벗어난 후 `result`를 사용하려는 시도</span>
+Listing 10-23: `string2`가 범위를 벗어난 후 `result`를 사용하려는 시도
 
 이 코드를 컴파일하려고 하면 다음과 같은 오류 메시지가 표시됩니다.
 
@@ -196,7 +196,7 @@ Rust 컴파일러에는 모든 보로가 유효한지 확인하기 위해 범위
 
 함수가 무엇을 하는지에 따라 라이프타임 매개변수를 어떻게 지정해야 하는지가 달라집니다. 예를 들어, `longest` 함수의 구현을 항상 첫 번째 인수를 반환하도록 변경하면 `y` 인수에 대해 라이프타임을 지정할 필요가 없습니다. 다음 코드는 컴파일됩니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-08-only-one-reference-with-lifetime/src/main.rs:here}}
@@ -206,7 +206,7 @@ Rust 컴파일러에는 모든 보로가 유효한지 확인하기 위해 범위
 
 함수에서 참조를 반환할 때 반환 유형의 수명 매개변수는 매개변수 중 하나의 수명 매개변수와 일치해야 합니다. 반환된 참조가 매개변수 중 하나를 가리키지 않는다면, 해당 참조는 함수 내에서 생성된 값을 가리켜야 합니다. 그러나 이것은 함수가 끝날 때 해당 값이 범위를 벗어나기 때문에 유효하지 않은 참조가 될 것입니다. `longest` 함수의 시도된 구현을 살펴보겠습니다. 이 구현은 컴파일되지 않습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-09-unrelated-lifetime/src/main.rs:here}}
@@ -226,13 +226,13 @@ Rust 컴파일러에는 모든 보로가 유효한지 확인하기 위해 범위
 
 지금까지 정의한 구조는 모두 소유된 유형을 포함하고 있습니다. 구조에 참조를 포함하도록 정의할 수 있지만, 그렇게 하면 구조 정의의 모든 참조에 대해 수명 어노테이션을 추가해야 합니다. 10-24번 목록에는 `ImportantExcerpt`라는 구조가 있습니다. 이 구조는 문자열 슬라이스를 포함합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-24/src/main.rs}}
 ```
 
-<span class=\"caption\">10-24번 목록: `ImportantExcerpt`라는 구조를 포함하는 문자열 슬라이스를 포함하는 구조</span>
+10-24번 목록: `ImportantExcerpt`라는 구조를 포함하는 문자열 슬라이스를 포함하는 구조
 
 이 구조는 `part`라는 하나의 필드를 가지고 있으며 문자열 슬라이스를 포함합니다. 일반 데이터 유형과 마찬가지로 구조 이름 뒤에 각각의 구조 정의 내부에서 사용할 수 있는 수명 매개변수의 이름을 괄호 안에 선언합니다. 이 어노테이션은 `ImportantExcerpt` 인스턴스가 `part` 필드에 포함된 참조보다 오래 살 수 없음을 의미합니다.
 
@@ -242,13 +242,13 @@ Rust 컴파일러에는 모든 보로가 유효한지 확인하기 위해 범위
 
 참조에는 항상 수명이 있으며, 참조를 사용하는 함수 또는 구조에 대해 수명 매개변수를 지정해야 합니다. 그러나 4-9번 목록에서 본 함수는 수명 어노테이션 없이 컴파일되었습니다. 10-25번 목록에 다시 표시된 함수입니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-25/src/main.rs:here}}
 ```
 
-<span class=\"caption\">10-25번 목록: 4-9번 목록에서 정의한 함수를 다시 표시합니다. 매개변수와 반환 유형이 참조이지만 수명 어노테이션 없이 컴파일되었습니다.</span>
+10-25번 목록: 4-9번 목록에서 정의한 함수를 다시 표시합니다. 매개변수와 반환 유형이 참조이지만 수명 어노테이션 없이 컴파일되었습니다.
 
 이 함수가 수명 어노테이션 없이 컴파일되는 이유는 역사적인 이유 때문입니다.초기 버전(1.0 이전)의 Rust에서는 이 코드가 컴파일되지 않았을 것입니다. 모든 참조가 명시적인 수명을 필요로 했기 때문입니다. 당시 함수 선언은 다음과 같이 작성되었을 것입니다.
 

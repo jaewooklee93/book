@@ -12,8 +12,8 @@
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-01/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-1: `i32` 유형의 값을 저장하는 새 비어 있는 벡터를
-만드는 것</span>
+Listing 8-1: `i32` 유형의 값을 저장하는 새 비어 있는 벡터를
+만드는 것
 
 여기서 유형 지정을 추가했습니다. 이 벡터에 값을 삽입하지 않기 때문에 Rust는 우리가 저장하려는 유형의 요소를 알지 못합니다. 이는 중요한 점입니다. 벡터는 제네릭을 사용하여 구현됩니다. 제네릭을 사용하여 자신의 유형으로 제네릭을 사용하는 방법은 제10장에서 다룹니다. 지금은 `Vec<T>`가 표준 라이브러리에서 제공하는 유형이 어떤 유형의 값을 저장할 수 있는지 알고 있습니다. 특정 유형의 값을 저장하는 벡터를 만들 때는 각각의 유형을 괄호 안에 지정할 수 있습니다. Listing 8-1에서 `v`의 `Vec<T>`는 `i32` 유형의 요소를 저장할 것이라고 Rust에 알렸습니다.
 
@@ -23,7 +23,7 @@
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-02/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-2: 값을 포함하는 새로운 벡터를 만드는 것</span>
+Listing 8-2: 값을 포함하는 새로운 벡터를 만드는 것
 
 초기 `i32` 값을 제공했기 때문에 Rust는 `v`의 유형이 `Vec<i32>`라고 추론할 수 있으며 유형 지정이 필요하지 않습니다. 다음으로 벡터를 수정하는 방법을 살펴보겠습니다.
 
@@ -35,7 +35,7 @@
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-03/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-3: `push` 메서드를 사용하여 벡터에 값을 추가하는 것</span>
+Listing 8-3: `push` 메서드를 사용하여 벡터에 값을 추가하는 것
 
 변수와 마찬가지로 값을 변경할 수 있도록 `mut` 키워드를 사용해야 합니다. 제3장에서 논의했듯이
 `i32` 유형의 숫자를 넣으면 Rust는 이를 추론하므로 유형 지정이 필요하지 않습니다.
@@ -50,8 +50,8 @@ Listing 8-4는 인덱싱 문법과 `get` 메서드를 사용하여 벡터의 값
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-04/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-4: 인덱싱 문법과 `get` 메서드를 사용하여 벡터의
-요소에 액세스하는 것</span>
+Listing 8-4: 인덱싱 문법과 `get` 메서드를 사용하여 벡터의
+요소에 액세스하는 것
 
 여기 몇 가지 세부 사항에 주의하십시오. 인덱스 값 `2`를 사용하여 0부터 시작하는 인덱스 번호로 3번째 요소를 가져옵니다. `&`와 `[]`를 사용하면 인덱스 값에 있는 요소에 대한 참조를 얻습니다. `get` 메서드는 인덱스 값에 해당하는 요소를 반환하는 데 사용됩니다. `get` 메서드는 `None`을 반환할 수 있습니다. 이는 인덱스가 벡터 범위를 벗어났을 때 발생합니다. `get` 메서드를 사용하려면 `Option<T>`을 사용하여 결과를 처리해야 합니다. `Option<T>`은 `Some(T)` 또는 `None`을 나타내는 옵셔널 유형입니다. `Some(T)`는 `T` 유형의 값을 포함하는 옵셔널입니다. `None`은 값이 없는 옵셔널입니다. `Option<T>`을 사용하여 `get` 메서드의 결과를 처리하면 `None`을 반환하는 경우 오류를 방지할 수 있습니다.
 
@@ -63,7 +63,7 @@ Rust는 요소에 참조하는 두 가지 방법을 제공하여 프로그램이
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-05/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-5: 5개의 요소를 포함하는 벡터에서 인덱스 100의 요소에 액세스하려는 시도</span>
+Listing 8-5: 5개의 요소를 포함하는 벡터에서 인덱스 100의 요소에 액세스하려는 시도
 
 이 코드를 실행하면 첫 번째 `[]` 메서드는 존재하지 않는 요소에 참조하기 때문에 프로그램이 panic하게 됩니다. 이 메서드는 벡터의 끝을 넘어서는 요소에 액세스하려는 시도가 있을 때 프로그램이 충돌하도록 원하는 경우에 가장 적합합니다.
 
@@ -76,7 +76,7 @@ Rust는 요소에 참조하는 두 가지 방법을 제공하여 프로그램이
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-06/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-6: 벡터의 첫 번째 요소에 참조를 가질 때 요소를 추가하려는 시도</span>
+Listing 8-6: 벡터의 첫 번째 요소에 참조를 가질 때 요소를 추가하려는 시도
 
 이 코드를 컴파일하면 다음과 같은 오류가 발생합니다:
 
@@ -96,7 +96,7 @@ Listing 8-6의 코드는 작동해야 할 것처럼 보입니다. 첫 번째 요
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-07/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-7: `for` 루프를 사용하여 `i32` 값을 가진 벡터의 각 요소를 출력하는 방법</span>
+Listing 8-7: `for` 루프를 사용하여 `i32` 값을 가진 벡터의 각 요소를 출력하는 방법
 
 변수 벡터의 각 요소에 대한 가변 참조를 순회하여 모든 요소에 변경 사항을 적용하는 방법도 있습니다. Listing 8-8은 가변 참조를 가진 각 요소를 순회하는 `for` 루프를 보여줍니다.
 
@@ -104,7 +104,7 @@ Listing 8-6의 코드는 작동해야 할 것처럼 보입니다. 첫 번째 요
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-08/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-8: 가변 참조를 가진 각 요소를 순회하여 벡터의 각 요소를 변경하는 방법</span>
+Listing 8-8: 가변 참조를 가진 각 요소를 순회하여 벡터의 각 요소를 변경하는 방법
 
 벡터의 각 요소에 `50`을 추가합니다.
 
@@ -112,7 +112,7 @@ Listing 8-6의 코드는 작동해야 할 것처럼 보입니다. 첫 번째 요
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-08/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-8: 변경 가능한 참조를 사용하여 벡터 요소를 반복</span>
+Listing 8-8: 변경 가능한 참조를 사용하여 벡터 요소를 반복
 
 변경 가능한 참조가 가리키는 값을 변경하려면 `*` 해제 연산자를 사용하여 `i` 안의 값에 접근해야 합니다. 그런 다음 `+=` 연산자를 사용할 수 있습니다. 해제 연산자에 대해서는 제15장의 \"해제 연산자를 사용하여 값에 대한 포인터를 따라가기\" 섹션에서 자세히 설명합니다.
 
@@ -128,7 +128,7 @@ Listing 8-6의 코드는 작동해야 할 것처럼 보입니다. 첫 번째 요
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-09/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-9: 다양한 유형을 저장하는 벡터에 `enum`을 정의</span>
+Listing 8-9: 다양한 유형을 저장하는 벡터에 `enum`을 정의
 
 Rust는 컴파일 시간에 벡터에 포함될 유형을 알아야 하므로 각 요소를 저장하기 위해 헤프에 얼마나 많은 메모리가 필요한지 정확히 알 수 있습니다. 또한 Rust는 이 벡터에 허용되는 유형에 대해 명시적으로 알려야 합니다. Rust가 벡터에 모든 유형을 허용한다면, 벡터 요소에 대해 수행되는 작업으로 인해 하나 이상의 유형이 오류를 일으킬 수 있습니다. `enum`과 `match` 표현식을 사용하면 Rust가 제6장에서 논의한 것처럼 컴파일 시간에 모든 가능한 경우가 처리되도록 보장합니다.
 
@@ -144,7 +144,7 @@ Rust는 컴파일 시간에 벡터에 포함될 유형을 알아야 하므로 �
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-10/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-10: 벡터와 그 요소가 삭제되는 위치를 보여주기</span>
+Listing 8-10: 벡터와 그 요소가 삭제되는 위치를 보여주기
 
 벡터가 해제되면 그 안에 있는 모든 내용도 해제되므로, 저장된 정수는 정리됩니다. 대출 검사기는 벡터 자체가 유효한 동안 벡터의 내용에 대한 모든 참조가 사용되도록 보장합니다.
 

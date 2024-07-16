@@ -16,13 +16,13 @@
 
 표 15-1은 `Box`를 사용하여 힙에 `i32` 값을 저장하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-01/src/main.rs}}
 ```
 
-<span class=\"caption\">표 15-1: `Box`를 사용하여 힙에 `i32` 값을 저장하기</span>
+표 15-1: `Box`를 사용하여 힙에 `i32` 값을 저장하기
 
 `b` 변수를 정의하여 `5` 값을 가리키는 `Box`의 값을 할당합니다. 이 프로그램은 `b = 5`를 출력합니다. 이 경우, `Box` 내의 데이터에 액세스하는 방법은 데이터가 스택에 있었다면과 동일합니다. 다른 소유된 값과 마찬가지로, `Box`가 `main` 함수의 범위를 벗어나면(즉, `b`가 끝나면) 해당 `Box`와 가리키는 데이터가 모두 해제됩니다.
 
@@ -54,25 +54,25 @@
 
 표 15-2에는 컨스 리스트 데이터 구조를 나타내는 `enum` 정의가 포함되어 있습니다. 이 코드는 아직 컴파일되지 않을 것입니다. `List` 유형은 알려진 크기를 가지지 않기 때문입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-02/src/main.rs:here}}
 ```
 
-<span class=\"caption\">표 15-2: `i32` 값의 컨스 리스트를 나타내는 `enum`을 정의하는 첫 번째 시도</span>
+표 15-2: `i32` 값의 컨스 리스트를 나타내는 `enum`을 정의하는 첫 번째 시도
 
 > 참고: 이 예제에서는 `i32` 값만 저장하는 컨스 리스트를 구현했습니다. 제10장에서 논의했듯이, 일반화를 사용하여 어떤 유형의 값을 저장할 수 있는 컨스 리스트 유형을 정의할 수도 있습니다.
 
 `List` 유형을 사용하여 `1, 2, 3` 리스트를 저장하는 것은 표 15-3과 같습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-03/src/main.rs:here}}
 ```
 
-<span class=\"caption\">표 15-3: `List` `enum`을 사용하여 `1, 2, 3` 리스트를 저장하는 방법</span>
+표 15-3: `List` `enum`을 사용하여 `1, 2, 3` 리스트를 저장하는 방법
 
 첫 번째 `Cons` 값은 `1`과 다른 `List` 값을 포함합니다. 이 `List` 값은 또 다른 `Cons` 값을 포함하며 `2`와 다른 `List` 값을 포함합니다. 이 `List` 값은 `3`을 포함하는 또 다른 `Cons` 값이며 마지막 `List` 값은 `Nil`입니다. `Nil`은 리스트의 끝을 나타내는 재귀적이지 않은 변형입니다.
 
@@ -82,7 +82,7 @@
 {{#include ../listings/ch15-smart-pointers/listing-15-03/output.txt}}
 ```
 
-<span class=\"caption\">표 15-4: 재귀 `enum`을 정의하려고 할 때 발생하는 오류</span>
+표 15-4: 재귀 `enum`을 정의하려고 할 때 발생하는 오류
 
 오류 메시지에서 이 유형은 "무한 크기"를 가지고 있음을 알 수 있습니다. 이는 `List`를 재귀적으로 정의했기 때문입니다. 즉, `List` 값이 직접 다른 `List` 값을 포함하기 때문입니다. 따라서 Rust는 `List` 값을 저장할 공간을 얼마나 필요로 하는지 알 수 없습니다. 이 오류가 발생하는 이유를 자세히 살펴보기 위해 Rust가 비재귀 유형의 크기를 계산하는 방식을 먼저 살펴보겠습니다.
 
@@ -120,13 +120,13 @@ help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle
 
 Listing 15-2의 `List` enum 정의와 Listing 15-3의 `List` 사용을 Listing 15-5와 같이 변경하면 컴파일이 가능합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-05/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 15-5: `Box<T>`를 사용하여 알 수 있는 크기를 가진 `List`의 정의</span>
+Listing 15-5: `Box<T>`를 사용하여 알 수 있는 크기를 가진 `List`의 정의
 
 `Cons` 변형은 `i32`의 크기와 `Box`의 포인터 데이터 크기를 필요로 합니다. `Nil` 변형은 값을 저장하지 않으므로 `Cons` 변형보다 적은 공간을 차지합니다. 이제 `List` 값이 `i32`의 크기와 `Box`의 포인터 데이터 크기만큼 공간을 차지한다는 것을 알 수 있습니다. `Box`를 사용함으로써 무한한 재귀적인 연결을 끊었기 때문에 컴파일러가 `List` 값을 저장하기 위해 필요한 크기를 알 수 있습니다. Figure 15-2는 `Cons` 변형이 이제 어떻게 보이는지 보여줍니다.
 
@@ -134,7 +134,7 @@ Listing 15-2의 `List` enum 정의와 Listing 15-3의 `List` 사용을 Listing 1
 
 <h1>박스</h1>
 
-<span class=\"caption\">그림 15-2: `Cons`가 `Box`를 갖고 있기 때문에 무한한 크기를 가진 것이 아닌 `List`</span>
+그림 15-2: `Cons`가 `Box`를 갖고 있기 때문에 무한한 크기를 가진 것이 아닌 `List`
 
 박스는 단지 간접 지정과 힙 할당을 제공합니다. 다른 특별한 기능은 없습니다. 이러한 특별한 기능은 나중에 다른 스마트 포인터 유형에서 볼 수 있습니다. 또한 이러한 특별한 기능이 발생시키는 성능 오버헤드가 없기 때문에, 간접 지정만이 필요한 경우(예: `cons` 리스트)에 유용할 수 있습니다. 박스의 다른 사용 사례는 제17장에서도 살펴볼 것입니다.
 

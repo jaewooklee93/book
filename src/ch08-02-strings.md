@@ -19,7 +19,7 @@ Rust의 표준 라이브러리에서 제공되는 `String` 유형은 성장 가�
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-11/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-11: 새로운 빈 `String` 생성</span>
+Listing 8-11: 새로운 빈 `String` 생성
 
 이 줄은 `s`라는 새로운 빈 문자열을 생성합니다. 이에 데이터를 로드할 수 있습니다. 종종 초기 데이터가 있을 때 문자열을 시작하려는 경우가 있습니다. 그럴 때는 `to_string` 메서드를 사용합니다. `Display` 트레이트를 구현하는 모든 유형에서 사용할 수 있는 메서드입니다. 문자열 리터럴은 그렇습니다. Listing 8-12는 두 가지 예입니다.
 
@@ -27,7 +27,7 @@ Rust의 표준 라이브러리에서 제공되는 `String` 유형은 성장 가�
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-12/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-12: 문자열 리터럴에서 `String`을 생성하는 데 `to_string` 메서드 사용</span>
+Listing 8-12: 문자열 리터럴에서 `String`을 생성하는 데 `to_string` 메서드 사용
 
 이 코드는 `initial contents`를 포함하는 문자열을 생성합니다.
 
@@ -37,7 +37,7 @@ Rust의 표준 라이브러리에서 제공되는 `String` 유형은 성장 가�
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-13/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-13: 문자열 리터럴에서 `String`을 생성하는 데 `String::from` 함수 사용</span>
+Listing 8-13: 문자열 리터럴에서 `String`을 생성하는 데 `String::from` 함수 사용
 
 문자열은 많은 용도로 사용되기 때문에 다양한 일반적인 API를 사용하여 문자열을 처리할 수 있습니다. 그중 일부는 중복된 것처럼 보일 수 있지만, 모두 그 자리를 차지합니다! 이 경우 `String::from`과 `to_string`은 동일한 작업을 수행하므로 선택한 것은 스타일과 읽기 쉬움에 따라 다릅니다.
 
@@ -49,7 +49,7 @@ Rust의 표준 라이브러리에서 제공되는 `String` 유형은 성장 가�
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-14/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-14: 다양한 언어로 된 인사말을 문자열에 저장</span>
+Listing 8-14: 다양한 언어로 된 인사말을 문자열에 저장
 
 이 모든 것은 유효한 `String` 값입니다.
 
@@ -65,7 +65,7 @@ Listing 8-15와 같이 문자열 슬라이스를 추가하여 `String`을 확장
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-15/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-15: `push_str` 메서드를 사용하여 문자열 슬라이스를 `String`에 추가</span>
+Listing 8-15: `push_str` 메서드를 사용하여 문자열 슬라이스를 `String`에 추가
 
 이 두 줄 이후 `s`는 `foobar`를 포함하게 됩니다. `push_str` 메서드는 매개변수의 소유권을 가져오지 않아야 하기 때문에 문자열 슬라이스를 가져옵니다. 예를 들어 Listing 8-16의 코드에서 `s2`의 내용을 `s1`에 추가한 후에도 `s2`를 사용할 수 있습니다.
 
@@ -73,7 +73,7 @@ Listing 8-15와 같이 문자열 슬라이스를 추가하여 `String`을 확장
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-16/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-16: `push_str` 메서드를 사용하여 문자열 슬라이스의 내용을 `String`에 추가한 후에도 `s2`를 사용하는 경우</span>
+Listing 8-16: `push_str` 메서드를 사용하여 문자열 슬라이스의 내용을 `String`에 추가한 후에도 `s2`를 사용하는 경우
 
 만약 `push_str` 메서드가 `s2`의 소유권을 가져왔다면, 마지막 줄에서 `s2`의 값을 출력할 수 없었습니다. 그러나 이 코드는 예상대로 작동합니다!
 
@@ -83,7 +83,7 @@ Listing 8-15와 같이 문자열 슬라이스를 추가하여 `String`을 확장
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-17/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-17: `push` 메서드를 사용하여 하나의 문자를 `String`에 추가</span>
+Listing 8-17: `push` 메서드를 사용하여 하나의 문자를 `String`에 추가
 
 결과적으로 `s`는 `lol`을 포함하게 됩니다.
 
@@ -95,7 +95,7 @@ Listing 8-15와 같이 문자열 슬라이스를 추가하여 `String`을 확장
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-18/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-18: `+` 연산자를 사용하여 두 `String` 값을 하나의 새로운 `String` 값으로 결합</span>
+Listing 8-18: `+` 연산자를 사용하여 두 `String` 값을 하나의 새로운 `String` 값으로 결합
 
 `s3` 문자열은 `Hello, world!`를 포함하게 됩니다. `s1`이 추가 후 더 이상 유효하지 않은 이유와 `s2`에 대한 참조를 사용한 이유는 `+` 연산자가 호출될 때 호출되는 메서드의 특징 때문입니다. `+` 연산자는 `add` 메서드를 사용하며, `add` 메서드의 서명은 다음과 같습니다.
 
@@ -140,7 +140,7 @@ fn add(self, s: &str) -> String {
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-19/src/main.rs:here}}
 ```
 
-<span class=\"caption\">8-19번째 코드: `String`에 인덱싱 문법을 사용하려는 시도</span>
+8-19번째 코드: `String`에 인덱싱 문법을 사용하려는 시도
 
 이 코드는 다음과 같은 오류를 발생시킵니다.
 

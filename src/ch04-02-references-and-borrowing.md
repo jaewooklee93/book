@@ -6,7 +6,7 @@ A *참조*는 포인터와 같이 특정 데이터에 접근할 수 있는 주�
 
 `calculate_length` 함수를 정의하고 사용하는 방법은 다음과 같습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-07-reference/src/main.rs:all}}
@@ -18,7 +18,7 @@ A *참조*는 포인터와 같이 특정 데이터에 접근할 수 있는 주�
 for s1. The table for s1 contains the stack data for s1 and points to the
 string data on the heap.\" src=\"img/trpl04-05.svg\" class=\"center\" />
 
-<span class=\"caption\">Figure 4-5: `&String s`가 `String s1`을 가리키는 그림</span>
+Figure 4-5: `&String s`가 `String s1`을 가리키는 그림
 
 > 참고: `&`를 사용하여 참조하는 것의 반대는 *해제*이며, 해제 연산자 `*`로 이루어집니다. 해제 연산자에 대한 자세한 내용은 8장에서 살펴보고, 15장에서 해제의 세부 사항을 논의합니다.
 
@@ -36,13 +36,13 @@ string data on the heap.\" src=\"img/trpl04-05.svg\" class=\"center\" />
 
 그렇다면 대여받은 것을 수정하려고 시도하면 어떻게 될까요? 4-6번 목록의 코드를 시도해 보세요. 스포일러 알림: 작동하지 않습니다!
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-06/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 4-6: 대여받은 값을 수정하려는 시도</span>
+Listing 4-6: 대여받은 값을 수정하려는 시도
 
 오류 메시지는 다음과 같습니다.
 
@@ -57,7 +57,7 @@ string data on the heap.\" src=\"img/trpl04-05.svg\" class=\"center\" />
 Listing 4-6의 코드를 수정하여 변경 가능한 값을 참조하여 수정할 수 있습니다.
 몇 가지 작은 수정을 사용하여 *변경 가능한 참조*를 사용하면 됩니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-09-fixes-listing-04-06/src/main.rs}}
@@ -67,7 +67,7 @@ Listing 4-6의 코드를 수정하여 변경 가능한 값을 참조하여 수�
 
 변경 가능한 참조에는 하나의 큰 제한이 있습니다. 변경 가능한 참조를 가진 경우 해당 값에 다른 참조를 가질 수 없습니다. 다음 코드는 `s`에 두 개의 변경 가능한 참조를 생성하려고 하므로 오류가 발생합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-10-multiple-mut-not-allowed/src/main.rs:here}}

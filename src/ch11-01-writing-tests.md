@@ -80,7 +80,7 @@ Cargo는 테스트를 컴파일하고 실행했습니다. `running 1 test` 라�
 
 자, 테스트를 우리의 필요에 맞게 사용하도록 변경해 보겠습니다. 먼저 `it_works` 함수의 이름을 `exploration`과 같은 다른 이름으로 변경하십시오.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/src/lib.rs}}
@@ -158,7 +158,7 @@ check the line number of the panic matches the line number in the following para
 
 테스트가 통과했습니다! `can_hold` 함수에서 더 작은 사각형이 더 큰 사각형을 포함할 수 없다는 것을 확인하는 또 다른 테스트를 추가해 보겠습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/src/lib.rs:here}}
@@ -234,7 +234,7 @@ Rust에서 테스트를 작성하는 데 사용되는 가장 기본적인 매크
 
 예를 들어, 이름으로 사람들을 인사하는 함수가 있고 함수에 전달하는 이름이 출력에 나타나는지 테스트하려고 합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-05-greeter/src/lib.rs}}
 ```

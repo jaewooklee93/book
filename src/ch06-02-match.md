@@ -13,7 +13,7 @@ Rust는 `match`라는 매우 강력한 제어 흐름 연산자를 가지고 있�
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-03/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 6-3: `match` 표현식을 사용하는 `enum`</span>
+Listing 6-3: `match` 표현식을 사용하는 `enum`
 
 `value_in_cents` 함수의 `match`를 살펴보겠습니다. 먼저 `match` 키워드, 그리고 `coin`이라는 값이 있는 표현식이 있습니다. 이것은 `if` 문과 유사해 보이지만, `if` 문의 경우 조건이 불리언 값으로 평가되어야 하는 반면, `match`는 어떤 타입이든 될 수 있습니다. 이 예제에서 `coin`의 타입은 Listing 6-3의 첫 번째 줄에 정의된 `Coin` enum입니다.
 
@@ -40,7 +40,7 @@ Rust는 `match`라는 매우 강력한 제어 흐름 연산자를 가지고 있�
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-04/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 6-4: `Coin` enum에서 `Quarter` 변형이 `UsState` 값을도 포함하는 경우</span>
+Listing 6-4: `Coin` enum에서 `Quarter` 변형이 `UsState` 값을도 포함하는 경우
 
 친구가 모든 주 쿼터를 수집하려고 한다고 가정해 보겠습니다. 우리가 동전을 종류별로 분류하는 동안, 각 쿼터에 해당하는 주 이름을 외치면 친구가 가지고 있지 않은 주를 추가할 수 있습니다.
 
@@ -64,7 +64,7 @@ Rust는 `match`라는 매우 강력한 제어 흐름 연산자를 가지고 있�
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-05/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 6-5: `Option<i32>`에 대한 `match` 표현식을 사용하는 함수</span>
+Listing 6-5: `Option<i32>`에 대한 `match` 표현식을 사용하는 함수
 
 Listing 6-5의 `plus_one` 함수의 첫 번째 실행을 자세히 살펴보겠습니다. `plus_one(five)`를 호출하면 `plus_one` 함수의 `x` 변수에는 `Some(5)` 값이 있습니다. `match`를 실행하고 각 일치 팔과 비교합니다.
 

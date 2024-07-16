@@ -15,7 +15,7 @@
 
 처음 챕터에서 `adder` 프로젝트를 생성했을 때 Cargo가 자동으로 생성한 코드를 기억하십시오.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs}}
@@ -100,7 +100,7 @@ adder
 
 그리고 `setup`이라는 함수를 넣으면, 여러 테스트 함수에서 공유할 수 있는 코드를 `setup`에 추가할 수 있습니다.
 
-<span class=\"filename\">Filename: tests/common.rs</span>
+Filename: tests/common.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-12-shared-test-code-problem/tests/common.rs}}
@@ -131,7 +131,7 @@ adder
 
 `tests/common/mod.rs`를 만들면, 이를 모든 통합 테스트 파일에서 모듈로 사용할 수 있습니다. 예를 들어, `tests/integration_test.rs`의 `it_adds_two` 테스트에서 `setup` 함수를 호출하는 방법은 다음과 같습니다.
 
-<span class=\"filename\">Filename: tests/integration_test.rs</span>
+Filename: tests/integration_test.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-13-fix-shared-test-code-problem/tests/integration_test.rs}}

@@ -40,14 +40,14 @@ Listing 18-1은 `if let`, `else if`, `else if let` 표현식을 혼합하여 사
 
 Listing 18-1의 코드는 사용자 입력에서 받은 값을 기반으로 배경 색상을 결정하는 방법을 보여줍니다. 이 예제에서는 실제 프로그램이 사용자 입력에서 받을 수 있는 값을 하드코딩하여 만들었습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-01/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 18-1: `if let`, `else if`, `else if let`,
-`else`를 혼합</span>
+Listing 18-1: `if let`, `else if`, `else if let`,
+`else`를 혼합
 
 사용자가 좋아하는 색상을 지정하면 해당 색상이 배경 색상으로 사용됩니다. 좋아하는 색상이 지정되지 않았고 오늘이 화요일이라면 배경 색상은 초록색입니다. 그렇지 않으면 사용자가 나이를 문자열로 지정하고 성공적으로 숫자로 변환할 수 있다면, 숫자의 값에 따라 보라색 또는 주황색이 배경 색상이 됩니다. 위의 조건이 모두 적용되지 않으면 배경 색상은 파란색입니다.
 
@@ -65,7 +65,7 @@ Listing 18-1의 코드는 사용자 입력에서 받은 값을 기반으로 배�
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-02/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 18-2: `while let` 루프를 사용하여 `stack.pop()`이 `Some`을 반환하는 동안 값을 출력</span>
+Listing 18-2: `while let` 루프를 사용하여 `stack.pop()`이 `Some`을 반환하는 동안 값을 출력
 
 이 예제는 3, 2, 그리고 1을 출력합니다. `pop` 메서드는 벡터에서 마지막 요소를 제거하고 `Some(value)`를 반환합니다. 벡터가 비어 있으면 `pop`은 `None`을 반환합니다. `while` 루프는 `pop`이 `Some`을 반환하는 동안 코드 블록을 계속 실행합니다. `pop`이 `None`을 반환하면 루프가 중단됩니다. `while let`을 사용하여 스택에서 모든 요소를 팝할 수 있습니다.
 
@@ -77,7 +77,7 @@ Listing 18-1의 코드는 사용자 입력에서 받은 값을 기반으로 배�
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-03/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 18-3: `for` 루프에서 패턴을 사용하여 튜플을 분해</span>
+Listing 18-3: `for` 루프에서 패턴을 사용하여 튜플을 분해
 
 18-3번 목록의 코드는 다음과 같은 출력을 생성합니다.
 
@@ -109,7 +109,7 @@ let PATTERN = EXPRESSION;
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-04/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 18-4: 패턴을 사용하여 튜플을 분해하고 한 번에 세 개의 변수를 생성</span>
+Listing 18-4: 패턴을 사용하여 튜플을 분해하고 한 번에 세 개의 변수를 생성
 
 여기서 우리는 튜플을 패턴에 맞춥니다. Rust는 `(1, 2, 3)` 값을 패턴과 비교합니다.
 Rust는 패턴을 사용하여 값을 분해하고 변수에 할당할 수 있습니다. 패턴은 값의 구조를 나타내는 표현식입니다. 예를 들어, 튜플 `(1, 2, 3)`에 대한 패턴 `(x, y, z)`를 사용하면 Rust는 값이 패턴에 맞는지 확인합니다. 만약 맞으면 `1`을 `x`에, `2`를 `y`에, `3`을 `z`에 할당합니다. 이 튜플 패턴은 세 개의 개별 변수 패턴을 중첩한 것과 같다고 생각할 수 있습니다.
@@ -120,7 +120,7 @@ Rust는 패턴을 사용하여 값을 분해하고 변수에 할당할 수 있�
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-05/src/main.rs:here}}
 ```
 
-<span class=\"caption\">18-5번 목록: 튜플의 요소 수와 일치하지 않는 패턴으로 인해 오류가 발생하는 코드</span>
+18-5번 목록: 튜플의 요소 수와 일치하지 않는 패턴으로 인해 오류가 발생하는 코드
 
 이 코드를 컴파일하려고 하면 다음과 같은 유형 오류가 발생합니다.
 
@@ -138,17 +138,17 @@ Rust는 패턴을 사용하여 값을 분해하고 변수에 할당할 수 있�
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-06/src/main.rs:here}}
 ```
 
-<span class=\"caption\">18-6번 목록: 함수 선언문에서 패턴이 사용되는 매개변수</span>
+18-6번 목록: 함수 선언문에서 패턴이 사용되는 매개변수
 
 `x` 부분은 패턴입니다! `let`과 마찬가지로 함수의 인수에 튜플을 매칭할 수 있습니다. 18-7번 목록은 함수에 전달되는 튜플의 값을 분리합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-07/src/main.rs}}
 ```
 
-<span class=\"caption\">18-7번 목록: 매개변수가 튜플을 해체하는 함수</span>
+18-7번 목록: 매개변수가 튜플을 해체하는 함수
 
 이 코드는 `Current location: (3, 5)`를 출력합니다. `&(3, 5)` 값이 패턴 `&(x, y)`에 맞기 때문에 `x`는 값 `3`이고 `y`는 값 `5`입니다.
 

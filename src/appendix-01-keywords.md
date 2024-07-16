@@ -75,7 +75,7 @@
 
 예를 들어, `match`는 키워드입니다. 다음 함수 이름으로 `match`를 사용하려고 시도하면 다음과 같은 오류가 발생합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 fn match(needle: &str, haystack: &str) -> bool {

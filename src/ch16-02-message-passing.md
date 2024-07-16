@@ -13,13 +13,13 @@
 
 먼저, Listing 16-6에서 채널을 생성하지만 아무것도 하지 않습니다. 이 코드는 Rust가 우리가 채널을 통해 어떤 유형의 값을 보내고 싶은지 알 수 없기 때문에 컴파일되지 않습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-06/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-6: 채널 생성 및 두 부분을 `tx`와 `rx`에 할당</span>
+Listing 16-6: 채널 생성 및 두 부분을 `tx`와 `rx`에 할당
 
 `mpsc::channel` 함수를 사용하여 새로운 채널을 생성합니다. `mpsc`는 *여러 생산자, 하나의 소비자*를 의미합니다. 간단히 말해서, Rust의 표준 라이브러리에서 채널을 구현하는 방식은 여러 개의 *보내는* 끝이 값을 생성할 수 있지만 하나의 *받는* 끝만이 값을 소비할 수 있습니다. 여러 개의 스트림이 하나의 큰 강으로 합쳐지는 것을 상상해 보세요. 스트림을 통해 보낸 모든 것이 결국 강의 끝에 도착합니다. 지금은 하나의 생산자로 시작하지만, 이 예제가 작동하면 여러 생산자를 추가할 것입니다.
 
@@ -29,13 +29,13 @@
 
 Listing 16-7에서 보내는 끝을 생성된 스레드로 이동하고 하나의 문자열을 보내도록 하겠습니다. 이렇게 하면 생성된 스레드가 메인 스레드와 소통하는 것입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-07/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-7: `tx`를 생성된 스레드로 이동하고 'hi'를 보냅니다.</span>
+Listing 16-7: `tx`를 생성된 스레드로 이동하고 'hi'를 보냅니다.
 
 다시 한번 `thread::spawn`을 사용하여 새로운 스레드를 생성하고 `move`를 사용하여 생성된 스레드가 `tx`를 소유하도록 합니다. 생성된 스레드는 채널을 통해 메시지를 보내기 위해 전송기를 소유해야 합니다.
 
@@ -43,13 +43,13 @@ Listing 16-7에서 보내는 끝을 생성된 스레드로 이동하고 하나�
 
 16-8번 목록에서 메인 스레드에서 값을 받는 방법을 살펴보겠습니다. 이것은 강물 끝에서 고무 오리 받는 것과 같습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-08/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-8: 메인 스레드에서 값 "hi"를 받고 출력</span>
+Listing 16-8: 메인 스레드에서 값 "hi"를 받고 출력
 
 받는 쪽에는 `recv`와 `try_recv`라는 두 가지 유용한 메서드가 있습니다. `recv` 메서드는 받는 쪽이 값을 받을 때까지 메인 스레드의 실행을 차단합니다. 값이 전송되면 `recv` 메서드는 `Result<T, E>` 형식으로 값을 반환합니다. 보내는 쪽이 채널을 닫으면 `recv` 메서드는 더 이상 값이 오지 않음을 나타내는 오류를 반환합니다.
 
@@ -71,13 +71,13 @@ Got: hi
 
 소유권 규칙은 메시지 전송에서 중요한 역할을 합니다. 소유권 규칙을 고려하면 안전하고 병렬 실행 코드를 작성할 수 있습니다. 채널과 소유권이 함께 작동하여 오류를 방지하는 방법을 보여주기 위해 실험을 해 보겠습니다. `val` 값을 다른 스레드에서 `tx.send`를 통해 전송한 후에 사용하려고 시도해 보겠습니다. 16-9번 목록의 코드를 컴파일해 보면 왜 이 코드가 허용되지 않는지 확인할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-09/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-9: 채널을 통해 전송한 후 `val`을 사용하려고 시도</span>
+Listing 16-9: 채널을 통해 전송한 후 `val`을 사용하려고 시도
 
 여기서 `tx.send`를 통해 채널로 `val` 값을 전송한 후에 `val`을 출력하려고 합니다. 이를 허용하면 좋지 않습니다. 값이 다른 스레드로 전송되면 다른 스레드가 값을 수정하거나 해제하기 전에 우리가 값을 다시 사용하려고 할 수 있습니다. 다른 스레드의 수정은 불일치하거나 없는 데이터로 인해 오류 또는 예상치 못한 결과를 초래할 수 있습니다. 그러나 Rust는 16-9번 목록의 코드를 컴파일하려고 할 때 오류를 발생시킵니다.
 
@@ -91,13 +91,13 @@ Got: hi
 
 Listing 16-8의 코드는 컴파일되고 실행되었지만, 두 개의 별도의 스레드가 채널을 통해 서로 소통하는 것을 명확하게 보여주지 않았습니다. Listing 16-10에서 우리는 Listing 16-8의 코드가 병렬로 실행되고 있음을 증명하기 위해 몇 가지 수정을 적용했습니다. 스폰된 스레드는 이제 여러 메시지를 전송하고 각 메시지 사이에 1초씩 일시 중단합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-10/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-10: 여러 메시지를 전송하고 각 메시지 사이에 1초씩 일시 중단</span>
+Listing 16-10: 여러 메시지를 전송하고 각 메시지 사이에 1초씩 일시 중단
 
 이번에는 스폰된 스레드에 메인 스레드로 전송할 문자열 벡터가 있습니다. 우리는 이를 순회하며 각각을 개별적으로 전송하고 `thread::sleep` 함수를 사용하여 1초의 `Duration` 값으로 각 메시지 사이에 일시 중단합니다.
 
@@ -120,13 +120,13 @@ Got: thread
 
 이전에 `mpsc`가 *여러 생산자, 하나의 소비자*의 약자라는 것을 언급했습니다. `mpsc`를 사용하여 Listing 16-10의 코드를 확장하고 동일한 수신기에 여러 값을 전송하는 여러 스레드를 생성해 보겠습니다. 전달자를 복사하여 이를 수행할 수 있습니다. Listing 16-11에서 보여주는 것처럼:
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-11/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 16-11: 여러 생산자에서 여러 메시지를 전송하기</span>
+Listing 16-11: 여러 생산자에서 여러 메시지를 전송하기
 
 첫 번째 스폰된 스레드를 생성하기 전에 전달자를 `clone` 호출합니다. 이렇게 하면 첫 번째 스폰된 스레드에 전달할 새로운 전달자를 얻을 수 있습니다. 원래 전달자를 두 번째 스폰된 스레드에 전달합니다. 이렇게 하면 하나의 수신기에 다양한 메시지를 전송하는 두 개의 스레드를 생성합니다.
 

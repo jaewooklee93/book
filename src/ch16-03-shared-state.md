@@ -20,13 +20,13 @@ mutex의 관리가 매우 어려울 수 있기 때문에 많은 사람들이 채
 
 mutex를 사용하는 방법을 살펴보기 위해 Listing 16-12에서 단일 스레드 컨텍스트에서 mutex를 사용하는 예시를 살펴보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-12/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-12: 단일 스레드 컨텍스트에서 `Mutex<T>`의 API를 탐색하기 위한 간단한 예시</span>
+Listing 16-12: 단일 스레드 컨텍스트에서 `Mutex<T>`의 API를 탐색하기 위한 간단한 예시
 
 많은 타입과 마찬가지로 `Mutex<T>`는 `new` 연관 함수를 사용하여 생성합니다. mutex 내부의 데이터에 액세스하려면 `lock` 메서드를 사용하여 잠금을 획득해야 합니다. 이 호출은 현재 스레드가 잠금을 얻을 때까지 작업을 할 수 없도록 차단합니다.
 
@@ -42,13 +42,13 @@ mutex를 사용하는 방법을 살펴보기 위해 Listing 16-12에서 단일 �
 
 이제 `Mutex<T>`를 사용하여 여러 스레드 간에 값을 공유해 보겠습니다. 10개의 스레드를 생성하고 각 스레드가 카운터 값을 1씩 증가시키도록 하여 카운터가 0에서 10까지 증가하도록 합니다. 다음은 16-13번 목록의 예제에서 컴파일 오류가 발생하고, 이 오류를 사용하여 `Mutex<T>`를 사용하는 방법과 Rust가 우리를 올바르게 사용하도록 돕는 방법을 배우겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-13/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-13: 10개의 스레드가 각각 `Mutex<T>`로 보호되는 카운터를 1씩 증가시킵니다.</span>
+Listing 16-13: 10개의 스레드가 각각 `Mutex<T>`로 보호되는 카운터를 1씩 증가시킵니다.
 
 Listing 16-12와 같이 `Mutex<T>` 안에 `i32`을 저장하는 `counter` 변수를 생성합니다. 다음으로 10개의 스레드를 생성하여 범위를 반복합니다. `thread::spawn`을 사용하여 모든 스레드에 동일한 closure를 제공합니다. `Mutex<T>`에 대한 잠금을 획득하는 `lock` 메서드를 호출하여 뮤텍스 내부의 값에 1을 더합니다. 스레드가 closure를 완료하면 `num`이 범위를 벗어나 잠금을 해제하여 다른 스레드가 잠금을 획득할 수 있습니다.
 
@@ -66,13 +66,13 @@ Listing 16-12와 같이 `Mutex<T>` 안에 `i32`을 저장하는 `counter` 변수
 
 15장에서 `Rc<T>`를 사용하여 값에 여러 소유주를 부여했습니다. Listing 16-14에서 `Mutex<T>`를 `Rc<T>`로 감싸고 `Rc<T>`를 이동하기 전에 복사하여 스레드에 소유권을 이동하는 방법을 살펴보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-14/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-14: `Mutex<T>`를 공유하려고 `Rc<T>`를 사용하는 시도</span>
+Listing 16-14: `Mutex<T>`를 공유하려고 `Rc<T>`를 사용하는 시도
 
 다시 한번 컴파일하면... 다른 오류가 발생합니다! 컴파일러가 우리에게 많은 것을 가르쳐 주고 있습니다.
 
@@ -111,13 +111,13 @@ Listing 16-12와 같이 `Mutex<T>` 안에 `i32`을 저장하는 `counter` 변수
 수정하여 `use` 문, `new` 호출 및 `clone` 호출을 변경하면 Listing 16-15
 의 코드가 마침내 컴파일되고 실행됩니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-15/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-15: `Mutex<T>`를 감싸서 여러 스레드에서 소유권을 공유할 수 있는 `Arc<T>` 사용</span>
+Listing 16-15: `Mutex<T>`를 감싸서 여러 스레드에서 소유권을 공유할 수 있는 `Arc<T>` 사용
 
 이 코드는 다음과 같이 출력됩니다.
 

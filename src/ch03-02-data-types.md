@@ -24,7 +24,7 @@ let guess: u32 = \"42\".parse().expect(\"Not a number!\");
 
 *정수*는 소수 부분이 없는 숫자입니다. 제2장에서 `u32` 유형이라는 정수 유형을 사용했습니다. 이 유형 선언은 해당 값이 32비트를 사용하는 무符号 정수(정수 유형은 `i`로 시작하는 대신 `u`로 시작합니다)여야 함을 나타냅니다. 표 3-1은 Rust의 내장 정수 유형을 보여줍니다. 이러한 변형 중 어느 것을 사용하여 정수 값의 유형을 선언할 수 있습니다.
 
-<span class=\"caption\">표 3-1: Rust의 정수 유형</span>
+표 3-1: Rust의 정수 유형
 
 | 길이  | 부호 있는 | 부호 없는 |
 |---------|---------|----------|
@@ -47,7 +47,7 @@ let guess: u32 = \"42\".parse().expect(\"Not a number!\");
 
 숫자 리터럴은 여러 유형의 숫자를 나타낼 수 있으며, 유형 접미사(예: `57u8`)를 사용하여 유형을 지정할 수 있습니다. 숫자 리터럴은 또한 `_`를 시각적 구분자로 사용하여 숫자를 더 쉽게 읽을 수 있습니다. 예를 들어 `1_000`은 `1000`과 같은 값을 가집니다.
 
-<span class=\"caption\">표 3-2: Rust의 정수 리터럴</span>
+표 3-2: Rust의 정수 리터럴
 
 | 숫자 리터럴 | 예시 |
 |---|---|
@@ -78,7 +78,7 @@ Rust에는 소수점이 있는 숫자를 나타내는 두 가지 기본 유형�
 
 다음 코드는 부동 소수점 숫자를 사용하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-06-floating-point/src/main.rs}}

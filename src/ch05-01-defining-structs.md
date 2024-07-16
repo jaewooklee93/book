@@ -5,45 +5,45 @@ ignore --> 섹션에서 논의되었습니다. 둘 다 관련된 여러 값을 �
 
 구조체를 정의하려면 `struct` 키워드를 입력하고 전체 구조체의 이름을 지정합니다. 구조체의 이름은 그룹화되는 데이터 조각의 중요성을 설명해야 합니다. 그런 다음 중괄호 안에서 데이터 조각의 이름과 유형을 정의합니다. 이러한 데이터 조각을 *필드*라고 합니다. 예를 들어, 사용자 계정에 대한 정보를 저장하는 구조체를 보여주는 5-1번 표를 참조하십시오.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-01/src/main.rs:here}}
 ```
 
-<span class=\"caption\">5-1번 표: `User` 구조체 정의</span>
+5-1번 표: `User` 구조체 정의
 
 구조체를 정의한 후에 사용하려면 해당 구조체의 *인스턴스*를 생성합니다. 인스턴스를 생성하려면 각 필드에 대한 구체적인 값을 지정합니다. 인스턴스를 생성하려면 구조체의 이름을 지정하고 필드의 이름과 값이 있는 *키:값* 쌍을 포함하는 중괄호를 추가합니다. 필드를 구조체에서 선언한 순서대로 지정할 필요는 없습니다. 즉, 구조체 정의는 유형의 일반적인 템플릿과 같으며, 인스턴스는 특정 데이터를 채워 유형의 값을 생성합니다. 예를 들어, 5-2번 표와 같이 특정 사용자를 선언할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-02/src/main.rs:here}}
 ```
 
-<span class=\"caption\">5-2번 표: `User` 구조체의 인스턴스 생성</span>
+5-2번 표: `User` 구조체의 인스턴스 생성
 
 구조체에서 특정 값을 가져오려면 점 표기법을 사용합니다. 예를 들어, 사용자의 이메일 주소에 액세스하려면 `user1.email`을 사용합니다. 인스턴스가 변경 가능하면 점 표기법을 사용하여 특정 필드에 값을 할당하여 값을 변경할 수 있습니다. 5-3번 표는 변경 가능한 `User` 인스턴스의 `email` 필드의 값을 변경하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-03/src/main.rs:here}}
 ```
 
-<span class=\"caption\">5-3번 표: `User` 인스턴스의 `email` 필드의 값을 변경하는 방법</span>
+5-3번 표: `User` 인스턴스의 `email` 필드의 값을 변경하는 방법
 
 참고로 전체 인스턴스가 변경 가능해야 합니다. Rust는 특정 필드만 변경 가능하도록 허용하지 않습니다. 어떤 표현과 마찬가지로, 함수 몸체의 마지막 표현으로 새로운 구조체 인스턴스를 생성하여 암시적으로 해당 새로운 인스턴스를 반환할 수 있습니다.
 
 5-4번 표는 `build_user` 함수를 보여줍니다. 이 함수는 주어진 이메일 주소와 사용자 이름을 사용하여 `User` 인스턴스를 반환합니다. `active` 필드는 `true` 값을 받고, `sign_in_count` 필드는 `1` 값을 받습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-04/src/main.rs:here}}
 ```
 
-<span class=\"caption\">5-4번 표: `build_user` 함수는 이메일 주소와 사용자 이름을 받아 `User` 인스턴스를 반환합니다.</span>
+5-4번 표: `build_user` 함수는 이메일 주소와 사용자 이름을 받아 `User` 인스턴스를 반환합니다.
 
 함수 매개변수에 구조체 필드 이름과 동일한 이름을 지정하는 것은 의미가 있습니다. 그러나 구조체 필드 이름과 변수를 반복하는 것은 조금 지루합니다. 구조체에 더 많은 필드가 있으면 각 이름을 반복하는 것은 더욱 번거로워집니다. 다행히도 편리한 약자를 사용할 수 있습니다! 
 
@@ -52,13 +52,13 @@ ignore --> 섹션에서 논의되었습니다. 둘 다 관련된 여러 값을 �
 
 Listing 5-4에서 보여진 것처럼, 매개변수 이름과 구조체 필드 이름이 정확히 동일하기 때문에 `build_user` 함수를 재작성하여 `username` 과 `email` 과 같은 반복을 없앨 수 있습니다. Listing 5-5와 같이 *필드 초기화 약속* 문법을 사용하여 동일한 동작을 수행할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-05/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 5-5: 필드 초기화 약속을 사용하는 `build_user` 함수. `username` 과 `email` 매개변수는 구조체 필드와 이름이 같기 때문에 `email: email` 처럼 반복적으로 쓰지 않아도 됩니다.</span>
+Listing 5-5: 필드 초기화 약속을 사용하는 `build_user` 함수. `username` 과 `email` 매개변수는 구조체 필드와 이름이 같기 때문에 `email: email` 처럼 반복적으로 쓰지 않아도 됩니다.
 
 여기서는 `User` 구조체의 새로운 인스턴스를 생성하고 있습니다. `User` 구조체에는 `email`이라는 필드가 있습니다. `build_user` 함수의 `email` 매개변수의 값을 `email` 필드에 할당하고 싶습니다. `email` 필드와 `email` 매개변수가 같은 이름이므로 `email: email` 대신 `email`만 쓰면 됩니다.
 
@@ -68,23 +68,23 @@ Listing 5-4에서 보여진 것처럼, 매개변수 이름과 구조체 필드 �
 
 먼저 Listing 5-6에서 `user2`라는 새로운 `User` 인스턴스를 정상적으로 생성하는 방법을 보여줍니다. `email` 값을 새로 설정하지만, Listing 5-2에서 생성한 `user1`에서 사용한 나머지 값은 동일합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-06/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 5-6: `user1`에서 대부분의 값을 사용하여 새로운 `User` 인스턴스 `user2`를 생성합니다.</span>
+Listing 5-6: `user1`에서 대부분의 값을 사용하여 새로운 `User` 인스턴스 `user2`를 생성합니다.
 
 구조체 업데이트 문법을 사용하면 Listing 5-7과 같이 코드를 줄일 수 있습니다. `..`는 나머지 필드에 대해 기존 인스턴스의 값을 사용하라는 의미입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-07/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 5-7: 구조체 업데이트 문법을 사용하여 `User` 인스턴스 `user2`를 생성합니다. `email` 값은 변경하지만 `user1`의 나머지 값은 유지됩니다.</span>
+Listing 5-7: 구조체 업데이트 문법을 사용하여 `User` 인스턴스 `user2`를 생성합니다. `email` 값은 변경하지만 `user1`의 나머지 값은 유지됩니다.
 
 Listing 5-7의 코드는 `user2`라는 새로운 인스턴스를 생성하고 `email` 값은 다르지만 `username`, `active`, `sign_in_count` 필드는 `user1`에서 가져옵니다. `..user1`은 나머지 필드에 대해 기존 인스턴스의 값을 사용하라는 의미이며, 구조체 정의 순서와 관계없이 원하는 필드만 지정할 수 있습니다.
 
@@ -115,7 +115,7 @@ Rust는 튜플과 유사한 구조체를 지원합니다. 이를 *튜플 구조�
 입력합니다. 예를 들어, `Color` 및 `Point`라는 두 개의 튜플 구조체를 정의하고 사용하는
 예를 들어 보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-01-tuple-structs/src/main.rs}}
@@ -136,7 +136,7 @@ Rust는 튜플과 유사한 구조체를 지원합니다. 이를 *튜플 구조�
 저장할 데이터가 없을 때 유용합니다. 10장에서 트레이트에 대해 논의할 것입니다.
 `AlwaysEqual`이라는 단위 구조체를 선언하고 인스턴스화하는 예를 보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-04-unit-like-structs/src/main.rs}}
@@ -164,7 +164,7 @@ Rust는 튜플과 유사한 구조체를 지원합니다. 이를 *튜플 구조�
 > 보장합니다. 예를 들어 라이프타임을 지정하지 않고 구조체에 참조를
 > 저장하려고 하면 다음과 같이 작동하지 않습니다.
 >
-> <span class=\"filename\">Filename: src/main.rs</span>
+> Filename: src/main.rs
 >
 > <!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
 >

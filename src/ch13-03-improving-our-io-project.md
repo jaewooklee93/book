@@ -26,7 +26,7 @@
 
 I/O 프로젝트의 *src/main.rs* 파일을 열고, 다음과 같이 보이는지 확인하십시오.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch13-functional-features/listing-12-24-reproduced/src/main.rs:ch13}}

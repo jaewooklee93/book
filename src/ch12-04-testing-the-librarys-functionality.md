@@ -96,7 +96,7 @@ This is another test string.";
 
 이제 `search` 함수가 작동하고 테스트가 완료되었으므로 `run` 함수에서 `search`를 호출해야 합니다. `run` 함수는 `config.query` 값과 `run`이 파일에서 읽는 `contents`를 `search` 함수에 전달해야 합니다. 그러면 `run`은 `search`에서 반환된 각 줄을 출력합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/no-listing-02-using-search-in-run/src/lib.rs:here}}

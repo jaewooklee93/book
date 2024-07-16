@@ -6,7 +6,7 @@
 
 새로운 *variables* 디렉토리에서 *src/main.rs*를 열고 아직 컴파일되지 않은 다음 코드로 코드를 대체합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-01-variables-are-immutable/src/main.rs}}
@@ -28,7 +28,7 @@
 
 예를 들어, *src/main.rs*를 다음과 같이 변경해 보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-02-adding-mut/src/main.rs}}

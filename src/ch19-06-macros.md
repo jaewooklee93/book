@@ -34,13 +34,13 @@ let v: Vec<u32> = vec![1, 2, 3];
 
 19-28번 목록은 `vec!` 매크로의 간략하게 정의된 버전을 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-28/src/lib.rs}}
 ```
 
-<span class=\"caption\">19-28번 목록: `vec!` 매크로 정의의 간략한 버전</span>
+19-28번 목록: `vec!` 매크로 정의의 간략한 버전
 
 > 주의: 표준 라이브러리에서 `vec!` 매크로의 실제 정의는 더 복잡합니다.
 ```rust,ignore
@@ -82,7 +82,7 @@ let v: Vec<u32> = vec![1, 2, 3];
 
 절차적 매크로를 만들 때 정의는 특수한 crate 유형을 가진 자신의 crate에 있어야 합니다. 이는 복잡한 기술적 이유로, 앞으로는 해결할 예정입니다. 19-29번 목록에서 `some_attribute`는 특정 매크로 유형을 사용하는 데 사용되는 빈자리입니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore
 use proc_macro;
@@ -94,7 +94,7 @@ pub fn some_name(input: TokenStream) -> TokenStream {
 
 ## 19.6. 매크로 정의하기
 
-<span class=\"caption\">Listing 19-29: 절차적 매크로 정의 예시</span>
+Listing 19-29: 절차적 매크로 정의 예시
 
 절차적 매크로를 정의하는 함수는 `TokenStream`을 입력으로 받고 `TokenStream`을 출력으로 반환합니다. `TokenStream` 유형은 Rust에 포함된 `proc_macro` crate에서 정의되며, 토큰의 순서를 나타냅니다. 이것이 매크로의 핵심입니다. 매크로가 작동하는 소스 코드가 입력 `TokenStream`을 구성하고, 매크로가 생성하는 코드가 출력 `TokenStream`입니다. 함수에는 또한 어떤 종류의 절차적 매크로를 만들고 있는지 지정하는 속성이 있습니다. 같은 crate에서 여러 종류의 절차적 매크로를 가질 수 있습니다.
 
@@ -104,13 +104,13 @@ pub fn some_name(input: TokenStream) -> TokenStream {
 
 `hello_macro`라는 이름의 crate를 만들고 `HelloMacro`라는 트레이트와 `hello_macro`라는 이름의 연관 함수를 정의합니다. 사용자가 자신의 유형에 대해 `#[derive(HelloMacro)]`를 추가하여 `HelloMacro` 트레이트의 기본 구현을 얻도록 하기 위해 `HelloMacro` 트레이트를 구현하도록 사용자에게 요구하지 않습니다. 기본 구현은 `Hello, Macro! My name is TypeName!`를 출력합니다. 여기서 `TypeName`은 이 트레이트가 정의된 유형의 이름입니다. 즉, 다른 프로그래머가 Listing 19-30과 같이 코드를 작성할 수 있도록 하는 crate를 작성할 것입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-30/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 19-30: 우리 crate를 사용하는 사용자가 매크로를 사용할 수 있도록 할 수 있는 코드</span>
+Listing 19-30: 우리 crate를 사용하는 사용자가 매크로를 사용할 수 있도록 할 수 있는 코드
 
 이 코드는 `Hello, Macro! My name is Pancakes!`를 출력합니다. 작업이 완료되면.
 첫 번째 단계는 `hello_macro`이라는 이름의 새로운 라이브러리 crate를 만드는 것입니다.
@@ -121,7 +121,7 @@ $ cargo new hello_macro --lib
 
 다음으로 `HelloMacro` 트레이트와 연관 함수를 정의합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/hello_macro/src/lib.rs}}
@@ -185,7 +185,7 @@ $ cargo new hello_macro_derive --lib
 
 우리는 `hello_macro_derive` crate를 절차적 맥락 crate로 선언해야 합니다. `syn`과 `quote` crate의 기능도 필요하므로, 잠시 볼 예정인 `syn`과 `quote` crate를 의존성으로 추가해야 합니다. `hello_macro_derive`의 *Cargo.toml* 파일에 다음 내용을 추가하세요.
 
-<span class=\"filename\">Filename: hello_macro_derive/Cargo.toml</span>
+Filename: hello_macro_derive/Cargo.toml
 
 ```toml
 {{#include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/Cargo.toml:6:12}}
@@ -193,13 +193,13 @@ $ cargo new hello_macro_derive --lib
 
 `hello_macro_derive` crate의 *src/lib.rs* 파일에 Listing 19-31의 코드를 넣어 절차적 맥락을 정의하기 시작합니다. `impl_hello_macro` 함수의 정의가 없기 때문에 이 코드는 컴파일되지 않습니다.
 
-<span class=\"filename\">Filename: hello_macro_derive/src/lib.rs</span>
+Filename: hello_macro_derive/src/lib.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 19-31: 대부분의 절차적 맥락 crate에서 Rust 코드를 처리하기 위해 필요한 코드</span>
+Listing 19-31: 대부분의 절차적 맥락 crate에서 Rust 코드를 처리하기 위해 필요한 코드
 
 `hello_macro_derive` 함수와 `impl_hello_macro` 함수로 코드를 분리했습니다. `hello_macro_derive` 함수는 `TokenStream`을 분석하고 `impl_hello_macro` 함수는 문법 트리의 변환을 담당합니다. 이렇게 하면 절차적 맥락을 작성하는 것이 더 편리해집니다. `hello_macro_derive` 함수의 코드는 거의 모든 절차적 맥락 crate에서 동일합니다. `impl_hello_macro` 함수의 코드는 절차적 맥락의 목적에 따라 다릅니다.
 
@@ -231,7 +231,7 @@ DeriveInput {
 }
 ```
 
-<span class=\"caption\">Listing 19-32: Listing 19-30의 코드에서 맥락의 속성을 가진 `struct Pancakes;` 문자열을 분석했을 때 얻는 `DeriveInput` 인스턴스</span>
+Listing 19-32: Listing 19-30의 코드에서 맥락의 속성을 가진 `struct Pancakes;` 문자열을 분석했을 때 얻는 `DeriveInput` 인스턴스
 
 이 구조체의 필드는 우리가 파싱한 Rust 코드가 `Pancakes`라는 이름의 단위 구조체임을 보여줍니다. 이 구조체에는 Rust 코드를 설명하는 더 많은 필드가 있습니다. 자세한 내용은 [`syn` 문서의 `DeriveInput`][syn-docs]을 참조하십시오.
 
@@ -241,13 +241,13 @@ DeriveInput {
 
 이제 `TokenStream`에서 `DeriveInput` 인스턴스로 해석된 Rust 코드를 처리하는 코드를 가지고 있으므로, Listing 19-33에 표시된 것처럼 `HelloMacro` 트레이트를 해당 코드에 적용하는 코드를 생성해 보겠습니다.
 
-<span class=\"filename\">Filename: hello_macro_derive/src/lib.rs</span>
+Filename: hello_macro_derive/src/lib.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-33/hello_macro/hello_macro_derive/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 19-33: `quote!` 매크로를 사용하여 `HelloMacro` 트레이트를 구현</span>
+Listing 19-33: `quote!` 매크로를 사용하여 `HelloMacro` 트레이트를 구현
 
 `ast.ident`를 사용하여 해당 구조체의 이름(identifier)을 나타내는 `Ident` 구조체 인스턴스를 얻습니다. Listing 19-32에서 보는 것처럼, Listing 19-30의 코드에 `impl_hello_macro` 함수를 실행하면 `ident` 필드가 `\"Pancakes\"` 값을 가진 `Ident` 인스턴스를 가져올 것입니다. 따라서 Listing 19-33의 `name` 변수에는 `\"Pancakes\"`라는 문자열을 포함하는 `Ident` 구조체 인스턴스가 있을 것입니다. Listing 19-30의 구조체의 이름입니다.
 

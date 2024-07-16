@@ -48,7 +48,7 @@ let s = \"hello\";
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-01/src/main.rs:here}}
 ```
 
-<span class=\"caption\">4-1 표: 변수와 유효한 범위</span>
+4-1 표: 변수와 유효한 범위
 
 즉, 여기서 중요한 두 가지 시점이 있습니다.
 
@@ -113,7 +113,7 @@ Rust에서 여러 변수는 다양한 방식으로 동일한 데이터와 상호
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-02/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 4-2: 변수 `x`의 정수 값을 변수 `y`에 할당</span>
+Listing 4-2: 변수 `x`의 정수 값을 변수 `y`에 할당
 
 우리는 아마도 이 코드가 무엇을 하는지 추측할 수 있습니다: “값 `5`를 `x`에 바인딩하고, `x`에 있는 값의 복사본을 만들어 `y`에 바인딩합니다.” 이제 `x`와 `y`라는 두 변수가 있으며, 두 변수 모두 `5`에 같습니다. 이것이 정확히 일어나는 것입니다. 왜냐하면 정수는 알려진 고정된 크기의 간단한 값이기 때문에 이 두 `5` 값이 스택에 푸시됩니다.
 
@@ -129,7 +129,7 @@ Rust에서 여러 변수는 다양한 방식으로 동일한 데이터와 상호
 
 <img alt=\"두 개의 표: 첫 번째 표는 스택에 있는 s1의 표현을 나타내며, 길이(5), 용량(5), 그리고 두 번째 표의 첫 번째 값에 대한 포인터를 포함합니다. 두 번째 표는 힙에 있는 문자열 데이터를 바이트 단위로 나타냅니다.\" src=\"img/trpl04-01.svg\" class=\"center\" style=\"width: 50%;\" />
 
-<span class=\"caption\">Figure 4-1: `String`을 포함하는 `s1`의 메모리 표현 (값은 `\"hello\"`입니다)</span>
+Figure 4-1: `String`을 포함하는 `s1`의 메모리 표현 (값은 `\"hello\"`입니다)
 
 길이는 `String`의 내용이 현재 사용하는 메모리 크기(바이트 단위)입니다. 용량은 `String`이 할당자로부터 받은 총 메모리 크기(바이트 단위)입니다. 길이와 용량의 차이는 중요하지만, 현재 맥락에서는 무시해도 괜찮습니다.
 
@@ -137,13 +137,13 @@ Rust에서 여러 변수는 다양한 방식으로 동일한 데이터와 상호
 
 <img alt=\"세 개의 표: 스택에 있는 s1과 s2를 나타내는 표 각각, 그리고 두 표 모두 힙에 있는 동일한 문자열 데이터에 대한 포인터를 가리킵니다.\" src=\"img/trpl04-02.svg\" class=\"center\" style=\"width: 50%;\" />
 
-<span class=\"caption\">Figure 4-2: `s2`의 메모리 표현 (s1의 포인터, 길이, 용량의 복사본을 가집니다)</span>
+Figure 4-2: `s2`의 메모리 표현 (s1의 포인터, 길이, 용량의 복사본을 가집니다)
 
 데이터가 힙에 복사된다면 4-3 그림과 같은 표현이 나타납니다. 4-3 그림은 Rust이 힙 데이터를 복사한다면 `s2 = s1`이 어떻게 작동할 수 있는지 보여줍니다. 만약 Rust이 이렇게 하면 힙 데이터가 크다면 `s2 = s1` 연산은 실행 시간 성능 측면에서 매우 비쌀 수 있습니다.
 
 <img alt=\"네 개의 표: s1과 s2를 나타내는 스택 데이터의 두 개의 표, 그리고 각각은 힙에 있는 문자열 데이터의 자신의 복사본에 대한 포인터를 가리킵니다.\" src=\"img/trpl04-03.svg\" class=\"center\" style=\"width: 50%;\" />
 
-<span class=\"caption\">Figure 4-3: `s2 = s1`이 힙 데이터를 복사한다면 다른 가능성</span>
+Figure 4-3: `s2 = s1`이 힙 데이터를 복사한다면 다른 가능성
 
 이전에 언급했듯이 변수가 범위를 벗어날 때 Rust은 자동으로 `drop` 함수를 호출하여 해당 변수의 힙 메모리를 정리합니다. 그러나 4-2 그림은 두 데이터 포인터가 동일한 위치를 가리키고 있습니다. 이것은 문제입니다. `s2`와 `s1`이 범위를 벗어날 때 두 개 모두 동일한 메모리를 해제하려고 시도하기 때문입니다. 이것을 *두 번 해제 오류*라고 하며, 이전에 언급한 메모리 안전성 오류 중 하나입니다. 메모리를 두 번 해제하면 메모리 손상이 발생할 수 있으며, 이는 보안 취약성으로 이어질 수 있습니다.
 
@@ -166,7 +166,7 @@ Rust에서 여러 변수는 다양한 방식으로 동일한 데이터와 상호
 <img alt=\"스택에 있는 s1과 s2라는 문자열을 나타내는 세 개의 표. 두 표 모두 heap에 있는 동일한 문자열 데이터를 가리키고 있습니다. s1은 이미 유효하지 않기 때문에 회색으로 표시됩니다. s2만이 heap 데이터에 액세스할 수 있습니다.\" src=\"img/trpl04-04.svg\" class=\"center\" style=\"width:
 50%;\" />
 
-<span class=\"caption\">그림 4-4: `s1`이 무효화된 후 메모리에서의 표현</span>
+그림 4-4: `s1`이 무효화된 후 메모리에서의 표현
 
 이것이 문제를 해결하는 방법입니다! `s2`만 유효하기 때문에, `s2`가 범위를 벗어날 때만 메모리가 해제되고 작업이 완료됩니다.
 
@@ -218,13 +218,13 @@ Traits”][derivable-traits]<!-- ignore -->를 참조하세요.
 
 값을 함수에 전달하는 메커니즘은 변수에 값을 할당하는 것과 유사합니다. 변수를 함수에 전달하면 할당과 마찬가지로 이동하거나 복사됩니다. Listing 4-3은 변수가 어디로 들어가고 나오는지 어노테이션이 있는 예입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-03/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 4-3: 소유권과 스코프가 어노테이션된 함수</span>
+Listing 4-3: 소유권과 스코프가 어노테이션된 함수
 
 `takes_ownership` 함수를 호출한 후 `s`를 사용하려고 하면 Rust는 컴파일 시간 오류를 발생시킵니다. 이러한 정적 검사는 우리를 실수로부터 보호합니다. `main` 함수에 `s`와 `x`를 사용하는 코드를 추가하여 어디에서 사용할 수 있는지, 어디에서는 소유권 규칙이 사용을 방지하는지 확인해 보세요.
 
@@ -232,13 +232,13 @@ Traits”][derivable-traits]<!-- ignore -->를 참조하세요.
 
 반환 값도 소유권을 이전할 수 있습니다. Listing 4-4는 소유권을 반환하는 함수의 예입니다. Listing 4-3와 유사한 어노테이션이 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-04/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 4-4: 반환 값의 소유권 이전</span>
+Listing 4-4: 반환 값의 소유권 이전
 
 변수의 소유권은 항상 동일한 패턴을 따릅니다. 변수에 값을 할당하면 이동합니다. 힙에 데이터가 포함된 변수가 스코프 밖으로 나갈 때는 `drop`에 의해 데이터가 정리되지 않는 한, 데이터의 소유권이 다른 변수로 이동되지 않았습니다.
 
@@ -246,13 +246,13 @@ Traits”][derivable-traits]<!-- ignore -->를 참조하세요.
 
 Rust는 Listing 4-5와 같이 튜플을 사용하여 여러 값을 반환할 수 있도록 합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-05/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 4-5: 매개변수의 소유권 반환</span>
+Listing 4-5: 매개변수의 소유권 반환
 
 하지만 이것은 너무 많은 의식적인 행위이며 흔히 볼 수 있는 개념에 대해 너무 많은 작업입니다. 다행히도 Rust는 참조라고 하는 값을 사용하지 않고도 소유권을 이전하는 기능이 있습니다.
 

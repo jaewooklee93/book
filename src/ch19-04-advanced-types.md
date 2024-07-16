@@ -40,14 +40,14 @@ Box<dyn Fn() + Send + 'static>
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-24/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 19-24: 여러 곳에서 긴 타입 사용</span>
+Listing 19-24: 여러 곳에서 긴 타입 사용
 
 타입 별칭은 `Thunk`라는 이름으로 이 긴 타입을 줄여서 코드를 더 관리하기 쉽게 합니다. Listing 19-25에서 `Thunk`라는 별칭을 도입하여 긴 타입을 대체하여 모든 사용을 짧은 별칭 `Thunk`로 바꿀 수 있습니다.
 
 ```rust
 ```
 
-<span class=\"caption\">Listing 19-25: `Thunk` 타입 별칭을 사용하여 반복을 줄이기</span>
+Listing 19-25: `Thunk` 타입 별칭을 사용하여 반복을 줄이기
 
 이 코드는 읽고 작성하는 데 훨씬 쉬워집니다! 유의미한 이름을 타입 별칭에 지정하면 의도를 효과적으로 전달하는 데 도움이 됩니다 (*thunk*는 나중에 평가될 코드를 나타내는 단어이므로 닫힘이 저장되는 타입에 적절한 이름입니다).
 
@@ -87,7 +87,7 @@ Rust에는 `!`라는 특수 타입이 있으며, 타입 이론 용어로는 *빈
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:ch19}}
 ```
 
-<span class=\"caption\">Listing 19-26: `continue` 문으로 끝나는 `match`</span>
+Listing 19-26: `continue` 문으로 끝나는 `match`
 
 당시에는 이 코드의 몇 가지 세부 사항을 건너뜁니다. 6장의 “The `match` Control Flow Operator” 섹션에서 `match` 팔레트는 모두 동일한 타입을 반환해야 한다고 설명했습니다. 따라서 다음과 같은 코드는 작동하지 않습니다.
 

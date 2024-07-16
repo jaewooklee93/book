@@ -8,7 +8,7 @@
 
 ![hello from rust](img/trpl20-01.png)
 
-<span class=\"caption\">Figure 20-1: 우리의 최종 공동 프로젝트</span>
+Figure 20-1: 우리의 최종 공동 프로젝트
 
 웹 서버를 구축하는 계획은 다음과 같습니다.
 

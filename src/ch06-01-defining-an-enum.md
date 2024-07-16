@@ -40,7 +40,7 @@
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-01/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 6-1: 구조체를 사용하여 IP 주소의 데이터와 `IpAddrKind` 변형을 저장하는 방법</span>
+Listing 6-1: 구조체를 사용하여 IP 주소의 데이터와 `IpAddrKind` 변형을 저장하는 방법
 
 여기서 `IpAddr` 구조체를 정의하여 `kind` 필드(이전에 정의한 열거형인 `IpAddrKind`)와 `address` 필드( `String` 유형)가 있습니다. 이 구조체의 두 가지 인스턴스가 있습니다. 첫 번째는 `home`이며, `kind` 필드에 `IpAddrKind::V4` 값을 가지고 `address` 데이터는 `127.0.0.1`입니다. 두 번째 인스턴스는 `loopback`이며, `kind` 필드에 다른 변형인 `IpAddrKind::V6` 값을 가지고 `address`는 `::1`입니다. `kind`와 `address` 값을 함께 묶어서 구조체를 사용하여 변형을 연결했습니다. 이제 변형이 값에 연결되었습니다.
 
@@ -86,7 +86,7 @@ enum IpAddr {
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-02/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 6-2: 각 변형이 다른 양과 유형의 값을 저장하는 `Message` 열거형</span>
+Listing 6-2: 각 변형이 다른 양과 유형의 값을 저장하는 `Message` 열거형
 
 이 열거형은 다음과 같은 다양한 유형을 가진 네 가지 변형이 있습니다.
 

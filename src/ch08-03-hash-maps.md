@@ -15,7 +15,7 @@
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-20/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-20: 새로운 해시맵 만들고 키와 값 삽입하기</span>
+Listing 8-20: 새로운 해시맵 만들고 키와 값 삽입하기
 
 표준 라이브러리의 `HashMap`을 사용하려면 `use`해야 합니다. 세 가지 일반적인 자료구조 중에서 가장 적게 사용되므로, 기본적으로 사용 범위에 포함되지 않습니다.
 해시맵은 표준 라이브러리에서의 지원도 적습니다. 예를 들어, 해시맵을 생성하는 데 사용되는 내장 매크로가 없습니다.
@@ -30,7 +30,7 @@
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-21/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-21: 해시맵에 저장된 Blue 팀의 점수 액세스하기</span>
+Listing 8-21: 해시맵에 저장된 Blue 팀의 점수 액세스하기
 
 여기서 `score`는 Blue 팀과 관련된 값을 가지고 있으며, 결과는 `10`입니다. `get` 메서드는 `Option<&V>`를 반환합니다. 해시맵에 해당 키에 대한 값이 없으면 `get`은 `None`을 반환합니다. 이 프로그램은 `Option`을 `copied`를 호출하여 `Option<i32>`를 가져오고 `unwrap_or`를 사용하여 `scores`에 키가 없으면 `score`를 0으로 설정합니다.
 
@@ -69,7 +69,7 @@ Blue: 10
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-23/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-23: 특정 키로 저장된 값을 대체하는 방법</span>
+Listing 8-23: 특정 키로 저장된 값을 대체하는 방법
 
 이 코드는 `{\"Blue\": 25}`를 출력합니다. 원래 값인 `10`이 덮어쓰였습니다.
 
@@ -83,7 +83,7 @@ Blue: 10
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-24/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 8-24: 키가 이미 존재하지 않을 때만 값을 추가하는 방법</span>
+Listing 8-24: 키가 이미 존재하지 않을 때만 값을 추가하는 방법
 
 `or_insert` 메서드는 `Entry`에 정의되어 있으며, 해당 키에 대한 값이 이미 존재하면 해당 값에 대한 가변 참조를 반환하고, 존재하지 않으면 매개변수를 새 값으로 삽입하고 새 값에 대한 가변 참조를 반환합니다. 이 기술은 직접 논리를 작성하는 것보다 깔끔하며, 대출 검사기와 더 잘 작동합니다.
 
@@ -97,7 +97,7 @@ Blue: 10
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-25/src/main.rs:here}}
 ```
 
-<span class=\"caption\">8-25번째 표: 단어와 횟수를 저장하는 해시 맵을 사용하여 단어의 발생 횟수를 세기</span>
+8-25번째 표: 단어와 횟수를 저장하는 해시 맵을 사용하여 단어의 발생 횟수를 세기
 
 이 코드는 `{\"world\": 2, \"hello\": 1, \"wonderful\": 1}`을 출력합니다. 동일한 키-값 쌍이 다른 순서로 출력될 수 있습니다. 해시 맵을 순회하는 것은 임의의 순서로 일어나기 때문입니다. ([“해시 맵에서 값 액세스”][access]<!-- ignore --> 섹션 참조)
 

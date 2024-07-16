@@ -15,7 +15,7 @@
 
 간단한 프로그램에서 `panic!`를 호출해 보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,should_panic,panics
 {{#rustdoc_include ../listings/ch09-error-handling/no-listing-01-panic/src/main.rs}}
@@ -36,13 +36,13 @@
 
 `panic!` 백트레이스를 사용하여 `panic!` 호출이 어디에서 발생했는지 이해할 수 있습니다. `panic!` 호출이 라이브러리에서 오류로 인해 발생하는 경우, 우리의 코드가 문제를 일으키는지 이해하는 데 도움이 됩니다. 9-1번 목록은 우리의 코드가 유효한 인덱스 범위를 벗어나 있는지 확인하는 코드를 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,should_panic,panics
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-01/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 9-1: 유효한 인덱스 범위를 벗어나 있는 요소에 액세스하려는 시도, 이는 `panic!`를 발생시킵니다</span>
+Listing 9-1: 유효한 인덱스 범위를 벗어나 있는 요소에 액세스하려는 시도, 이는 `panic!`를 발생시킵니다
 
 여기서는 벡터의 100번째 요소(인덱스 99)에 액세스하려고 하지만, 벡터에는 3개의 요소만 있습니다. 이 경우 Rust는 panic합니다.
 
@@ -104,8 +104,8 @@ stack backtrace:
 note: 몇 가지 세부 정보는 생략되었습니다. 자세한 백트레이스를 확인하려면 `RUST_BACKTRACE=full`을 사용하십시오.
 ```
 
-<span class=\"caption\">Listing 9-2: `panic!` 호출 시 생성되는 백트레이스
-`RUST_BACKTRACE` 환경 변수가 설정되었을 때 표시</span>
+Listing 9-2: `panic!` 호출 시 생성되는 백트레이스
+`RUST_BACKTRACE` 환경 변수가 설정되었을 때 표시
 
 꽤 많은 출력이 나오네요! 정확한 출력은 운영 체제와 Rust 버전에 따라 다를 수 있습니다. 이러한 정보를 포함한 백트레이스를 얻으려면 디버그 심볼이 활성화되어 있어야 합니다. 디버그 심볼은 `cargo build` 또는 `cargo run`을 사용하여 `--release` 플래그 없이 실행할 때 기본적으로 활성화됩니다. Listing 9-2의 출력에서 백트레이스의 6번째 줄은 우리 프로젝트에서 문제를 일으키는 줄인 *src/main.rs*의 4번째 줄을 가리킵니다. 우리 프로그램이 panic하지 않도록 하려면, 우리가 작성한 파일을 나타내는 첫 번째 줄에서 언급된 위치에서 조사를 시작해야 합니다. Listing 9-1에서 우리가 의도적으로 panic을 일으키는 코드를 작성한 경우, panic을 해결하는 방법은 벡터 인덱스 범위를 벗어난 요소를 요청하지 않는 것입니다. 코드가 앞으로 panic할 때, 코드가 어떤 값으로 어떤 작업을 수행하여 panic을 일으키는지 파악하고 코드가 대신 어떻게 해야 하는지 알아야 합니다.
 

@@ -7,13 +7,13 @@ enum 또는 [Chapter 17][trait-objects]<!-- ignore -->에서 다룰 trait 객체
 
 `Rectangle` 인스턴스를 매개변수로 받는 `area` 함수를 변경하여 `Rectangle` 구조체에 정의된 `area` 메서드로 바꾸겠습니다. Listing 5-13을 참조하세요.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-13/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 5-13: `Rectangle` 구조체에 `area` 메서드 정의</span>
+Listing 5-13: `Rectangle` 구조체에 `area` 메서드 정의
 
 `Rectangle`의 맥락 내에서 함수를 정의하려면 `impl` 블록(구현 블록)을 `Rectangle`에 대해 시작합니다. 이 `impl` 블록 내의 모든 내용은 `Rectangle` 유형과 관련이 있습니다. 그런 다음 `impl` 괄호 안에 `area` 함수를 옮기고 첫 번째(이 경우 유일한) 매개변수를 `self`로 변경합니다.
 `main`에서 `area` 함수를 호출하고 `rect1`을 인수로 전달했던 경우, `Rectangle` 인스턴스에 `area` 메서드를 호출하기 위해 *메서드 구문*을 사용할 수 있습니다. 메서드 구문은 인스턴스 뒤에 오며, 점(.)을 사용하여 메서드 이름, 괄호(), 그리고 모든 인수를 추가합니다.
@@ -28,7 +28,7 @@ enum 또는 [Chapter 17][trait-objects]<!-- ignore -->에서 다룰 trait 객체
 
 구조체의 필드와 동일한 이름을 가진 메서드를 정의할 수도 있습니다. 예를 들어, `Rectangle`에 `width`라는 이름의 메서드를 정의할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-06-method-field-interaction/src/main.rs:here}}
@@ -79,13 +79,13 @@ enum 또는 [Chapter 17][trait-objects]<!-- ignore -->에서 다룰 trait 객체
 
 `Rectangle` 구조체에 `can_hold` 메서드를 정의하여 `Rectangle` 인스턴스가 다른 `Rectangle` 인스턴스를 완전히 포함할 수 있는지 여부를 확인하는 방법을 연습해 보겠습니다. 즉, `can_hold` 메서드를 정의한 후 `Listing 5-14`와 같이 프로그램을 작성할 수 있어야 합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-14/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 5-14: 아직 정의되지 않은 `can_hold` 메서드를 사용</span>
+Listing 5-14: 아직 정의되지 않은 `can_hold` 메서드를 사용
 
 예상 출력은 두 차원의 크기가 모두 작기 때문에 다음과 같습니다.
  `rect2`는 `rect1`의 치수보다 작지만, `rect3`은 `rect1`보다 넓습니다:
@@ -98,13 +98,13 @@ rect1이 rect3를 포함할 수 있나요? false
 `can_hold`이라는 메서드를 정의하고 싶으므로 `impl Rectangle` 블록 내에 있을 것입니다. 메서드 이름은 `can_hold`이며, 다른 `Rectangle`에 대한 불변 참조를 매개변수로 받습니다. 매개변수의 유형을 알 수 있는 방법은 메서드를 호출하는 코드를 살펴보는 것입니다:
 `rect1.can_hold(&rect2)`는 `&rect2`를 전달하며, `Rectangle`의 인스턴스인 `rect2`에 대한 불변 참조입니다. 우리는 `rect2`만 읽기(쓰지 않기 때문에 변수 참조가 필요하지 않으며, `main` 함수가 `rect2`를 다시 사용할 수 있도록 소유권을 유지해야 함)이므로 불변 참조가 적절합니다. `can_hold`의 반환 값은 불리언이며, 구현은 `self`의 너비와 높이가 다른 `Rectangle`의 너비와 높이보다 크거나 같으면 확인합니다. Listing 5-13에서 가져온 `impl` 블록에 새로운 `can_hold` 메서드를 추가하는 Listing 5-15를 보여드리겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-15/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 5-15: `Rectangle`에 `can_hold` 메서드를 구현하는 것. 다른 `Rectangle` 인스턴스를 매개변수로 받습니다</span>
+Listing 5-15: `Rectangle`에 `can_hold` 메서드를 구현하는 것. 다른 `Rectangle` 인스턴스를 매개변수로 받습니다
 
 Listing 5-14의 `main` 함수와 함께 이 코드를 실행하면 원하는 출력을 얻습니다. 메서드는 `self` 매개변수 다음에 추가할 수 있는 여러 매개변수를 받을 수 있으며, 이러한 매개변수는 함수의 매개변수와 동일하게 작동합니다.
 
@@ -114,7 +114,7 @@ Listing 5-14의 `main` 함수와 함께 이 코드를 실행하면 원하는 출
 
 `self`가 없는 연관 함수는 구조체의 인스턴스를 반환하는 생성자를 위해 자주 사용됩니다. 이러한 함수는 종종 `new`로 지정되지만, `new`는 특별한 이름이 아니며 언어에 내장되어 있지 않습니다. 예를 들어, `square`라는 이름의 연관 함수를 제공하여 한 개의 치수 매개변수를 받고, 두 치수 모두에 같은 값을 사용하여 사각형 `Rectangle`을 만들 수 있도록 할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-03-associated-functions/src/main.rs:here}}
@@ -132,7 +132,7 @@ Listing 5-14의 `main` 함수와 함께 이 코드를 실행하면 원하는 출
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-16/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 5-16: 여러 `impl` 블록을 사용하여 Listing 5-15를 다시 작성합니다</span>
+Listing 5-16: 여러 `impl` 블록을 사용하여 Listing 5-15를 다시 작성합니다
 
 여기서는 이러한 메서드를 여러 `impl` 블록으로 분리하는 이유가 없습니다.
 하지만 이것은 유효한 문법입니다. 10장에서 일반적인 유형과 트레이트에 대해 논의할 때 여러 개의 `impl` 블록이 유용한 경우를 살펴보겠습니다.

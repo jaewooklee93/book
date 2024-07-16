@@ -78,7 +78,7 @@ Rust가 이러한 보장을 강제하지 않고 선택할 수 있기 때문에, 
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-01/src/main.rs:here}}
 ```
 
-<span class=\"caption\">19-1번 목록: 참조에서 원시 포인터 생성</span>
+19-1번 목록: 참조에서 원시 포인터 생성
 
 이 코드에서 `unsafe` 키워드를 포함하지 않는 것을 알 수 있습니다. 안전 코드에서 원시 포인터를 만들 수 있습니다. 하지만 `unsafe` 블록 외부에서 원시 포인터를 해제할 수 없습니다. 곧 알아보겠습니다.
 
@@ -90,7 +90,7 @@ Rust가 이러한 보장을 강제하지 않고 선택할 수 있기 때문에, 
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-02/src/main.rs:here}}
 ```
 
-<span class=\"caption\">19-2번 목록: 임의의 메모리 주소에 대한 원시 포인터 생성</span>
+19-2번 목록: 임의의 메모리 주소에 대한 원시 포인터 생성
 
 기억하세요. 안전 코드에서 원시 포인터를 만들 수 있지만, `unsafe` 블록 내에서만 원시 포인터를 해제하여 데이터를 읽을 수 있습니다.
 
@@ -100,7 +100,7 @@ Rust가 이러한 보장을 강제하지 않고 선택할 수 있기 때문에, 
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-03/src/main.rs:here}}
 ```
 
-<span class=\"caption\">19-3번 목록: `unsafe` 블록 내에서 원시 포인터 해제</span>
+19-3번 목록: `unsafe` 블록 내에서 원시 포인터 해제
 
 포인터를 만드는 것은 해롭지 않습니다. 해당 포인터가 가리키는 값에 액세스하려고 할 때만 유효하지 않은 값을 처리할 수 있습니다.
 
@@ -136,7 +136,7 @@ Rust가 이러한 보장을 강제하지 않고 선택할 수 있기 때문에, 
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-04/src/main.rs:here}}
 ```
 
-<span class=\"caption\">19-4번 목록: 안전한 `split_at_mut` 함수 사용</span>
+19-4번 목록: 안전한 `split_at_mut` 함수 사용
 
 우리는 안전한 Rust만 사용하여 이 함수를 구현할 수 없습니다. 시도는 19-5번 목록과 같이 컴파일되지 않을 것입니다. 간단히 말해서, `split_at_mut`를 함수로 구현하고 `i32` 값의 슬라이스에만 적용하겠습니다.
 
@@ -144,7 +144,7 @@ Rust가 이러한 보장을 강제하지 않고 선택할 수 있기 때문에, 
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-05/src/main.rs:here}}
 ```
 
-<span class=\"caption\">19-5번 목록: 안전한 Rust만 사용하여 구현된 `split_at_mut`의 시도</span>
+19-5번 목록: 안전한 Rust만 사용하여 구현된 `split_at_mut`의 시도
 
 이 함수는 먼저 슬라이스의 총 길이를 가져옵니다. 그런 다음 인덱스가 슬라이스 내에 있는지 확인하여 `mid` 인덱스에서 슬라이스를 나누는 인수로 주어진 인덱스가 길이보다 작거나 같으면서도 슬라이스를 나눕니다. 주장은 `mid` 인덱스에서 슬라이스를 나누는 인수로 주어진 인덱스가 길이보다 크면 함수가 실행되기 전에 에러를 발생시키는 것을 의미합니다.
 
@@ -164,7 +164,7 @@ Rust의 보로 체커는 우리가 같은 슬라이스에서 두 번을 대여�
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-06/src/main.rs:here}}
 ```
 
-<span class=\"caption\">19-6번 목록: `split_at_mut` 함수의 구현에서 불안전한 코드 사용</span>
+19-6번 목록: `split_at_mut` 함수의 구현에서 불안전한 코드 사용
 
 4장의 "슬라이스 유형"<!-- ignore --> 섹션에서 기억하시면 슬라이스는 데이터 포인터와 슬라이스 길이입니다. 우리는 `len` 메서드를 사용하여 슬라이스의 길이를 가져오고 `as_mut_ptr` 메서드를 사용하여 슬라이스의 원시 포인터에 액세스합니다. 이 경우, `i32` 값의 가변 슬라이스를 가지고 있기 때문에 `as_mut_ptr`는 `i32` 값의 원시 포인터를 반환합니다.
 
@@ -185,7 +185,7 @@ Rust의 보로 체커는 우리가 같은 슬라이스에서 두 번을 대여�
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-07/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 19-7: 임의의 메모리 위치에서 슬라이스 생성</span>
+Listing 19-7: 임의의 메모리 위치에서 슬라이스 생성
 
 이 임의의 위치에 메모리를 소유하지 않으며, 이 코드가 만드는 슬라이스에 유효한 `i32` 값이 있는지 보장할 수 없습니다. `values` 를 유효한 슬라이스로 사용하려고 시도하면 정의되지 않은 동작이 발생합니다.
 
@@ -195,13 +195,13 @@ Rust의 보로 체커는 우리가 같은 슬라이스에서 두 번을 대여�
 
 Listing 19-8은 C 표준 라이브러리의 `abs` 함수와의 통합 설정 방법을 보여줍니다. `extern` 블록 내에서 선언된 함수는 Rust 코드에서 호출할 때 항상 안전하지 않습니다. 다른 언어는 Rust의 규칙과 보장을 준수하지 않기 때문에 Rust는 확인할 수 없기 때문에 안전성을 보장하는 것은 프로그래머의 책임입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-08/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 19-8: 다른 언어에서 정의된 외부 함수를 선언하고 호출하는 방법</span>
+Listing 19-8: 다른 언어에서 정의된 외부 함수를 선언하고 호출하는 방법
 
 `extern \"C\"` 블록 내에서 다른 언어에서 호출하려는 외부 함수의 이름과 서명을 나열합니다. `\"C\"` 부분은 외부 함수가 사용하는 ABI를 정의합니다. ABI는 어셈블리 수준에서 함수를 호출하는 방법을 정의합니다. `\"C\"` ABI는 가장 일반적이며 C 프로그래밍 언어의 ABI를 따릅니다.
 
@@ -227,25 +227,25 @@ pub extern \"C\" fn call_from_c() {
 
 Rust에서 글로벌 변수는 *정적* 변수라고 합니다. 19-9번 목록은 문자열 슬라이스를 값으로 사용하는 정적 변수의 선언 및 사용 예를 보여줍니다. 
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-09/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 19-9: 불변 정적 변수 정의 및 사용</span>
+Listing 19-9: 불변 정적 변수 정의 및 사용
 
 정적 변수는 문단 3에서 [변수와 상수의 차이]<!-- ignore --> 섹션에서 논의한 상수와 유사합니다. 정적 변수의 이름은 `SCREAMING_SNAKE_CASE`로 표시되는 것이 일반적입니다. 정적 변수는 `'static` 수명을 가진 참조만 저장할 수 있으며, 이는 Rust 컴파일러가 수명을 파악할 수 있기 때문에 명시적으로 표시할 필요가 없습니다. 불변 정적 변수에 액세스하는 것은 안전합니다. 
 
 상수와 불변 정적 변수의 미묘한 차이점은 정적 변수의 값이 메모리에 고정된 주소를 가지고 있기 때문입니다. 값을 사용하면 항상 동일한 데이터에 액세스합니다. 반면 상수는 사용될 때마다 데이터를 복제할 수 있습니다. 또 다른 차이점은 정적 변수가 변경 가능하다는 것입니다. 변경 가능한 정적 변수에 액세스하고 수정하는 것은 *unsafe*입니다. 19-10번 목록은 `COUNTER`라는 변경 가능한 정적 변수를 선언하고 액세스하고 수정하는 방법을 보여줍니다. 
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-10/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 19-10: 변경 가능한 정적 변수에서 읽거나 쓰는 것은 안전하지 않습니다</span>
+Listing 19-10: 변경 가능한 정적 변수에서 읽거나 쓰는 것은 안전하지 않습니다
 
 정규 변수와 마찬가지로 `mut` 키워드를 사용하여 변경 가능성을 지정합니다. `COUNTER`에서 읽거나 쓰는 모든 코드는 `unsafe` 블록 내에서 있어야 합니다. 이 코드는 예상대로 컴파일되어 `COUNTER: 3`을 출력합니다. 이는 단일 스레드이기 때문입니다. `COUNTER`에 여러 스레드가 액세스하면 데이터 레이스가 발생할 가능성이 높습니다. 
 
@@ -259,7 +259,7 @@ Rust에서 글로벌 변수는 *정적* 변수라고 합니다. 19-9번 목록�
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-11/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 19-11: 불안전한 트레이트 정의 및 구현</span>
+Listing 19-11: 불안전한 트레이트 정의 및 구현
 
 `unsafe impl`을 사용하면 컴파일러가 검증할 수 없는 조건을 유지하겠다는 약속을 합니다. 
 

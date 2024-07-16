@@ -16,7 +16,7 @@ Rust에서 고유한 주석 스타일은 두 개의 슬래시로 주석을 시�
 
 주석은 코드가 포함된 줄의 끝에 배치할 수도 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-24-comments-end-of-line/src/main.rs}}
@@ -24,7 +24,7 @@ Rust에서 고유한 주석 스타일은 두 개의 슬래시로 주석을 시�
 
 그러나 주석을 코드를 설명하는 별도의 줄에 배치하는 형식을 더 자주 볼 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-25-comments-above-line/src/main.rs}}

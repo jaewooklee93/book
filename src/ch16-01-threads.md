@@ -20,14 +20,14 @@ Rust는 스레드 사용의 부정적인 영향을 완화하려고 노력하지�
 
 새 스레드를 생성하려면 `thread::spawn` 함수를 호출하고, 새 스레드에서 실행할 코드를 포함하는 클로저(Chapter 13에서 다뤘던 클로저)를 전달합니다. Listing 16-1은 메인 스레드에서 텍스트를 출력하고 새 스레드에서 다른 텍스트를 출력하는 예입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-01/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-1: 메인 스레드에서 하나의 것을 출력하는 새 스레드를 생성
-동시에 다른 스레드에서 다른 것을 출력</span>
+Listing 16-1: 메인 스레드에서 하나의 것을 출력하는 새 스레드를 생성
+동시에 다른 스레드에서 다른 것을 출력
 
 이 프로그램의 출력은 매번 약간 다를 수 있지만, 다음과 같이 보일 것입니다.
 
@@ -54,13 +54,13 @@ hi number 5 from the spawned thread!
 
 Listing 16-2는 `thread::spawn`을 사용하여 생성된 스레드가 완료될 때까지 기다리는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-02/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-2: 모든 스레드가 완료될 때까지 기다리는 방법</span>
+Listing 16-2: 모든 스레드가 완료될 때까지 기다리는 방법
 
 `thread::spawn` 함수는 `JoinHandle`를 반환합니다. `JoinHandle`는 스레드가 완료될 때까지 기다리는 데 사용되는 소유 값입니다. `join` 메서드를 호출하면 스레드가 완료될 때까지 기다립니다.
 
@@ -81,13 +81,13 @@ hi number 5 from the spawned thread!
 16-1절에서 만든 스레드의 `JoinHandle`을 사용하는 방법과
 `join`을 호출하여 스레드가 `main`이 종료하기 전에 완료되도록 하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-02/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 16-2: 스레드가 완료될 때까지 `JoinHandle`을 저장하여 보장</span>
+Listing 16-2: 스레드가 완료될 때까지 `JoinHandle`을 저장하여 보장
 
 `join`을 해당 핸들에 호출하면 현재 실행 중인 스레드가 해당 핸들로 표현되는 스레드가 종료될 때까지 차단됩니다. 스레드를 차단하는 것은 스레드가 작업을 수행하거나 종료하는 것을 방지하는 것을 의미합니다. `main` 스레드의 `for` 루프 뒤에 `join` 호출을 넣었기 때문에 16-2번 목록을 실행하면 다음과 같은 출력이 생성됩니다.
 
@@ -113,7 +113,7 @@ hi number 9 from the spawned thread!
 
 하지만 `handle.join()`을 `for` 루프 앞으로 옮기면 어떻게 될까요? 다음과 같이:
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/no-listing-01-join-too-early/src/main.rs}}
@@ -147,7 +147,7 @@ hi number 4 from the main thread!
 
 16-1절에서 보는 것처럼 `thread::spawn`에 전달하는 closure는 인수를 받지 않습니다. 즉, 생성된 스레드에서 메인 스레드의 데이터를 사용하지 않습니다. 생성된 스레드에서 메인 스레드의 데이터를 사용하려면 생성된 스레드의 closure가 필요한 값을 캡처해야 합니다. 16-3번 목록은 메인 스레드에서 벡터를 생성하고 생성된 스레드에서 사용하려는 시도를 보여줍니다. 그러나 아직 작동하지 않습니다. 다음은 이유입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 ## 16.1. 스레드"

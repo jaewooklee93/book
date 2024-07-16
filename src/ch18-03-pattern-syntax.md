@@ -27,14 +27,14 @@
 마지막 `println!`을 살펴보고 코드가 실행되기 전에 또는 더 읽기 전에
 코드가 무엇을 출력할지 시도해 보세요.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-11/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 18-11: 이름 지정된 변수 `y`를 가리는
-`match` 표현식</span>
+Listing 18-11: 이름 지정된 변수 `y`를 가리는
+`match` 표현식
 
 `match` 표현식이 실행될 때 발생하는 일을 살펴보겠습니다. 첫 번째 `match` 팔의
 패턴은 정의된 `x` 값에 일치하지 않으므로 코드가 계속 진행됩니다.
@@ -117,23 +117,23 @@ Rust는 `'c'`가 첫 번째 패턴의 범위 내에 있음을 알 수 있으며 
 
 18-12번 목록은 `x`와 `y`라는 두 필드를 가진 `Point` 구조체를 보여줍니다. 이를 패턴과 함께 `let` 문을 사용하여 분해할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-12/src/main.rs}}
 ```
 
-<span class=\"caption\">18-12번 목록: 구조체 필드를 분리하여 별도의 변수에 저장하기</span>
+18-12번 목록: 구조체 필드를 분리하여 별도의 변수에 저장하기
 
 이 코드는 `p` 구조체의 `x`와 `y` 필드의 값을 일치시키는 `a`와 `b`라는 변수를 생성합니다. 이 예제는 패턴의 변수 이름이 구조체의 필드 이름과 일치하지 않아도 된다는 것을 보여줍니다. 그러나 변수 이름을 필드 이름과 일치시키는 것이 일반적이며, 어떤 변수가 어떤 필드에서 가져왔는지 기억하기 쉽기 때문입니다. 이러한 일반적인 사용법과 `let Point { x: x, y: y } = p;`가 중복을 많이 포함하기 때문에 Rust는 구조체 필드를 일치시키는 패턴에 대한 약속을 제공합니다. 패턴에서 구조체 필드 이름만 나열하면 변수가 생성되고, 이 변수 이름은 필드 이름과 동일합니다. 18-13번 목록은 18-12번 목록과 동일한 방식으로 작동하지만, `let` 패턴에서 생성되는 변수는 `x`와 `y`입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-13/src/main.rs}}
 ```
 
-<span class=\"caption\">18-13번 목록: 구조체 필드를 일치시키는 패턴을 사용하여 구조체 필드를 분해하기</span>
+18-13번 목록: 구조체 필드를 일치시키는 패턴을 사용하여 구조체 필드를 분해하기
 
 이 코드는 `p` 변수의 `x`와 `y` 필드를 일치시키는 `x`와 `y`라는 변수를 생성합니다. 결과적으로 `x`와 `y` 변수에는 `p` 구조체의 값이 저장됩니다.
 
@@ -141,7 +141,7 @@ Rust는 `'c'`가 첫 번째 패턴의 범위 내에 있음을 알 수 있으며 
 
 18-14번 목록에서는 `Point` 값을 세 가지 경우로 분리하는 `match` 표현식이 있습니다. `y = 0`일 때 `x` 축에 직접 위치한 점(즉, `y = 0`), `x = 0`일 때 `y` 축에 위치한 점 또는 그렇지 않은 점입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-14/src/main.rs:here}}
@@ -154,13 +154,13 @@ Rust는 `'c'`가 첫 번째 패턴의 범위 내에 있음을 알 수 있으며 
 
 변수를 생성하지만 어디에서도 사용하지 않으면 Rust는 일반적으로 사용되지 않는 변수가 버그일 수 있기 때문에 경고를 냅니다. 그러나 때때로는 아직 사용하지 않을 변수를 생성하는 것이 유용할 수 있습니다. 예를 들어 프로토타입을 작성하거나 프로젝트를 시작할 때입니다. 이러한 상황에서는 Rust에게 사용되지 않는 변수에 대해 경고하지 않도록 `_`로 변수 이름을 시작하여 알 수 있습니다. Listing 18-20에서 두 개의 사용되지 않는 변수를 생성하지만 코드를 컴파일하면 하나에 대해서만 경고를 받습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-20/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 18-20: 사용되지 않는 변수 경고를 피하기 위해 변수 이름을 `_`로 시작하기</span>
+Listing 18-20: 사용되지 않는 변수 경고를 피하기 위해 변수 이름을 `_`로 시작하기
 
 여기서 `y` 변수를 사용하지 않아 경고를 받지만 `_x`를 사용하지 않아 경고를 받지 않습니다.
 
@@ -170,7 +170,7 @@ Rust는 `'c'`가 첫 번째 패턴의 범위 내에 있음을 알 수 있으며 
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-21/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 18-21: `_`로 시작하는 사용되지 않는 변수는 여전히 값을 바인딩하여 값의 소유권을 가져갈 수 있습니다</span>
+Listing 18-21: `_`로 시작하는 사용되지 않는 변수는 여전히 값을 바인딩하여 값의 소유권을 가져갈 수 있습니다
 
 `s` 값이 `_s`로 이동되어 사용할 수 없게 되므로 오류가 발생합니다. 그러나 `_`만 사용하면 값에 결코 바인딩되지 않습니다. Listing 18-22는 오류 없이 컴파일됩니다. `s`가 `_`로 이동되지 않기 때문입니다.
 
@@ -178,7 +178,7 @@ Rust는 `'c'`가 첫 번째 패턴의 범위 내에 있음을 알 수 있으며 
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-22/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 18-22: `_`를 사용하면 값이 바인딩되지 않습니다</span>
+Listing 18-22: `_`를 사용하면 값이 바인딩되지 않습니다
 
 이 코드는 `s`가 아무것도 바인딩되지 않기 때문에 괜찮게 작동합니다.
 
@@ -192,19 +192,19 @@ Rust는 `'c'`가 첫 번째 패턴의 범위 내에 있음을 알 수 있으며 
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-23/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 18-23: `..`를 사용하여 `Point`의 `x`만 일치시키고 나머지를 무시하기</span>
+Listing 18-23: `..`를 사용하여 `Point`의 `x`만 일치시키고 나머지를 무시하기
 
 `x` 값을 나열한 후 `..` 패턴만 포함합니다. 이는 `y: _` 및 `z: _`를 나열하는 것보다 특히 많은 필드를 가진 구조체를 다룰 때 더 빠릅니다. 우리가 관심 있는 필드가 하나 또는 두 개일 때 유용합니다.
 
 `..` 문법은 필요한 만큼의 값을 확장합니다. Listing 18-24는 `..`를 사용하여 튜플을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-24/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 18-24: 튜플에서 첫 번째와 마지막 값만 일치시키기</span>
+Listing 18-24: 튜플에서 첫 번째와 마지막 값만 일치시키기
 
 튜플이고 나머지 값은 무시합니다.
 
@@ -212,13 +212,13 @@ Rust는 `'c'`가 첫 번째 패턴의 범위 내에 있음을 알 수 있으며 
 
 그러나 `..`를 사용하는 것은 모호해야 합니다. 매칭할 값과 무시할 값이 명확하지 않으면 Rust는 오류를 줍니다. 18-25번 목록은 `..`를 모호하게 사용하는 예시이므로 컴파일되지 않습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-25/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 18-25: `..`를 모호하게 사용하려는 시도</span>
+Listing 18-25: `..`를 모호하게 사용하려는 시도
 
 이 코드를 컴파일하면 다음과 같은 오류가 발생합니다.
 
@@ -238,7 +238,7 @@ Rust는 튜플에서 몇 개의 값을 무시해야 하는지 결정할 수 없�
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-26/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 18-26: 패턴에 매치 가드 추가</span>
+Listing 18-26: 패턴에 매치 가드 추가
 
 이 예제는 `The number 4 is even`을 출력합니다. `num`이 패턴과 비교될 때, `Some(4)`가 `Some(x)`에 맞기 때문에 매칭됩니다. 그런 다음 매치 가드는 `x`를 2로 나눈 나머지가 0인지 확인합니다. 0이므로 첫 번째 팔레트가 선택됩니다.
 
@@ -248,13 +248,13 @@ Rust는 튜플에서 몇 개의 값을 무시해야 하는지 결정할 수 없�
 
 18-11번 목록에서 언급했듯이, 매치 가드를 사용하여 패턴-스키닝 문제를 해결할 수 있습니다. 패턴 표현식 내부에 새로운 변수를 만들었던 것을 기억하십시오. 이 새로운 변수는 `match` 외부의 변수에 대한 테스트를 할 수 없었습니다. 18-27번 목록은 매치 가드를 사용하여 이 문제를 해결하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-27/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 18-27: 매치 가드를 사용하여 외부 변수와의 등식을 테스트</span>
+Listing 18-27: 매치 가드를 사용하여 외부 변수와의 등식을 테스트
 
 이 코드는 이제 `Default case, x = Some(5)`를 출력합니다. 두 번째 팔레트의 패턴은 `Some(x)`이고 매치 가드는 `x == 5`입니다. 이 조건이 참이므로 두 번째 팔레트가 선택됩니다.
 
@@ -269,7 +269,7 @@ match arm에서 `y`라는 새로운 변수를 선언하지 않기 때문에 외�
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-28/src/main.rs:here}}
 ```
 
-<span class=\"caption\">18-28번 표: match guard와 여러 패턴을 결합</span>
+18-28번 표: match guard와 여러 패턴을 결합
 
 match 조건은 `x`의 값이 `4`, `5`, 또는 `6`이고 `y`가 `true`인 경우에만 해당하는 팔을 만듭니다. 이 코드가 실행되면 첫 번째 팔의 패턴이 `x`가 `4`이기 때문에 일치하지만, `if y` match guard가 `false`이기 때문에 첫 번째 팔은 선택되지 않습니다. 코드는 두 번째 팔로 이동하며, 이 팔이 일치하므로 프로그램은 `no`를 출력합니다. 이유는 `if` 조건이 `4 | 5 | 6` 전체 패턴에 적용되기 때문입니다. 즉, `|` 연산자로 지정된 값 목록의 마지막 값만 적용되는 것이 아니라, `if` 조건이 전체 패턴에 적용됩니다.
 
@@ -293,7 +293,7 @@ rather than this:
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-29/src/main.rs:here}}
 ```
 
-<span class=\"caption\">18-29번 표: 패턴에서 값을 바인딩하면서 동시에 테스트</span>
+18-29번 표: 패턴에서 값을 바인딩하면서 동시에 테스트
 
 이 예제는 `Found an id in range: 5`를 출력합니다. `id_variable @`를 패턴 앞에 지정함으로써 `3..=7` 범위에 맞는 값을 저장하면서 동시에 해당 값을 테스트합니다.
 

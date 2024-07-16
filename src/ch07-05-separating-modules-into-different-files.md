@@ -7,23 +7,23 @@
 
 먼저 `front_of_house` 모듈을 자신의 파일에 추출합니다. `front_of_house` 모듈의 중괄호 안의 코드를 제거하고, *src/lib.rs* 에 7-21번 목록에 나와 있는 코드만 남겨둡니다. 이때, *src/front_of_house.rs* 파일을 만들기 전까지는 컴파일되지 않습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-21-and-22/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 7-21: `front_of_house` 모듈을 선언하는데, 본문은 *src/front_of_house.rs* 에 있을 것입니다.</span>
+Listing 7-21: `front_of_house` 모듈을 선언하는데, 본문은 *src/front_of_house.rs* 에 있을 것입니다.
 
 다음으로, 중괄호 안에 있던 코드를 *src/front_of_house.rs* 라는 새 파일로 옮깁니다. 7-22번 목록에 나와 있습니다. 컴파일러는 크레이트 루트에서 `front_of_house` 라는 이름의 모듈 선언을 발견했기 때문에 해당 파일을 찾을 수 있습니다.
 
-<span class=\"filename\">Filename: src/front_of_house.rs</span>
+Filename: src/front_of_house.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-21-and-22/src/front_of_house.rs}}
 ```
 
-<span class=\"caption\">Listing 7-22: `front_of_house` 모듈 내부의 정의가 *src/front_of_house.rs* 에 있습니다.</span>
+Listing 7-22: `front_of_house` 모듈 내부의 정의가 *src/front_of_house.rs* 에 있습니다.
 
 모듈 트리에서 `mod` 선언을 사용하여 파일을 로드해야 하는 것은 한 번만입니다. 컴파일러가 프로젝트에 해당 파일이 포함되어 있고 (모듈 트리에서 코드가 어디에 있는지 `mod` 문을 사용하여 선언한 위치를 알기 때문에) 프로젝트의 다른 파일은 해당 파일의 코드를 `mod` 문에서 선언된 경로를 사용하여 참조해야 합니다. 이는 [“모듈 트리에서 항목을 참조하는 경로”][paths]<!-- ignore --> 섹션에서 설명된 내용과 같습니다. 즉, `mod` 는 다른 프로그래밍 언어에서 볼 수 있는 “include” 연산이 아닙니다.
 
@@ -31,7 +31,7 @@
 
 `hosting` 을 옮기기 시작하려면 *src/front_of_house.rs* 를 `hosting` 모듈의 선언만 포함하도록 변경합니다.
 
-<span class=\"filename\">Filename: src/front_of_house.rs</span>
+Filename: src/front_of_house.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/no-listing-02-extracting-hosting/src/front_of_house.rs}}
@@ -39,7 +39,7 @@
 
 그런 다음 *src/front_of_house* 디렉토리와 *hosting.rs* 파일을 만들어 `hosting` 모듈에서 정의된 코드를 포함합니다.
 
-<span class=\"filename\">Filename: src/front_of_house/hosting.rs</span>
+Filename: src/front_of_house/hosting.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/no-listing-02-extracting-hosting/src/front_of_house/hosting.rs}}

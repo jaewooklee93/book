@@ -16,42 +16,42 @@ Rust에서 구조체와 열거형을 “object”라고 부르지 않는다는 �
 
 17-3번 목록은 `Draw`라는 이름의 트레이트를 `draw`라는 이름의 한 가지 메서드를 정의하여 정의하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 ```
 
-<span class=\"caption\">Listing 17-3: `Draw` trait 정의</span>
+Listing 17-3: `Draw` trait 정의
 
 이 문법은 제10장에서 트레이트를 정의하는 방법에 대한 논의에서 이미 익숙하실 것입니다. 다음은 새로운 문법입니다. Listing 17-4는 `Screen`이라는 구조체를 정의하는데, `components`라는 벡터를 포함합니다. 이 벡터는 `Box<dyn Draw>` 유형이며, 트레이트 객체입니다. `Box` 안에 있는 트레이트 `Draw`를 구현하는 모든 유형을 대체하는 것입니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-04/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-4: `Draw` 트레이트를 구현하는 트레이트 객체를 포함하는 `Screen` 구조체의 정의</span>
+Listing 17-4: `Draw` 트레이트를 구현하는 트레이트 객체를 포함하는 `Screen` 구조체의 정의
 
 `Screen` 구조체에서 `run`이라는 메서드를 정의하여 각 `components`의 `draw` 메서드를 호출합니다. Listing 17-5에서 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-05/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-5: 각 구성 요소의 `draw` 메서드를 호출하는 `Screen`의 `run` 메서드</span>
+Listing 17-5: 각 구성 요소의 `draw` 메서드를 호출하는 `Screen`의 `run` 메서드
 
 이는 트레이트 경계를 가진 일반 유형 매개변수를 사용하여 구조체를 정의하는 것과 다릅니다. 일반 유형 매개변수는 한 번에 하나의 구체적인 유형으로만 대체될 수 있지만, 트레이트 객체는 런타임에 트레이트 객체를 채울 수 있는 여러 구체적인 유형을 허용합니다. 예를 들어, Listing 17-6과 같이 일반 유형 매개변수와 트레이트 경계를 사용하여 `Screen` 구조체를 정의할 수 있습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-06/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-6: 일반 유형 매개변수와 트레이트 경계를 사용하여 `Screen` 구조체와 `run` 메서드를 정의하는 다른 방법</span>
+Listing 17-6: 일반 유형 매개변수와 트레이트 경계를 사용하여 `Screen` 구조체와 `run` 메서드를 정의하는 다른 방법
 
 이것은 `Screen` 인스턴스가 `Button` 유형 또는 `TextField` 유형의 구성 요소 목록만을 가질 수 있도록 제한합니다. 구성 요소가 동질적이라면, 컴파일 시간에 구체적인 유형으로 단일화되는 일반 유형 매개변수와 트레이트 경계를 사용하는 것이 선호됩니다.
 
@@ -61,13 +61,13 @@ Rust에서 구조체와 열거형을 “object”라고 부르지 않는다는 �
 
 이제 `Draw` 트레이트를 구현하는 몇 가지 유형을 추가하겠습니다. `Button` 유형을 제공하겠습니다. 실제 GUI 라이브러리를 구현하는 것은 이 책의 범위를 벗어나므로 `draw` 메서드에는 실제 구현이 없습니다. 구현이 어떻게 보일지 상상해 보려면, `Button` 구조체에는 `width`, `height`, `label`와 같은 필드가 있을 수 있습니다. Listing 17-7을 참조하십시오.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-07/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-7: `Draw` 트레이트를 구현하는 `Button` 구조체</span>
+Listing 17-7: `Draw` 트레이트를 구현하는 `Button` 구조체
 
 `Button`의 `width`, `height`, `label` 필드는 다른 구성 요소의 필드와 다를 것입니다. 예를 들어, `TextField` 유형은 `placeholder` 필드를 포함하는 `width`, `height`, `label` 필드를 가질 수 있습니다. 우리가 그리려는 각 유형은 `Draw` 트레이트를 구현하지만, `Button`에서와 같이 `draw` 메서드에서 구체적인 유형에 따라 다르게 구현됩니다. `Button` 유형의 경우, 예를 들어, `draw` 메서드는 버튼의 폭과 높이를 기반으로 버튼을 그리는 코드를 포함할 수 있습니다. 다른 구성 요소의 `draw` 메서드는 그 구성 요소의 특정 형태를 그리는 코드를 포함할 것입니다.
 
@@ -75,23 +75,23 @@ Rust에서 구조체와 열거형을 “object”라고 부르지 않는다는 �
 
 우리 라이브러리를 사용하는 사람이 `width`, `height`, 그리고 `options` 필드를 가진 `SelectBox` 구조체를 구현하기로 결정하면, 그들은 Listing 17-8와 같이 `SelectBox` 유형에 `Draw` 트레이트를 구현합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch17-oop/listing-17-08/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-8: `gui`를 사용하는 또 다른 crate 및 `Draw` 트레이트를 `SelectBox` 구조체에 구현</span>
+Listing 17-8: `gui`를 사용하는 또 다른 crate 및 `Draw` 트레이트를 `SelectBox` 구조체에 구현
 
 우리 라이브러리의 사용자는 이제 `Screen` 인스턴스를 만들고 `SelectBox`와 `Button`을 추가하여 `Box<T>`로 넣어 트레이트 객체로 만들 수 있습니다. 그들은 `run` 메서드를 호출하여 각 구성 요소의 `draw` 메서드를 호출하는 `Screen` 인스턴스에 넣을 수 있습니다. Listing 17-9는 이 구현을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch17-oop/listing-17-09/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-9: 동일한 트레이트를 구현하는 다른 유형의 값을 저장하기 위해 트레이트 객체를 사용</span>
+Listing 17-9: 동일한 트레이트를 구현하는 다른 유형의 값을 저장하기 위해 트레이트 객체를 사용
 
 라이브러리를 작성할 때 `SelectBox` 유형이 추가될 것이라는 것을 알지 못했지만, `Screen` 구현은 `SelectBox` 유형을 처리하고 그래픽을 그릴 수 있었습니다. `SelectBox`가 `Draw` 트레이트를 구현하기 때문입니다. 즉, `draw` 메서드를 구현합니다.
 
@@ -101,13 +101,13 @@ Rust에서 구조체와 열거형을 “object”라고 부르지 않는다는 �
 
 예를 들어, Listing 17-10은 `Screen`에 `String`을 구성 요소로 사용하려고 할 때 발생하는 상황을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch17-oop/listing-17-10/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 17-10: 트레이트 객체의 트레이트를 구현하지 않는 유형을 사용하려는 시도</span>
+Listing 17-10: 트레이트 객체의 트레이트를 구현하지 않는 유형을 사용하려는 시도
 
 `String`이 `Draw` 트레이트를 구현하지 않기 때문에 다음과 같은 오류를 받게 됩니다.
 

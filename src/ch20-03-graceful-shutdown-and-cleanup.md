@@ -8,13 +8,13 @@
 
 스레드 풀이 삭제될 때 스레드가 모두 합쳐져 작업을 완료해야 합니다. 스레드 풀의 `Drop` 구현을 시작하는 것은 20-22번 목록에서 볼 수 있습니다. 이 코드는 아직 작동하지 않습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-22/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-22: 스레드 풀이 범위를 벗어날 때 각 스레드를 합치기</span>
+Listing 20-22: 스레드 풀이 범위를 벗어날 때 각 스레드를 합치기
 
 먼저 스레드 풀의 각 `workers`를 반복합니다. `&mut`를 사용하는 이유는 `self`가 가변 참조이기 때문이며, `worker`를 변경할 수 있어야 하기 때문입니다. 각 `worker`에 대해 작업 중인 스레드가 종료되도록 메시지를 출력하고 `join`을 호출합니다. `join` 호출이 실패하면 `unwrap`을 사용하여 Rust가 오류를 발생시키고 무예의식적인 종료로 넘어갑니다.
 
@@ -28,7 +28,7 @@
 
 따라서 `Worker` 정의를 다음과 같이 업데이트해야 합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-04-update-worker-definition/src/lib.rs:here}}
@@ -42,7 +42,7 @@
 
 두 번째 오류는 `Worker::new` 함수의 끝 부분을 가리키고 있으며, `thread` 값을 `Some`으로 감싸서 새 `Worker`를 생성해야 합니다. 이 오류를 수정하려면 다음과 같은 변경 사항을 적용합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-05-fix-worker-new/src/lib.rs:here}}
@@ -50,7 +50,7 @@
 
 첫 번째 오류는 `Drop` 구현에서 발생합니다. 이전에 언급했듯이, 우리는 `Option` 값에 `take`를 호출하여 `thread`를 `worker`에서 옮기려고 했습니다. 다음 변경 사항이 이를 수행합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,not_desired_behavior
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-06-fix-threadpool-drop/src/lib.rs:here}}
@@ -66,33 +66,33 @@
 
 먼저, `ThreadPool`의 `drop` 구현을 변경하여 스레드가 완료될 때까지 기다리기 전에 `sender`를 명시적으로 삭제합니다. 20-23번 목록은 `ThreadPool`에 `sender`를 명시적으로 삭제하는 변경 사항을 보여줍니다. `Option`과 `take` 기술을 `thread`과 동일하게 사용하여 `ThreadPool`에서 `sender`를 옮길 수 있습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground,not_desired_behavior
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-23/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">20-23번 목록: `sender`를 `join`하기 전에 명시적으로 삭제</span>
+20-23번 목록: `sender`를 `join`하기 전에 명시적으로 삭제
 
 `sender`를 삭제하면 채널이 닫히고, 더 이상 메시지가 전송되지 않음을 나타냅니다. 이 경우 작업자가 `loop`에서 하는 모든 `recv` 호출은 오류를 반환합니다. 20-24번 목록에서는 `Worker` 루프를 변경하여 이 경우에 루프에서 조심스럽게 나가도록 합니다. 즉, `ThreadPool`의 `drop` 구현이 `join`을 호출하면 스레드가 완료됩니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-24/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">20-24번 목록: `recv`가 오류를 반환하면 루프에서 조심스럽게 나가기</span>
+20-24번 목록: `recv`가 오류를 반환하면 루프에서 조심스럽게 나가기
 
 이 코드를 실제로 실행하려면 `main`을 변경하여 서버를 두 개의 요청만 처리한 후 조심스럽게 종료하도록 합니다. 20-25번 목록에 `main`의 변경 사항이 나와 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-25/src/main.rs:here}}
 ```
 
-<span class=\"caption\">20-25번 목록: 두 개의 요청을 처리한 후 루프를 종료하여 서버를 종료하기</span>
+20-25번 목록: 두 개의 요청을 처리한 후 루프를 종료하여 서버를 종료하기
 
 실제 웹 서버가 두 개의 요청만 처리한 후 종료되는 것은 원하지 않습니다. 이 코드는 조심스러운 종료 및 정리 작업이 제대로 작동하는지 보여주는 데 사용됩니다.
 
@@ -140,13 +140,13 @@ Shutting down worker 3
 
 참고로 전체 코드가 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-07-final-code/src/main.rs}}
 ```
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-07-final-code/src/lib.rs}}

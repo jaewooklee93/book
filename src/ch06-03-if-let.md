@@ -6,7 +6,7 @@
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-06/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 6-6: `Some`일 때만 코드를 실행하는 `match`</span>
+Listing 6-6: `Some`일 때만 코드를 실행하는 `match`
 
 만약 값이 `Some`이라면, 패턴에서 `max` 변수에 값을 바인딩하여 `Some` 변수 내의 값을 출력합니다. `None` 값에 대해서는 아무것도 하지 않습니다. `match` 표현식을 만족하기 위해 `_ => ()`를 추가해야 하는데, 이는 불필요한 boilerplate 코드입니다.
 

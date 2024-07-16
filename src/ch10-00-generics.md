@@ -16,25 +16,25 @@
 
 10-1번 목록에 나와 있는 짧은 프로그램으로 시작하여 숫자 목록에서 가장 큰 숫자를 찾는 방법을 살펴보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-01/src/main.rs:here}}
 ```
 
-<span class=\"caption\">10-1번 목록: 숫자 목록에서 가장 큰 숫자 찾기</span>
+10-1번 목록: 숫자 목록에서 가장 큰 숫자 찾기
 
 `number_list` 변수에 숫자 목록을 저장하고 `largest` 변수에 목록의 첫 번째 숫자를 가리키는 참조를 할당합니다. 그런 다음 목록의 모든 숫자를 반복하여 현재 숫자가 `largest`에 저장된 숫자보다 크면 해당 변수의 참조를 업데이트합니다. 그러나 현재 숫자가 가장 큰 숫자보다 작거나 같으면 변수는 변경되지 않고 코드는 목록의 다음 숫자로 이동합니다. 목록의 모든 숫자를 고려한 후 `largest`는 가장 큰 숫자를 가리키게 됩니다. 이 경우 100입니다.
 
 이제 두 개의 다른 숫자 목록에서 가장 큰 숫자를 찾아야 합니다. 이를 위해 10-2번 목록과 같이 10-1번 목록의 코드를 복제할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-02/src/main.rs}}
 ```
 
-<span class=\"caption\">10-2번 목록: 두 개의 숫자 목록에서 가장 큰 숫자 찾기</span>
+10-2번 목록: 두 개의 숫자 목록에서 가장 큰 숫자 찾기
 
 이 코드는 작동하지만, 코드를 복제하는 것은 번거롭고 오류 발생 가능성이 높습니다. 또한 코드를 변경할 때는 여러 곳에서 업데이트해야 합니다.
 
@@ -43,13 +43,13 @@
 10-3번 목록에서 가장 큰 숫자를 찾는 코드를 `largest`라는 함수로 추출합니다.
 그런 다음 두 목록에서 가장 큰 숫자를 찾기 위해 함수를 호출합니다. 10-2번 목록에서 보았던 것처럼, 이 함수를 앞으로 우리가 가질 수 있는 다른 `i32` 값 목록에도 사용할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-03/src/main.rs:here}}
 ```
 
-<span class=\"caption\">10-3번 목록: 두 목록에서 가장 큰 숫자를 찾는 추상화된 코드</span>
+10-3번 목록: 두 목록에서 가장 큰 숫자를 찾는 추상화된 코드
 
 `largest` 함수에는 `list`라는 매개변수가 있으며, 이는 함수에 전달할 수 있는 임의의 `i32` 값의 구체적인 슬라이스를 나타냅니다. 그 결과, 함수를 호출할 때 코드는 우리가 전달한 구체적인 값에 대해 실행됩니다.
 

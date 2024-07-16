@@ -34,7 +34,7 @@ backyard
 
 이 경우 크레이트 루트 파일은 *src/main.rs*이며 다음과 같이 구성되어 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,noplayground,ignore
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/quick-reference-example/src/main.rs}}
@@ -42,7 +42,7 @@ backyard
 
 `pub mod garden;` 라인은 *src/garden.rs*에서 찾을 수 있는 코드를 컴파일러에 알려줍니다. 이 코드는 다음과 같습니다.
 
-<span class=\"filename\">Filename: src/garden.rs</span>
+Filename: src/garden.rs
 
 ```rust,noplayground,ignore
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/quick-reference-example/src/garden.rs}}
@@ -73,13 +73,13 @@ backyard
 이러한 방식으로 crate를 구조화하려면 함수를  pertanian 모듈로 정리할 수 있습니다.
 `cargo new restaurant --lib`를 실행하여 `restaurant`라는 이름의 새로운 라이브러리를 만들고, *src/lib.rs* 파일에 Listing 7-1에 있는 코드를 입력하여 전면 부분의 모듈과 함수 서명을 정의합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-01/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 7-1: `front_of_house` 모듈이 다른 모듈을 포함하고 있는 모듈</span>
+Listing 7-1: `front_of_house` 모듈이 다른 모듈을 포함하고 있는 모듈
 
 `mod` 키워드를 사용하여 모듈을 정의하고 모듈 이름(이 경우 `front_of_house`)을 붙입니다.
 모듈의 몸체는 괄호 안에 들어갑니다.
@@ -107,7 +107,7 @@ crate
          └── take_payment
 ```
 
-<span class=\"caption\">Listing 7-2: Listing 7-1의 코드에 대한 모듈 트리</span>
+Listing 7-2: Listing 7-1의 코드에 대한 모듈 트리
 
 이 트리는 어떤 모듈이 다른 모듈 안에 포함되는지 보여줍니다. 예를 들어 `hosting`은 `front_of_house` 안에 포함됩니다.
 트리는 또한 모듈이 *형제*라는 것을 보여줍니다. 즉, `front_of_house` 안에 정의된 `hosting`과 `serving`은 형제입니다.

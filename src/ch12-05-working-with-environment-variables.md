@@ -44,7 +44,7 @@ Listing 12-21에 나와 있는 `search_case_insensitive` 함수는 `search` 함�
 
 훌륭합니다! 테스트가 통과했습니다. 이제 `run` 함수에서 새 `search_case_insensitive` 함수를 호출해 보겠습니다. 먼저 `Config` 구조체에 사례에 민감하거나 사례에 민감하지 않은 검색을 전환하는 구성 옵션을 추가합니다. 이 필드를 추가하면 `ignore_case` 필드를 초기화하지 않았기 때문에 컴파일 오류가 발생합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/lib.rs:here}}

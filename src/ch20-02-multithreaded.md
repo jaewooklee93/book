@@ -6,13 +6,13 @@
 
 우리는 현재 서버 구현에 느리게 처리되는 요청이 다른 요청에 어떤 영향을 미치는지 살펴보겠습니다. 20-10번 목록은 *sleep* 요청을 처리하는 방법을 구현합니다. 이는 서버가 응답하기 전에 5초 동안 수면을 취하는 시뮬레이션 느린 응답을 제공합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,no_run
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-10/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-10: 5초 동안 수면을 취하여 느린 요청을 시뮬레이션하기</span>
+Listing 20-10: 5초 동안 수면을 취하여 느린 요청을 시뮬레이션하기
 
 우리는 이제 세 가지 경우를 처리하기 위해 `if`를 `match`로 변경했습니다. `match`는 `=` 연산자처럼 자동 참조 및 해제를 하지 않기 때문에 `request_line` 슬라이스에 대한 명시적인 패턴 매칭이 필요합니다.
 
@@ -47,13 +47,13 @@
 
 먼저, 각 연결에 대해 새 스레드를 생성하는 방식으로 코드가 어떻게 보일지 살펴보겠습니다. 앞서 언급했듯이, 제한 없는 수의 스레드를 생성할 수 있다는 문제 때문에 이것이 최종 계획은 아니지만, 먼저 작동하는 다중 스레드 서버를 얻기 위한 시작점입니다. 그런 다음 스레드 풀을 추가하여 개선하고, 두 가지 솔루션을 비교하면 쉬워집니다. 20-11번 표에서 `main`을 수정하여 `for` 루프 내에서 각 스트림을 처리하는 새 스레드를 생성하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,no_run
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-11/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-11: 각 스트림에 대해 새 스레드를 생성하는 경우</span>
+Listing 20-11: 각 스트림에 대해 새 스레드를 생성하는 경우
 
 제16장에서 배운 것처럼 `thread::spawn`은 새 스레드를 생성하고 폐쇄 코드를 새 스레드에서 실행합니다. 이 코드를 실행하고 브라우저에 */sleep*를 로드한 다음 두 개의 브라우저 탭에서 */*를 로드하면 */sleep*가 완료될 때까지 기다리지 않고 */*에 대한 요청이 처리되는 것을 확인할 수 있습니다. 그러나 앞서 언급했듯이, 제한 없이 새 스레드를 생성하므로 시스템을 궁극적으로 압도하게 됩니다.
 
@@ -64,13 +64,13 @@
 
 스레드 풀이 동일한 방식으로 작동하도록 하여 스레드에서 스레드 풀로 전환할 때 API를 사용하는 코드에 큰 변경이 필요하지 않도록 합니다. 20-12번 표는 사용하려는 `ThreadPool` 구조의 가상 인터페이스를 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-12/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-12: 우리가 원하는 `ThreadPool` 인터페이스</span>
+Listing 20-12: 우리가 원하는 `ThreadPool` 인터페이스
 
 `ThreadPool::new`를 사용하여 스레드 수가 4개인 스레드 풀을 생성합니다. 그런 다음 `for` 루프에서 `pool.execute`는 `thread::spawn`과 유사한 인터페이스를 가지고 있으며, 스레드 풀이 실행해야 하는 폐쇄를 가져옵니다. 스레드 풀에 폐쇄를 전달하고 실행하도록 하는 `pool.execute`를 구현해야 합니다. 이 코드는 아직 컴파일되지 않지만, 컴파일러가 우리를 도와 문제를 해결하는 방향으로 이끌어 줄 것입니다.
 
@@ -92,7 +92,7 @@
 
 `src/lib.rs`를 생성하여 현재 가질 수 있는 가장 간단한 `ThreadPool` 구조의 정의를 포함합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}
@@ -100,7 +100,7 @@
 
 그런 다음 `ThreadPool`을 라이브러리 crate에서 가져오도록 `main.rs` 파일을 편집하여 `src/main.rs`의 맨 위에 다음 코드를 추가합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/main.rs:here}}
@@ -114,7 +114,7 @@
 
 이 오류는 다음 단계로 `ThreadPool`에 `new`이라는 연관 함수를 만들어야 함을 나타냅니다. 또한 `new`가 `4`를 인수로 받을 수 있는 하나의 매개변수를 가져야 하며 `ThreadPool` 인스턴스를 반환해야 한다는 것을 알 수 있습니다. 가장 간단한 `new` 함수를 구현하여 이러한 특징을 가질 수 있습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/src/lib.rs}}
@@ -145,7 +145,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 
 `F` 유형 매개변수에는 `Send` 트레이트 경계와 `'static` 라이프타임 경계가 있습니다. 이는 우리 상황에 유용합니다. 다른 스레드로 클로저를 전송하려면 `Send`가 필요하며, 스레드가 실행을 완료하는 데 걸리는 시간을 모르기 때문에 `'static`가 필요합니다. `ThreadPool`에 `execute` 메서드를 만들어 `F` 유형의 일반 매개변수를 사용하여 이러한 경계를 받도록 하겠습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-03-define-execute/src/lib.rs:here}}
@@ -167,13 +167,13 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 
 `new`와 `execute`의 매개변수를 아무것도 하지 않습니다. 이 함수의 몸체를 원하는 동작으로 구현하겠습니다. 먼저 `new`에 대해 생각해 보겠습니다. 이전에 `size` 매개변수에 부호가 없는 유형을 선택한 이유는 스레드 수가 음수인 풀이 의미가 없기 때문입니다. 그러나 스레드 수가 0인 풀도 의미가 없지만, 0은 완벽히 유효한 `usize`입니다. `size`가 0보다 크다는 것을 확인하기 전에 `ThreadPool` 인스턴스를 반환하고 프로그램이 0을 받으면 `panic`하도록 `assert!` 매크로를 추가합니다. Listing 20-13에서 보여주는 것처럼.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-13/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-13: `ThreadPool::new`를 구현하여 `size`가 0이면 `panic`</span>
+Listing 20-13: `ThreadPool::new`를 구현하여 `size`가 0이면 `panic`
 
 `ThreadPool`에 대한 설명서도 추가했습니다. Chapter 14에서 논의된 것처럼, 함수가 `panic`할 수 있는 상황을 명시하는 섹션을 추가하여 좋은 설명서 작성 규칙을 따랐습니다. `cargo doc --open`을 실행하고 `ThreadPool` 구조체를 클릭하여 `new`에 대한 생성된 설명서를 확인해 보세요!
 
@@ -207,14 +207,14 @@ Listing 20-14의 코드는 컴파일되지만 아직 스레드를 생성하지 �
 `ThreadPool`의 정의를 변경하여 `thread::JoinHandle<()>` 인스턴스의 벡터를
 저장하고, 이 벡터를 반환합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,not_desired_behavior
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-14/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-14: `ThreadPool`에 스레드를 저장하기 위한
-벡터 생성</span>
+Listing 20-14: `ThreadPool`에 스레드를 저장하기 위한
+벡터 생성
 
 `std::thread`를 라이브러리 크레인에 범위 내에 가져왔습니다. `ThreadPool`에서
 `thread::JoinHandle` 유형의 요소를 저장하기 때문입니다.
@@ -259,13 +259,13 @@ Listing 20-14의 `for` 루프에 대한 주석을 살펴보았습니다. 이제 
 
 준비되셨나요? 다음은 Listing 20-15에서 하나의 방법으로 이러한 변경 사항을 적용한 코드입니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-15/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-15: `ThreadPool`을 `Worker` 인스턴스를 직접 저장하도록 변경</span>
+Listing 20-15: `ThreadPool`을 `Worker` 인스턴스를 직접 저장하도록 변경
 
 `ThreadPool`의 필드 이름을 `threads`에서 `workers`로 변경했습니다. 이는 이제 `Worker` 인스턴스를 `JoinHandle<()>` 인스턴스 대신 저장하기 때문입니다. `for` 루프의 카운터를 `Worker::new` 함수의 인자로 사용하고, 각 새로운 `Worker`를 `workers`라는 벡터에 저장합니다.
 
@@ -291,7 +291,7 @@ Listing 20-14의 `for` 루프에 대한 주석을 살펴보았습니다. 이제 
 
 Listing 20-16에서 `ThreadPool::new`에서 채널을 생성하고 보내는 쪽을 `ThreadPool` 인스턴스에 저장하는 방법을 살펴보겠습니다. `Job` 구조체는 현재 아무것도 포함하지 않지만, 채널을 통해 전송할 항목의 유형이 될 것입니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 ## 20.2. 다중 스레드
@@ -299,19 +299,19 @@ Listing 20-16에서 `ThreadPool::new`에서 채널을 생성하고 보내는 쪽
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-16/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-16: `ThreadPool`을 수정하여 `Job` 인스턴스를 전송하는 채널의 발신자를 저장</span>
+Listing 20-16: `ThreadPool`을 수정하여 `Job` 인스턴스를 전송하는 채널의 발신자를 저장
 
 `ThreadPool::new`에서 새로운 채널을 생성하고 풀이 채널의 발신자를 저장합니다. 이렇게 하면 코드가 성공적으로 컴파일됩니다.
 
 채널의 수신자를 각 작업자로 전달하여 작업자 스레드가 생성될 때 채널의 수신자를 사용할 수 있도록 하려고 합니다. `receiver` 매개변수를 closure 내에서 참조해야 하므로, Listing 20-17의 코드는 아직 컴파일되지 않습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-17/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-17: 작업자에게 수신자를 전달</span>
+Listing 20-17: 작업자에게 수신자를 전달
 
 작은 변화를 몇 가지 적용했습니다. `Worker::new`에 수신자를 전달하고, closure 내에서 사용합니다.
 
@@ -327,13 +327,13 @@ Listing 20-16에서 `ThreadPool::new`에서 채널을 생성하고 보내는 쪽
 
 Chapter 16에서 다룬 스레드 안전한 스마트 포인터를 기억하세요. 여러 스레드에서 소유권을 공유하고 스레드가 값을 변경할 수 있도록 하려면 `Arc<Mutex<T>>`를 사용해야 합니다. `Arc`는 여러 작업자가 `receiver`의 소유권을 가질 수 있도록 하고, `Mutex`는 한 번에 한 작업자만 `receiver`에서 작업을 가져올 수 있도록 합니다. Listing 20-18은 이러한 변경 사항을 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-18/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-18: `Arc`와 `Mutex`를 사용하여 작업자 간에 `receiver`를 공유</span>
+Listing 20-18: `Arc`와 `Mutex`를 사용하여 작업자 간에 `receiver`를 공유
 
 `ThreadPool::new`에서 `receiver`를 `Arc`와 `Mutex`에 넣습니다. 각 새로운 작업자에게는 `Arc`를 복사하여 작업자가 `receiver`의 소유권을 공유할 수 있도록 참조 카운트를 증가시킵니다.
 
@@ -344,13 +344,13 @@ Chapter 16에서 다룬 스레드 안전한 스마트 포인터를 기억하세�
 마지막으로 `ThreadPool`의 `execute` 메서드를 구현해야 합니다. `Job`를 구현 방식을 변경하여 `execute`가 받는 closure의 유형을 갖는 트레이트 객체로 변경합니다. Chapter 19의 [“Creating Type Synonyms with Type Aliases”][creating-type-synonyms-with-type-aliases]<!-- ignore -->
 섹션에서 설명했듯이, 타입 별칭은 긴 타입을 간결하게 만들어 사용하기 쉽게 합니다. Listing 20-19를 참조하세요.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-19/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-19: `Job` 타입 별칭을 `Box`를 사용하여 각 closure를 갖는 타입으로 만들고 채널을 통해 작업을 전송</span>
+Listing 20-19: `Job` 타입 별칭을 `Box`를 사용하여 각 closure를 갖는 타입으로 만들고 채널을 통해 작업을 전송
 
 `execute`에서 받는 closure를 사용하여 새로운 `Job` 인스턴스를 생성한 후, 채널의 발신 쪽으로 작업을 전송합니다. `send`에서 `unwrap`을 호출하여 전송 실패 시 발생하는 경우를 처리합니다. 이는 예를 들어 채널이 이미 닫혔을 때 발생할 수 있습니다.
 
@@ -359,13 +359,13 @@ Chapter 16에서 다룬 스레드 안전한 스마트 포인터를 기억하세�
 
 하지만 아직 끝나지 않았습니다! 작업자에서 `thread::spawn`에 전달되는 폐쇄는 수신 측의 채널을 *참조*할 뿐입니다. 대신, 폐쇄가 영원히 루프를 돌려 채널의 수신 측에 작업을 요청하고 작업을 받으면 실행해야 합니다. 20-20번 목록에 나와 있는 변경 사항을 `Worker::new`에 적용해 보겠습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-20/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-20: 작업자의 스레드에서 작업을 수신하고 실행하기</span>
+Listing 20-20: 작업자의 스레드에서 작업을 수신하고 실행하기
 
 여기서 먼저 `lock`을 사용하여 `receiver`에 잠금을 획득하고, 그런 다음 `unwrap`을 사용하여 오류 발생 시 에러를 발생시킵니다. 잠금을 획득하는 것은 다른 스레드가 잠금을 획득한 상태에서 에러가 발생하여 잠금을 해제하지 않은 경우, 즉 *오염된* 상태인 경우 실패할 수 있습니다. 이러한 상황에서는 `unwrap`을 사용하여 현재 스레드가 에러를 발생시키는 것이 올바른 조치입니다. `expect`로 변경하여 의미 있는 오류 메시지를 포함할 수 있습니다.
 
@@ -426,13 +426,13 @@ Worker 2 got a job; executing.
 
 제18장에서 `while let` 루프를 배웠다면, 왜 `Worker::new` 함수 코드를 표시된 것처럼 작성하지 않았는지 궁금할 수 있습니다. 20-21번 목록.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,not_desired_behavior
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-21/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 20-21: `while let`을 사용하여 `Worker::new`의 대안 구현</span>
+Listing 20-21: `while let`을 사용하여 `Worker::new`의 대안 구현
 
 이 코드는 컴파일되고 실행되지만, 원하는 스레드 동작을 생성하지 않습니다. 느린 요청이 다른 요청이 처리되기 전까지 기다리게 됩니다. 이유는 다음과 같습니다. `Mutex` 구조체에는 `unlock` 메서드가 없기 때문입니다. `MutexGuard<T>` 내부의 잠금 소유권이 `Mutex` 구조체의 라이프타임에 기반하기 때문입니다. 컴파일 시점에, 보로 체커는 `Mutex`로 보호된 리소스는 잠금을 갖고 있지 않으면 액세스할 수 없다는 규칙을 강제할 수 있습니다. 그러나 이 구현은 `MutexGuard<T>`의 라이프타임에 주의하지 않으면 잠금이 예상보다 오래 유지될 수 있습니다.
 

@@ -4,13 +4,13 @@
 
 `Post`는 `Box<dyn State>`의 트레이트 객체를 `Option<T>` 안에 갖고 있는 `state`라는 프라이빗 필드에 저장합니다. 이유는 곧 알아갈 수 있습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-12/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 17-12: `Post` 구조체와 `new` 함수의 정의, `State` 트레이트, 그리고 `Draft` 구조체</span>
+Listing 17-12: `Post` 구조체와 `new` 함수의 정의, `State` 트레이트, 그리고 `Draft` 구조체
 
 `State` 트레이트는 다양한 게시물 상태가 공유하는 동작을 정의합니다. 상태 객체는 `Draft`, `PendingReview`, `Published`이며, 모두 `State` 트레이트를 구현합니다. 현재 트레이트에는 메서드가 없으며, `Draft` 상태만 정의하여 시작합니다. 게시물이 시작할 때 상태가 `Draft`가 되도록 합니다.
 
@@ -20,13 +20,13 @@
 
 Listing 17-11에서 보았듯이 `add_text`라는 메서드를 호출하여 `&str`을 전달하고 이것이 블로그 게시물의 텍스트 콘텐츠로 추가되도록 하려고 합니다. 이를 구현하는 것은 `content` 필드를 `pub`으로 노출하는 것보다 메서드로 구현하는 것이 좋습니다. 이렇게 하면 나중에 `content` 필드의 데이터가 읽는 방식을 제어하는 메서드를 구현할 수 있습니다. `add_text` 메서드는 매우 직관적이므로 Listing 17-13에 `impl Post` 블록에 구현을 추가합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-13/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-13: `add_text` 메서드를 구현하여 게시물의 텍스트 콘텐츠에 텍스트를 추가합니다</span>
+Listing 17-13: `add_text` 메서드를 구현하여 게시물의 텍스트 콘텐츠에 텍스트를 추가합니다
 
 `add_text` 메서드는 `self`에 대한 가변 참조를 가져야 합니다. `add_text`를 호출하는 `Post` 인스턴스를 변경하기 때문입니다. `content`에 있는 `String`에 `push_str`을 호출하고 `text` 인수를 전달하여 저장된 `content`에 추가합니다. 이 동작은 게시물의 상태에 관계없으므로 상태 패턴의 일부가 아닙니다. `add_text` 메서드는 `state` 필드와 상호 작용하지 않습니다. 그러나 이는 우리가 지원하고자 하는 동작의 일부입니다.
 
@@ -34,13 +34,13 @@ Listing 17-11에서 보았듯이 `add_text`라는 메서드를 호출하여 `&st
 
 `add_text`를 호출하고 게시물에 텍스트를 추가한 후에도, 게시물이 여전히 초안 상태이기 때문에 `content` 메서드가 빈 문자열 슬라이스를 반환해야 합니다. Listing 17-11의 7행과 같습니다. 현재 상태에서는 게시물이 `Draft` 상태일 때만 콘텐츠가 빈 문자열 슬라이스로 반환되어야 하므로, `content` 메서드를 구현하는 가장 간단한 방법은 항상 빈 문자열 슬라이스를 반환하는 것입니다. 이를 나중에 게시물의 상태를 변경하여 게시물을 게시할 수 있게 구현하면 변경할 수 있습니다. 현재까지 게시물은 `Draft` 상태만 있으므로 게시물 콘텐츠는 항상 빈 문자열이어야 합니다. Listing 17-14에 이 플레이스홀더 구현이 있습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-14/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-14: `Post`의 `content` 메서드에 항상 빈 문자열 슬라이스를 반환하는 플레이스홀더 구현을 추가합니다</span>
+Listing 17-14: `Post`의 `content` 메서드에 항상 빈 문자열 슬라이스를 반환하는 플레이스홀더 구현을 추가합니다
 
 ## 게시글 상태 패턴 추가
 
@@ -50,13 +50,13 @@ Listing 17-11에서 보았듯이 `add_text`라는 메서드를 호출하여 `&st
 
 다음으로, 게시글 검토를 요청하는 기능을 추가해야 합니다. 이는 게시글 상태를 `Draft`에서 `PendingReview`로 변경해야 합니다. Listing 17-15에 이 코드가 나와 있습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-15/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-15: `Post`에 `request_review` 메서드와 `State` 트레이트 구현</span>
+Listing 17-15: `Post`에 `request_review` 메서드와 `State` 트레이트 구현
 
 `Post`에 `request_review`이라는 공개 메서드를 추가합니다. 이 메서드는 `self`에 대한 변경 가능한 참조를 받습니다. 그런 다음 현재 상태의 `request_review` 메서드를 호출하고, 이 두 번째 `request_review` 메서드는 현재 상태를 소비하여 새로운 상태를 반환합니다.
 
@@ -79,13 +79,13 @@ Listing 17-11에서 보았듯이 `add_text`라는 메서드를 호출하여 `&st
 
 `approve` 메서드는 `request_review` 메서드와 유사합니다. 현재 상태가 승인될 때 가져야 하는 상태 값을 `state`로 설정합니다. Listing 17-16에 이 코드가 나와 있습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-16/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-16: `Post`에 `approve` 메서드와 `State` 트레이트 구현</span>
+Listing 17-16: `Post`에 `approve` 메서드와 `State` 트레이트 구현
 
 우리는 `State` 트레이트에 `approve` 메서드를 추가하고, `State`를 구현하는 새로운 구조체인 `Published` 상태를 추가합니다.
 
@@ -93,13 +93,13 @@ Listing 17-11에서 보았듯이 `add_text`라는 메서드를 호출하여 `&st
 
 이제 `Post`의 `content` 메서드를 업데이트해야 합니다. `content`에서 반환되는 값이 `Post`의 현재 상태에 따라 달라지도록 하기 위해 `Post`가 `state`에 정의된 `content` 메서드로 위임하도록 합니다. Listing 17-17을 참조하세요.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch17-oop/listing-17-17/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-17: `Post`의 `content` 메서드를 업데이트하여 `State`에 정의된 `content` 메서드로 위임</span>
+Listing 17-17: `Post`의 `content` 메서드를 업데이트하여 `State`에 정의된 `content` 메서드로 위임
 
 목표는 `State`를 구현하는 구조체 내부에 모든 규칙을 유지하는 것이므로 `state`의 값에서 `content` 메서드를 호출하고 `post` 인스턴스(즉, `self`)를 인수로 전달합니다. 그런 다음 `state`의 값을 사용하여 `content` 메서드를 호출한 결과를 반환합니다.
 
@@ -109,13 +109,13 @@ Listing 17-11에서 보았듯이 `add_text`라는 메서드를 호출하여 `&st
 
 이제 `&Box<dyn State>`에서 `content`를 호출하면 `&`와 `Box`에 대한 디레프 암시적 변환이 발생하여 `content` 메서드가 마침내 `State` 트레이트를 구현하는 유형에 호출됩니다. 즉, `State` 트레이트 정의에 `content`를 추가해야 하며, Listing 17-18에 표시된 것처럼 현재 상태에 따라 어떤 콘텐츠를 반환해야 하는지에 대한 논리를 넣어야 합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-18/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-18: `State` 트레이트에 `content` 메서드 추가</span>
+Listing 17-18: `State` 트레이트에 `content` 메서드 추가
 
 `content` 메서드에 대한 기본 구현을 추가하여 빈 문자열 슬라이스를 반환합니다. 즉, `Draft`와 `PendingReview` 구조체에서 `content`를 구현할 필요가 없습니다. `Published` 구조체는 `content` 메서드를 재정의하여 `post.content`의 값을 반환합니다.
 
@@ -195,13 +195,13 @@ Rust의 강점을 최대한 활용하지 못합니다. 다음은 `blog` crate에
 `Post::new`을 사용하여 여전히 초안 상태의 새 게시물을 만들 수 있으며, 게시물의 내용에 텍스트를 추가할 수 있습니다. 하지만 초안 게시물의 `content` 메서드가 빈 문자열을 반환하는 대신, 초안 게시물에는 `content` 메서드가 전혀 없도록 하겠습니다. 그렇게 하면 초안 게시물의 내용을 가져하려고 하면 `content` 메서드가 존재하지 않음을 알리는 컴파일러 오류가 발생합니다. 결과적으로, 컴파일러 오류가 발생하기 때문에 생산에서 초안 게시물 내용을 실수로 표시할 수 없습니다.
 17-19번 목록은 `Post` 구조체와 `DraftPost` 구조체의 정의, 그리고 각 구조체의 메서드를 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-19/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 17-19: `content` 메서드가 있는 `Post`와 `content` 메서드가 없는 `DraftPost`</span>
+Listing 17-19: `content` 메서드가 있는 `Post`와 `content` 메서드가 없는 `DraftPost`
 
 `Post`와 `DraftPost` 구조체 모두 게시물 텍스트를 저장하는 `content` 필드를 가지고 있습니다. 구조체에는 더 이상 `state` 필드가 없으며, 구조체의 유형으로 상태를 인코딩하고 있습니다. `Post` 구조체는 게시된 게시물을 나타내며, `content` 메서드를 통해 `content`를 반환합니다.
 
@@ -213,13 +213,13 @@ Rust의 강점을 최대한 활용하지 못합니다. 다음은 `blog` crate에
 
 그렇다면 게시된 게시물을 어떻게 얻을 수 있을까요? 우리는 초안 게시물이 검토 및 승인을 받아야만 게시될 수 있다는 규칙을 강제해야 합니다. 검토 중인 게시물 상태의 게시물은 여전히 내용을 표시해서는 안 됩니다. `PendingReviewPost`라는 또 다른 구조체를 추가하여 `DraftPost`에서 `request_review` 메서드를 호출하여 `PendingReviewPost`를 생성하고, `PendingReviewPost`에서 `approve` 메서드를 호출하여 `Post`로 변환하는 방법을 구현해 보겠습니다. 17-20번 목록을 참조하세요.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-20/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-20: `DraftPost`에서 `request_review`를 호출하여 `PendingReviewPost`를 생성하고, `PendingReviewPost`에서 `approve` 메서드를 호출하여 게시된 `Post`로 변환하는 방법</span>
+Listing 17-20: `DraftPost`에서 `request_review`를 호출하여 `PendingReviewPost`를 생성하고, `PendingReviewPost`에서 `approve` 메서드를 호출하여 게시된 `Post`로 변환하는 방법
 
 `request_review`와 `approve` 메서드는 `self`를 소유하므로 `DraftPost`와 `PendingReviewPost` 인스턴스를 소유하고 `PendingReviewPost`와 게시된 `Post`로 변환합니다. 이렇게 하면 `request_review`를 호출한 후 `DraftPost` 인스턴스가 남지 않고, 마찬가지로 `PendingReviewPost` 인스턴스가 남지 않습니다. `PendingReviewPost` 구조체에는 `content` 메서드가 정의되지 않았으므로, `PendingReviewPost`의 내용을 읽으려고 하면 컴파일러 오류가 발생합니다. `DraftPost`와 마찬가지로.
 `approve` 메서드를 `PendingReviewPost`에 호출하여 `content` 메서드가 정의된 게시된 `Post` 인스턴스를 얻을 수 있는 유일한 방법이기 때문에, `Post::new` 함수를 통해 `DraftPost`를 생성하고, `request_review` 메서드를 통해 `PendingReviewPost`를 생성하고, `approve` 메서드를 통해 `Post`를 생성하는 유일한 방법이므로, 이제 블로그 게시물 워크플로우를 유형 시스템에 인코딩했습니다.
@@ -232,14 +232,14 @@ Rust의 강점을 최대한 활용하지 못합니다. 다음은 `blog` crate에
 사용하려고 하는 코드를 컴파일할 수 없습니다.
 `main`에서 업데이트된 코드는 17-21번 목록에 나와 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch17-oop/listing-17-21/src/main.rs}}
 ```
 
-<span class=\"caption\">17-21번 목록: `blog` 작업 흐름의 새 구현을 사용하기 위한 `main`의
-변경 사항</span>
+17-21번 목록: `blog` 작업 흐름의 새 구현을 사용하기 위한 `main`의
+변경 사항
 
 `post`를 재할당하기 위해 `main`에서 수행해야 하는 변경 사항은 이
 구현이 객체 지향 상태 패턴을 완벽하게 따르지 않는다는 것을 의미합니다.

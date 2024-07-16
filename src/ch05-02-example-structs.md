@@ -4,13 +4,13 @@
 
 Cargo로 *rectangles*라는 새로운 이진 프로젝트를 만들고, 픽셀로 지정된 직사각형의 너비와 높이를 입력받아 직사각형의 면적을 계산하도록 하겠습니다. 5-8번 표에 우리 프로젝트의 *src/main.rs*에 있는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/src/main.rs:all}}
 ```
 
-<span class=\"caption\">Listing 5-8: 별도의 너비와 높이 변수로 지정된 직사각형의 면적 계산</span>
+Listing 5-8: 별도의 너비와 높이 변수로 지정된 직사각형의 면적 계산
 
 이제 `cargo run`을 사용하여 이 프로그램을 실행합니다.
 
@@ -32,13 +32,13 @@ Cargo로 *rectangles*라는 새로운 이진 프로젝트를 만들고, 픽셀�
 
 5-9번 표는 튜플을 사용하는 프로그램의 다른 버전을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-09/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 5-9: 튜플로 직사각형의 너비와 높이를 지정</span>
+Listing 5-9: 튜플로 직사각형의 너비와 높이를 지정
 
 어떤 면에서 이 프로그램은 더 나은 것입니다. 튜플은 약간의 구조를 제공하며, 하나의 인수만 전달하고 있습니다. 그러나 다른 면에서 이 버전은 덜 명확합니다. 튜플은 요소에 이름을 붙이지 않으므로 튜플의 부분에 인덱싱해야 하며, 계산이 덜 명확해집니다.
 
@@ -48,13 +48,13 @@ Cargo로 *rectangles*라는 새로운 이진 프로젝트를 만들고, 픽셀�
 
 구조체를 사용하여 데이터에 이름을 붙여 의미를 추가합니다. 우리가 사용하는 튜플을 `Rectangle`이라는 이름의 구조체로 변환하고, 전체에 대한 이름과 부분에 대한 이름을 정의할 수 있습니다. 5-10번 표를 참조하세요.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-10/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 5-10: `Rectangle` 구조체 정의</span>
+Listing 5-10: `Rectangle` 구조체 정의
 
 여기서는 `Rectangle`이라는 구조체를 정의했습니다. 괄호 안에는 `width`와 `height`라는 필드를 정의했으며, 두 필드 모두 `u32` 유형입니다. 그런 다음 `main`에서 `Rectangle`의 특정 인스턴스를 생성하여 너비가 `30`이고 높이가 `50`인 직사각형을 만듭니다.
 
@@ -67,13 +67,13 @@ Cargo로 *rectangles*라는 새로운 이진 프로젝트를 만들고, 픽셀�
 
 `Rectangle` 인스턴스를 출력하여 프로그램을 디버깅하는 동안 값을 확인하는 것이 유용할 것입니다. 5-11번 목록은 이전 장에서 사용했던 `println!` 매크로를 사용하려고 시도합니다. 그러나 이것은 작동하지 않습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 5-11: `Rectangle` 인스턴스를 출력하려는 시도</span>
+Listing 5-11: `Rectangle` 인스턴스를 출력하려는 시도
 
 이 코드를 컴파일하면 다음과 같은 오류 메시지가 나타납니다.
 
@@ -106,12 +106,12 @@ Cargo로 *rectangles*라는 새로운 이진 프로젝트를 만들고, 픽셀�
 
 Rust는 디버깅 정보를 출력하는 기능을 포함하고 있지만, 이 기능을 구조체에 명시적으로 적용해야 합니다. 구조체 정의 바로 앞에 `#[derive(Debug)]`라는 외부 속성을 추가하면 이를 수행할 수 있습니다. 5-12번 목록에서 보여주는 것처럼.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 ```
 
-<span class=\"caption\">Listing 5-12: `Debug` 트레이트를 추가하여 `Rectangle` 인스턴스를 디버그 형식으로 출력</span>
+Listing 5-12: `Debug` 트레이트를 추가하여 `Rectangle` 인스턴스를 디버그 형식으로 출력
 
 이제 프로그램을 실행하면 오류가 발생하지 않고 다음과 같은 출력을 볼 수 있습니다.
 

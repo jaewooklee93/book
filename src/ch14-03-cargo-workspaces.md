@@ -15,7 +15,7 @@ $ cd add
 
 다음으로, *add* 디렉토리에 전체 작업 공간을 구성하는 *Cargo.toml* 파일을 만듭니다. 이 파일에는 `[package]` 섹션이 없으며, 대신 작업 공간에 구성원을 추가하여 바이너리 크레이트의 경로를 지정할 수 있는 `[workspace]` 섹션이 있습니다. 이 경우 경로는 *adder*입니다.
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 {{#include ../listings/ch14-more-about-cargo/no-listing-01-workspace-with-adder-crate/add/Cargo.toml}}
@@ -53,7 +53,7 @@ $ cargo new adder
 
 다음으로, 작업 공간에 또 다른 구성원 패키지를 만들어 `add_one`이라고 합니다. 최상위 *Cargo.toml* 파일을 수정하여 `members` 목록에 *add_one* 경로를 지정합니다.
 
-<span class=\"filename\">Filename: Cargo.toml</span>
+Filename: Cargo.toml
 
 ```toml
 {{#include ../listings/ch14-more-about-cargo/no-listing-02-workspace-with-two-crates/add/Cargo.toml}}
@@ -91,7 +91,7 @@ $ cargo new add_one --lib
 
 add_one/src/lib.rs" 파일에서 `add_one` 함수를 추가해 보겠습니다.
 
-<span class=\"filename\">Filename: add_one/src/lib.rs</span>
+Filename: add_one/src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch14-more-about-cargo/no-listing-02-workspace-with-two-crates/add/add_one/src/lib.rs}}
@@ -99,7 +99,7 @@ add_one/src/lib.rs" 파일에서 `add_one` 함수를 추가해 보겠습니다.
 
 이제 `adder` 패키지가 우리의 바이너리에 `add_one` 패키지가 의존하도록 할 수 있습니다. 먼저 `add_one` 에 대한 경로 의존성을 *adder/Cargo.toml* 에 추가해야 합니다.
 
-<span class=\"filename\">Filename: adder/Cargo.toml</span>
+Filename: adder/Cargo.toml
 
 ```toml
 {{#include ../listings/ch14-more-about-cargo/no-listing-02-workspace-with-two-crates/add/adder/Cargo.toml:6:7}}
@@ -158,7 +158,7 @@ Hello, world! 10 plus one is 11!
 ch07-04-bringing-paths-into-scope-with-the-use-keyword.md
 -->
 
-<span class=\"filename\">Filename: add_one/Cargo.toml</span>
+Filename: add_one/Cargo.toml
 
 ```toml
 {{#include ../listings/ch14-more-about-cargo/no-listing-03-workspace-with-external-dependency/add/add_one/Cargo.toml:6:7}}
@@ -219,7 +219,7 @@ error[E0432]: unresolved import `rand`
 
 다른 개선 사항으로서, `add_one::add_one` 함수를 `add_one` crate 내에서 테스트합니다.
 
-<span class=\"filename\">Filename: add_one/src/lib.rs</span>
+Filename: add_one/src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add/add_one/src/lib.rs}}

@@ -47,7 +47,7 @@ Rust의 유형 시스템을 사용하여 유효한 값을 가지고 있는지 �
 
 ## panic!을 사용하거나 사용하지 않을까?
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch09-error-handling/no-listing-09-guess-out-of-range/src/main.rs:here}}
@@ -61,13 +61,13 @@ Rust의 유형 시스템을 사용하여 유효한 값을 가지고 있는지 �
 
 9-13번 목록은 `Guess` 유형을 정의하는 한 가지 방법을 보여줍니다. `Guess::new` 함수가 받은 값이 1에서 100 사이인지 확인하여 `Guess` 인스턴스를 생성합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-13/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 9-13: 1에서 100 사이의 값만 허용하는 `Guess` 유형</span>
+Listing 9-13: 1에서 100 사이의 값만 허용하는 `Guess` 유형
 
 먼저 `value`라는 필드를 가진 `Guess`라는 구조체를 정의합니다. 이 필드는 숫자를 저장할 것입니다.
 

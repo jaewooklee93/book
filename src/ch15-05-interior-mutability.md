@@ -58,26 +58,26 @@ Rust은 다른 언어에서 객체를 가지는 방식과 동일한 객체를 �
 
 라이브러리는 현재 값이 최대 값에 얼마나 가까운지 추적하고 각 단계에서 메시지가 어떻게 보내야 하는지에 대한 기능만 제공합니다. 라이브러리를 사용하는 응용 프로그램은 메시지를 보내는 메커니즘을 제공해야 합니다. 응용 프로그램은 메시지를 응용 프로그램에 넣거나 이메일을 보내거나 문자 메시지를 보내거나 다른 작업을 수행할 수 있습니다. 라이브러리는 그 세부 사항을 알 필요가 없습니다. `Messenger`라는 추상화된 인터페이스를 구현하는 것만으로도 충분합니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-20/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 15-20: 특정 값이 최대 값에 얼마나 가까운지 추적하고 특정 수준에 도달하면 경고 메시지를 보내는 라이브러리</span>
+Listing 15-20: 특정 값이 최대 값에 얼마나 가까운지 추적하고 특정 수준에 도달하면 경고 메시지를 보내는 라이브러리
 
 이 코드의 중요한 부분은 `Messenger` 트레이트가 `send` 메서드를 하나 가지고 있으며, 이 메서드는 `self`의 무효 참조와 메시지 텍스트를 받습니다. 이 트레이트는 가짜 객체가 실제 객체와 동일한 방식으로 사용될 수 있도록 하는 인터페이스입니다. 또 다른 중요한 부분은 `set_value` 메서드의 동작을 테스트하고 싶습니다. `value` 매개변수에 다양한 값을 전달할 수 있지만, `set_value`는 우리가 주장을 할 수 있는 값을 반환하지 않습니다. `LimitTracker`의 `set_value` 메서드를 호출했을 때, 가짜 객체를 사용하여 `Messenger` 트레이트를 구현하고 `max` 값을 설정하면 메시지가 올바르게 전달되는지 확인하고 싶습니다.
 
 `send` 메서드를 호출할 때 이메일이나 문자 메시지를 보내는 대신 메시지를 기록하는 가짜 객체가 필요합니다. 새로운 가짜 객체 인스턴스를 만들고 `Messenger` 트레이트를 구현한 가짜 객체를 사용하여 `LimitTracker`를 만들고 `set_value` 메서드를 호출한 후, 가짜 객체가 기록한 메시지를 확인할 수 있습니다.
 모의 객체에는 우리가 기대하는 메시지가 있습니다. 15-21번 목록은 그렇게 하는 모의 객체를 구현하려는 시도를 보여주지만, 보로 체커는 허용하지 않습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-21/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">15-21번 목록: 보로 체커가 허용하지 않는 `MockMessenger` 구현 시도</span>
+15-21번 목록: 보로 체커가 허용하지 않는 `MockMessenger` 구현 시도
 
 이 테스트 코드는 `sent_messages` 필드가 메시지를 보관하기 위해 `Vec<String>` 값을 가진 `MockMessenger` 구조체를 정의합니다. 또한 `new` 연관 함수를 정의하여 메시지 목록이 비어 있는 새로운 `MockMessenger` 값을 만들기 쉽게 합니다. 그런 다음 `MockMessenger` 에 대해 `Messenger` 트레이트를 구현하여 `MockMessenger` 를 `LimitTracker` 에 줄 수 있습니다. `send` 메서드의 정의에서 전달된 메시지를 매개변수로 받아 `MockMessenger` 의 `sent_messages` 목록에 저장합니다.
 
@@ -93,13 +93,13 @@ Rust은 다른 언어에서 객체를 가지는 방식과 동일한 객체를 �
 
 이것은 내부 가변성이 도움이 될 수 있는 상황입니다! `RefCell<T>` 안에 `sent_messages` 를 저장하고 `send` 메서드가 보관된 메시지를 저장하도록 수정할 수 있습니다. 15-22번 목록은 그렇게 하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-22/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">15-22번 목록: 외부 값이 불변으로 간주되면서 내부 값을 수정하는 `RefCell<T>` 사용</span>
+15-22번 목록: 외부 값이 불변으로 간주되면서 내부 값을 수정하는 `RefCell<T>` 사용
 
 `sent_messages` 필드는 이제 `Vec<String>` 대신 `RefCell<Vec<String>>` 유형입니다. `new` 함수에서 빈 벡터 주위에 새로운 `RefCell<Vec<String>>` 인스턴스를 만듭니다.
 
@@ -117,13 +117,13 @@ Rust은 다른 언어에서 객체를 가지는 방식과 동일한 객체를 �
 
 이러한 규칙을 위반하려고 하면, 참조와 같이 컴파일러 오류를 받는 대신, `RefCell<T>`의 구현은 실행 시간에 panic합니다. 15-23번 목록은 15-22번 목록의 `send` 함수 구현의 수정을 보여줍니다. `borrow_mut`를 사용하여 두 개의 가변 참조를 동시에 활성화하려고 의도적으로 시도하고 있습니다. `RefCell<T>`가 동시에 두 개의 가변 참조를 허용하지 않는다는 것을 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,ignore,panics
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-23/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-23: 동일한 범위에서 두 개의 가변 참조를 생성하여 `RefCell<T>`가 panic한다는 것을 보여줍니다</span>
+Listing 15-23: 동일한 범위에서 두 개의 가변 참조를 생성하여 `RefCell<T>`가 panic한다는 것을 보여줍니다
 
 `RefMut<T>` 스마트 포인터로 반환된 `borrow_mut`를 `one_borrow` 변수에 저장합니다. 그런 다음 동일한 방식으로 같은 범위에서 또 다른 가변 참조를 생성합니다. 이는 동일한 범위에서 두 개의 가변 참조를 만듭니다. 이는 허용되지 않습니다. 라이브러리의 테스트를 실행하면 15-23번 목록의 코드는 오류 없이 컴파일되지만 테스트는 실패합니다.
 
@@ -141,13 +141,13 @@ Rust은 다른 언어에서 객체를 가지는 방식과 동일한 객체를 �
 
 예를 들어, 15-18번 목록에서 `Rc<T>`를 사용하여 다른 리스트가 다른 리스트의 소유권을 공유하는 연결 리스트 예제를 기억하세요. `Rc<T>`가 불변 값만 저장하기 때문에, 리스트를 생성한 후에는 리스트에 저장된 값을 변경할 수 없습니다. `RefCell<T>`를 사용하여 `Cons` 정의에 추가하면 모든 리스트에 저장된 값을 변경할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 ```
 
-<span class=\"caption\">Listing 15-24: `Rc<RefCell<i32>>`를 사용하여 수정 가능한
-`List` 생성</span>
+Listing 15-24: `Rc<RefCell<i32>>`를 사용하여 수정 가능한
+`List` 생성
 
 `Rc<RefCell<i32>>` 인스턴스를 생성하고 `value` 변수에 저장하여 나중에 직접 액세스할 수 있도록 합니다. 다음으로 `Cons` 변형을 가진 `List` 를 `a` 에 생성하고 `value` 를 포함합니다. `value` 를 복사해야 `a` 와 `value` 가 모두 내부 `5` 값의 소유권을 가지고 있고, 소유권이 `value` 에서 `a` 로 전달되거나 `a` 가 `value` 에서 대출하지 않도록 합니다.
 

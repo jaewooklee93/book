@@ -13,13 +13,13 @@
 
 일반 참조는 포인터 유형이며, 포인터를 생각하는 한 가지 방법은 다른 곳에 저장된 값으로 가는 화살표입니다. 15-6번 목록에서 참조를 생성하고 디레퍼런스 연산자를 사용하여 참조를 따라가서 값에 도달하는 방법을 살펴보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-06/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 15-6: 디레퍼런스 연산자를 사용하여 `i32` 값을 가리키는 참조를 따라가기</span>
+Listing 15-6: 디레퍼런스 연산자를 사용하여 `i32` 값을 가리키는 참조를 따라가기
 
 변수 `x`는 `i32` 값 `5`를 저장합니다. `y`를 `x`의 참조로 설정합니다. `x`가 `5`와 같다는 것을 확인할 수 있습니다. 그러나 `y`의 값에 대한 주장을 하고 싶다면 `*y`를 사용하여 참조를 따라가서 값에 도달해야 합니다(즉, 디레퍼런스). 컴파일러가 실제 값과 비교할 수 있도록 합니다. `y`를 디레퍼런스하면 `y`가 가리키는 정수 값에 액세스하여 `5`와 비교할 수 있습니다.
 
@@ -35,13 +35,13 @@
 
 15-7번 목록에서 참조 대신 `Box<T>`를 사용하여 코드를 다시 작성할 수 있습니다. 15-7번 목록의 `Box<T>`에 사용되는 디레퍼런스 연산자는 15-6번 목록의 참조에 사용되는 디레퍼런스 연산자와 동일한 방식으로 작동합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-07/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 15-7: `Box<i32>`에 디레퍼런스 연산자 사용</span>
+Listing 15-7: `Box<i32>`에 디레퍼런스 연산자 사용
 
 15-7번 목록과 15-6번 목록의 주요 차이점은 `y`가 `x`의 복사본을 가리키는 `Box<T>`로 설정된다는 것입니다. 마지막 주장에서 디레퍼런스 연산자를 사용하여 `Box<T>`의 포인터를 따라가는 방법은 15-6번 목록에서 `y`가 참조일 때와 동일합니다. 다음으로 `Deref` 트레이트가 `Box<T>`를 사용하여 디레퍼런스 연산자를 사용할 수 있도록 하는 특별한 점을 살펴보겠습니다.
 
@@ -51,25 +51,25 @@
 
 `Box<T>` 유형은 궁극적으로 하나의 요소를 가진 튜플 구조로 정의되므로 Listing 15-8은 표준 라이브러리에서 제공되는 `Box<T>` 유형과 동일한 방식으로 `MyBox<T>` 유형을 정의합니다. 또한 `Box<T>`에서 정의된 `new` 함수와 유사한 `new` 함수를 정의할 것입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-08/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-8: `MyBox<T>` 유형 정의</span>
+Listing 15-8: `MyBox<T>` 유형 정의
 
 `MyBox`라는 구조를 정의하고 `T`라는 일반 매개변수를 선언합니다. 우리는 모든 유형의 값을 담을 수 있도록 하기 위해서입니다. `MyBox` 유형은 `T` 유형의 하나의 요소를 가진 튜플 구조입니다. `MyBox::new` 함수는 `T` 유형의 하나의 매개변수를 받아 전달된 값을 담고 있는 `MyBox` 인스턴스를 반환합니다.
 
 Listing 15-7에서 정의된 `main` 함수를 Listing 15-8에 추가하고 우리가 정의한 `MyBox<T>` 유형을 사용하도록 변경해 보겠습니다. Listing 15-9의 코드는 `MyBox<T>`를 참조와 `Box<T>`와 동일한 방식으로 사용하려고 하기 때문에 컴파일되지 않습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-09/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-9: `MyBox<T>`를 참조와 `Box<T>`와 동일한 방식으로 사용하려는 시도</span>
+Listing 15-9: `MyBox<T>`를 참조와 `Box<T>`와 동일한 방식으로 사용하려는 시도
 
 컴파일 오류는 다음과 같습니다.
 
@@ -83,13 +83,13 @@ Listing 15-7에서 정의된 `main` 함수를 Listing 15-8에 추가하고 우�
 
 Chapter 10의 [“유형에 트레이트 구현하기”][impl-trait]<!-- ignore --> 섹션에서 언급했듯이, 트레이트를 구현하려면 트레이트의 필요한 메서드에 대한 구현을 제공해야 합니다. 표준 라이브러리에서 제공되는 `Deref` 트레이트는 `deref`라는 이름의 메서드를 구현하도록 요구합니다. 이 메서드는 `self`를 빌려주고 내부 데이터에 대한 참조를 반환합니다. Listing 15-10은 `MyBox`에 추가할 `Deref`의 구현을 포함합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-10/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-10: `MyBox<T>`에 `Deref` 구현</span>
+Listing 15-10: `MyBox<T>`에 `Deref` 구현
 
 `type Target = T;` 문법은 `Deref` 트레이트에 대한 연관된 유형을 정의하는 방법입니다. 연관된 유형은 약간 다른 방식으로 일반 매개변수를 선언하는 것입니다. 하지만 지금 당장은 걱정하지 마세요. Chapter 19에서 자세히 설명하겠습니다.
 
@@ -117,23 +117,23 @@ Deref 변환은 함수 및 메서드 호출을 작성하는 프로그래머가 `
 
 Deref 변환을 작동하는 모습을 보려면 Listing 15-8에서 정의한 `MyBox<T>` 유형과 Listing 15-10에서 추가한 `Deref` 구현을 사용해 보겠습니다. Listing 15-11은 `&str` 유형의 문자열 슬라이스 매개변수를 가진 함수를 정의합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-11/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-11: `hello` 함수는 `&str` 유형의 `name` 매개변수를 가집니다.</span>
+Listing 15-11: `hello` 함수는 `&str` 유형의 `name` 매개변수를 가집니다.
 
 `hello(\"Rust\");`와 같은 문자열 슬라이스를 인수로 함수 `hello`를 호출할 수 있습니다. Deref 변환은 Listing 15-12에서 보여진 것처럼 `MyBox<String>` 값의 참조로 `hello`를 호출할 수 있도록 합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-12/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-12: `MyBox<String>` 값의 참조인 `&m`으로 `hello` 함수를 호출합니다. Deref 변환 덕분에 가능합니다.</span>
+Listing 15-12: `MyBox<String>` 값의 참조인 `&m`으로 `hello` 함수를 호출합니다. Deref 변환 덕분에 가능합니다.
 
 여기서는 `&m` 인수로 `hello` 함수를 호출하고 있습니다. `MyBox<T>`에서 `Deref` 트레이트를 Listing 15-10에서 구현했기 때문에 Rust는 `&MyBox<String>`을 `&String`으로 `deref`를 호출하여 변환할 수 있습니다. 표준 라이브러리는 `Deref`를 구현하는 데 사용할 수 있는 기본적인 구현을 제공합니다.
 
@@ -142,13 +142,13 @@ Rust는 `deref` 를 다시 호출하여 `&String` 을 `&str` 로 변환하고, �
 
 Rust가 `deref` 강제 변환을 구현하지 않았다면, Listing 15-13과 같은 코드를 작성해야 `hello` 함수를 `&MyBox<String>` 유형의 값으로 호출할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-13/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-13: Rust가 `deref` 강제 변환을 하지 않았다면 작성해야 할 코드</span>
+Listing 15-13: Rust가 `deref` 강제 변환을 하지 않았다면 작성해야 할 코드
 
 `(*m)` 은 `MyBox<String>` 을 `String` 으로 해제합니다. 그런 다음 `&` 와 `[..]` 는 `hello` 의 서명과 일치하는 `String` 의 전체 문자열 슬라이스를 가져옵니다. `deref` 강제 변환이 없는 이 코드는 `*` 와 같은 모든 기호가 포함되어 있기 때문에 읽기, 쓰기, 이해하기가 어렵습니다. `deref` 강제 변환은 Rust가 이러한 변환을 자동으로 처리하도록 허용합니다.
 

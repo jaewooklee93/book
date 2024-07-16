@@ -104,7 +104,7 @@ $ cargo test -- --show-output
 
  일부 테스트는 실행하는 데 시간이 오래 걸릴 수 있으므로 대부분의 `cargo test` 실행 중에는 제외하는 것이 좋습니다. `cargo test` 결과가 빠르게 반환되도록 원하는 테스트만 실행하는 것이 좋습니다. `#[ignore]` 속성을 사용하여 시간이 오래 걸리는 테스트를 지정하여 제외할 수 있습니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-11-ignore-a-test/src/lib.rs:here}}

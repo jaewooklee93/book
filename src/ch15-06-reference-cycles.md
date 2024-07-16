@@ -6,25 +6,25 @@ Rust의 메모리 안전성 보장은 의도치 않게 메모리 해제가 되�
 
 Listing 15-25에서 정의된 `List` 열거형과 `tail` 메서드를 살펴보면서 참조 사이클이 어떻게 발생하는지와 어떻게 방지하는지 살펴보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-25/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 15-25: `List` 정의와 `tail` 메서드</span>
+Listing 15-25: `List` 정의와 `tail` 메서드
 
 Listing 15-5에서의 `List` 정의의 또 다른 변형입니다. `Cons` 변형의 두 번째 요소는 `RefCell<Rc<List>>`가 되므로 Listing 15-24에서와 같이 `i32` 값을 수정할 수 있는 대신 `Cons` 변형이 가리키는 `List` 값을 수정하려는 것입니다. `Cons` 변형이 가리키는 두 번째 항목에 액세스하기 위해 `tail` 메서드를 추가했습니다.
 
 Listing 15-26에서는 Listing 15-25에서 정의된 내용을 사용하는 `main` 함수를 추가합니다. 이 코드는 `a`에 있는 리스트와 `b`에 있는 리스트를 생성하고 `a`에 있는 리스트가 `b`에 있는 리스트를 가리키도록 합니다. 그런 다음 `a`에 있는 리스트를 `b`로 변경하여 참조 사이클을 만듭니다. 참조 카운트가 다양한 단계에서 어떻게 변하는지 보여주는 `println!` 문이 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-26/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-26: 서로 참조하는 두 `List` 값의 참조 사이클 생성</span>
+Listing 15-26: 서로 참조하는 두 `List` 값의 참조 사이클 생성
 
 `a` 변수에 `Rc<List>` 인스턴스를 생성하여 `List` 값을 저장합니다. `b` 변수에 또 다른 `Rc<List>` 인스턴스를 생성하여 10 값을 포함하고 `a`에 있는 리스트를 가리킵니다.
 
@@ -42,7 +42,7 @@ Listing 15-26에서는 Listing 15-25에서 정의된 내용을 사용하는 `mai
 
 <img alt=\"리스트의 참조 주기\" src=\"img/trpl15-04.svg\" class=\"center\" />
 
-<span class=\"caption\">그림 15-4: 서로 참조하는 리스트 `a` 와 `b` 의 참조 주기</span>
+그림 15-4: 서로 참조하는 리스트 `a` 와 `b` 의 참조 주기
 
 마지막 `println!`을 해제하고 프로그램을 실행하면 Rust는 `a` 가 `b` 에, `b` 가 `a` 에 이르는 순환 참조를 출력하려고 합니다. 이 과정은 스택 오버플로우를 일으킬 때까지 계속됩니다.
 
@@ -67,7 +67,7 @@ Listing 15-26에서는 Listing 15-25에서 정의된 내용을 사용하는 `mai
 처음부터 자식 노드를 알고 있는 트리를 만들겠습니다.
 `Node`라는 구조체를 만들어서 자신의 `i32` 값과 자식 `Node` 값에 대한 참조를 저장합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:here}}
@@ -77,13 +77,13 @@ Listing 15-26에서는 Listing 15-25에서 정의된 내용을 사용하는 `mai
 
 다음으로, `leaf`라는 이름의 `Node` 인스턴스를 하나 만들고 값 3을 가지고 자식이 없는 `Node`를 만들고, `branch`라는 이름의 다른 인스턴스를 만들고 값 5를 가지고 `leaf`를 하나의 자식으로 만듭니다. Listing 15-27에서 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:there}}
 ```
 
-<span class=\"caption\">Listing 15-27: 자식이 없는 `leaf` 노드를 만들고 `branch` 노드를 `leaf`를 하나의 자식으로 만듭니다</span>
+Listing 15-27: 자식이 없는 `leaf` 노드를 만들고 `branch` 노드를 `leaf`를 하나의 자식으로 만듭니다
 
 `leaf`의 `Rc<Node>`를 복사하여 `branch`에 저장합니다. 즉, `leaf` 노드는 이제 `leaf`와 `branch` 두 개의 소유자를 가지게 됩니다. `branch`에서 `leaf`에 도달할 수 있지만, `leaf`에서 `branch`에 도달할 수는 없습니다. 이유는 `leaf`가 `branch`에 대한 참조를 가지고 있지 않고 관계가 없기 때문입니다. `leaf`가 `branch`가 부모임을 알 수 있도록 해야 합니다. 다음 단계에서 이를 해결합니다.
 
@@ -95,7 +95,7 @@ Listing 15-26에서는 Listing 15-25에서 정의된 내용을 사용하는 `mai
 
 따라서 `parent`의 유형은 `Rc<T>`가 아닌 `Weak<T>`를 사용하여 `RefCell<Weak<Node>>`로 설정합니다. 이제 `Node` 구조체 정의는 다음과 같습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:here}}
@@ -103,13 +103,13 @@ Listing 15-26에서는 Listing 15-25에서 정의된 내용을 사용하는 `mai
 
 노드는 부모 노드를 참조할 수 있지만 부모를 소유하지 않습니다. Listing 15-28에서 `main`을 이 새로운 정의를 사용하여 업데이트하여 `leaf` 노드가 부모 노드 `branch`를 참조할 수 있도록 합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:there}}
 ```
 
-<span class=\"caption\">Listing 15-28: 부모 노드 `branch`에 약 참조를 가진 `leaf` 노드</span>
+Listing 15-28: 부모 노드 `branch`에 약 참조를 가진 `leaf` 노드
 
 `leaf` 노드를 만드는 것은 Listing 15-27과 유사하지만 `parent` 필드가 있습니다. `leaf` 노드는 처음에는 부모가 없으므로 새롭고 비어있는 `Weak<Node>` 참조 인스턴스를 만듭니다.
 
@@ -135,13 +135,13 @@ children: RefCell { value: [] } }] } })
 
 내부 범위를 생성하고 `branch`의 생성을 그 범위로 옮겨서 `Rc<Node>` 인스턴스의 `strong_count` 및 `weak_count` 값이 어떻게 변하는지 살펴보겠습니다. 이렇게 하면 `branch`가 생성되고 범위를 벗어날 때 발생하는 변화를 볼 수 있습니다. 수정된 내용은 Listing 15-29에 나와 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-29/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 15-29: 내부 범위에서 `branch`를 생성하고 강 및 약 참조 카운트를 검사</span>
+Listing 15-29: 내부 범위에서 `branch`를 생성하고 강 및 약 참조 카운트를 검사
 
 `leaf`가 생성된 후, `Rc<Node>`의 강 참조 카운트는 1이고 약 참조 카운트는 0입니다. 내부 범위에서 `branch`를 생성하고 `leaf`와 연결하면 출력할 때 `branch`의 `Rc<Node>`의 강 참조 카운트는 1이고 약 참조 카운트는 1( `leaf.parent`가 `branch`를 가리키는 `Weak<Node>` 참조를 가짐)입니다. `leaf`에서 카운트를 출력하면 강 참조 카운트가 2가 되고, `branch`가 `leaf`의 `Rc<Node>`를 `branch.children`에 저장하기 때문에 강 참조 카운트가 증가하지만 약 참조 카운트는 여전히 0입니다.
 

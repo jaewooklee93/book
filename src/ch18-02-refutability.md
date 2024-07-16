@@ -12,7 +12,7 @@
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-08/src/main.rs:here}}
 ```
 
-<span class=\"caption\">18-8번 목록: 불가능성 검사 패턴을 사용하여 `let`</span>
+18-8번 목록: 불가능성 검사 패턴을 사용하여 `let`
 
 만약 `some_option_value` 가 `None` 값이었다면, `Some(x)` 패턴에 일치하지 않아 패턴이 불가능성 검사 패턴이라는 것을 알 수 있습니다. 그러나 `let` 문은 불가능성 검사 패턴을 받을 수 없습니다. `None` 값에 대해 유효한 작업을 수행할 수 없기 때문입니다. 컴파일 시간에 Rust는 불가능성 검사 패턴을 사용하려고 시도했다는 오류를 발생시킵니다.
 
@@ -28,7 +28,7 @@
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-09/src/main.rs:here}}
 ```
 
-<span class=\"caption\">18-9번 목록: 불가능성 검사 패턴을 사용하는 `if let` 블록</span>
+18-9번 목록: 불가능성 검사 패턴을 사용하는 `if let` 블록
 
 이제 코드에 빠져들 수 있습니다. 그러나 `if let`에 확실성 검사 패턴(항상 일치하는 패턴)을 사용하면 18-10번 목록과 같이 컴파일러가 경고를 표시합니다.
 
@@ -36,7 +36,7 @@
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-10/src/main.rs:here}}
 ```
 
-<span class=\"caption\">18-10번 목록: `if let`에 확실성 검사 패턴 사용</span>
+18-10번 목록: `if let`에 확실성 검사 패턴 사용
 
 Rust는 `if let`에 확실성 검사 패턴을 사용하는 것은 의미가 없다고 말합니다.
 

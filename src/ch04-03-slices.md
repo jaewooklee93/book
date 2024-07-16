@@ -12,13 +12,13 @@ fn first_word(s: &String) -> ?
 
 `first_word` 함수는 `&String`을 매개변수로 받습니다. 소유권을 원하지 않으므로 이는 괜찮습니다. 하지만 무엇을 반환해야 할까요? 문자열의 *부분*에 대해 이야기하는 방법이 없기 때문입니다. 그러나 공백으로 나타나는 단어의 끝 인덱스를 반환할 수 있습니다. Listing 4-7와 같이 시도해 보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 4-7: `first_word` 함수가 `String` 매개변수 내의 바이트 인덱스를 반환하는 경우</span>
+Listing 4-7: `first_word` 함수가 `String` 매개변수 내의 바이트 인덱스를 반환하는 경우
 
 문자열을 요소별로 순회하여 값이 공백인지 확인해야 하므로 `String`을 `as_bytes` 메서드를 사용하여 바이트 배열로 변환합니다.
 
@@ -44,16 +44,16 @@ fn first_word(s: &String) -> ?
 
 이제 문자열에서 첫 번째 단어의 끝 인덱스를 찾는 방법이 있지만 문제가 있습니다. `usize`을 단독으로 반환하지만, `String`의 맥락에서만 의미 있는 값입니다. 즉, `String`과 별개의 값이기 때문에 미래에 유효한지 보장할 수 없습니다. Listing 4-8과 같은 프로그램을 살펴보겠습니다. Listing 4-8은 Listing 4-7의 `first_word` 함수를 사용합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-08/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 4-8: `first_word` 함수의 결과를 저장하는 경우</span>
+Listing 4-8: `first_word` 함수의 결과를 저장하는 경우
 
 ```
- `first_word` 함수와 그 후 `String` 내용을 변경하는 것</span>
+ `first_word` 함수와 그 후 `String` 내용을 변경하는 것
 
 이 프로그램은 오류 없이 컴파일되며, `word`를 사용하더라도 `s.clear()`를 호출한 후에도 그렇습니다.
 `word`가 `s`의 상태와 연결되어 있지 않기 때문에 `word`는 여전히 값 `5`를 포함합니다. 우리는 그 값 `5`를 변수 `s`와 함께 사용하여 첫 번째 단어를 추출하려고 할 수 있지만, 이것은 `word`에 저장된 `5`가 `s`의 내용이 변경된 이후의 값이기 때문에 버그가 될 것입니다.
@@ -86,8 +86,8 @@ the heap. The third table rep-resents the stack data of the slice world, which
 has a length value of 5 and points to byte 6 of the heap data table.\"
 src=\"img/trpl04-06.svg\" class=\"center\" style=\"width: 50%;\" />
 
-<span class=\"caption\">Figure 4-6: String slice referring to part of a
-`String`</span>
+Figure 4-6: String slice referring to part of a
+`String`
 
 Rust의 `..` 범위 문법을 사용하면 인덱스 0부터 시작하려면 두 점 앞의 값을 생략할 수 있습니다. 즉, 다음은 같습니다.
 
@@ -126,7 +126,7 @@ let slice = &s[..];
 
 슬라이스. 문자열 슬라이스를 나타내는 유형은 `&str`로 작성됩니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-18-first-word-slice/src/main.rs:here}}
@@ -144,7 +144,7 @@ fn second_word(s: &String) -> &str {
 
 이제 훨씬 쉽게 사용할 수 있는 직관적인 API를 가지게 되었습니다. 컴파일러가 `String` 내부 참조의 유효성을 보장하기 때문에 오류를 범할 가능성이 훨씬 줄어듭니다. Listing 4-8의 프로그램에서 `first_word` 함수의 오류를 기억하세요? 첫 번째 단어의 끝 인덱스를 가져왔지만, 문자열을 비우면 인덱스가 무효가 되는 문제였습니다. 그 코드는 논리적으로 잘못되었지만 즉각적인 오류를 보이지 않았습니다. 문제는 문자열이 비워진 후에도 첫 번째 단어 인덱스를 계속 사용하려고 할 때 발생했습니다. 슬라이스를 사용하면 이러한 오류가 불가능해지고 코드에서 문제가 발생하는 것을 훨씬 빨리 알 수 있습니다. 슬라이스 버전의 `first_word`를 사용하면 컴파일 시간 오류가 발생합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/src/main.rs:here}}
@@ -185,7 +185,7 @@ fn first_word(s: &String) -> &str {
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 4-9: `first_word` 함수를 개선하여 `s` 매개변수 유형에 문자열 슬라이스를 사용</span>
+Listing 4-9: `first_word` 함수를 개선하여 `s` 매개변수 유형에 문자열 슬라이스를 사용
 
 문자열 슬라이스가 있다면 직접 전달할 수 있습니다. `String`이 있다면 `String`의 슬라이스 또는 `String` 자체에 대한 참조를 전달할 수 있습니다. 이 유연성은 다음 장에서 다룰 예정인 *묵시적 Deref Coercions* 기능을 활용합니다.
 ## 슬라이스

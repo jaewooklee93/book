@@ -16,24 +16,24 @@ Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides가 저술한 *Desig
 
 Chapter 7에서 캡슐화를 제어하는 방법을 살펴보았습니다. `pub` 키워드를 사용하여 코드의 모듈, 유형, 함수, 메서드가 공개되어야 하는지 결정할 수 있습니다. 기본적으로 나머지는 프라이빗입니다. 예를 들어, `AveragedCollection`이라는 구조체를 정의할 수 있습니다. 이 구조체는 `i32` 값의 벡터를 포함하는 필드를 가지고 있습니다. 구조체에는 또한 벡터의 값의 평균을 포함하는 필드가 있을 수 있습니다. 즉, 누구나 평균을 필요로 할 때마다 계산할 필요가 없습니다. 즉, `AveragedCollection`은 평균을 캐시합니다. Listing 17-1은 `AveragedCollection` 구조체의 정의를 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-01/src/lib.rs}}
 ```
 
-<span class=\"caption\">Listing 17-1: `AveragedCollection` 구조체의 정의
-`AveragedCollection`은 `i32` 값의 리스트와 리스트의 평균을 유지합니다.</span>
+Listing 17-1: `AveragedCollection` 구조체의 정의
+`AveragedCollection`은 `i32` 값의 리스트와 리스트의 평균을 유지합니다.
 
 구조체는 다른 코드가 사용할 수 있도록 `pub`으로 표시되지만, 구조체 내부의 필드는 프라이빗입니다. 이는 `list`에 값이 추가되거나 제거될 때마다 평균도 업데이트되어야 하기 때문에 중요합니다. `add`, `remove`, `average` 메서드를 구조체에 구현하여 이를 처리합니다. Listing 17-2는 `AveragedCollection`에 대한 공개 메서드의 구현을 보여줍니다.
 
-<span class=\"filename\">Filename: src/lib.rs</span>
+Filename: src/lib.rs
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-02/src/lib.rs:here}}
 ```
 
-<span class=\"caption\">Listing 17-2: `AveragedCollection`에 대한 `add`, `remove`, `average` 메서드의 구현</span>
+Listing 17-2: `AveragedCollection`에 대한 `add`, `remove`, `average` 메서드의 구현
 
 `add`, `remove`, `average`와 같은 공개 메서드는 `AveragedCollection` 인스턴스의 데이터에 액세스하거나 수정하는 유일한 방법입니다. `add` 메서드를 사용하여 `list`에 값이 추가되거나 `remove` 메서드를 사용하여 값이 제거될 때, 각 메서드의 구현은 `list` 필드가 변경될 때마다 `average` 필드를 업데이트하는 `update_average` 메서드를 호출합니다.
 

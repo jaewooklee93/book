@@ -9,13 +9,13 @@
 
 함수 포인터 인수가 함수인지 여부를 나타내는 방법의 문법은 Listing 19-27에서 보여주는 것처럼 클로저와 유사합니다. `add_one`이라는 함수를 정의했는데, 이 함수는 인수에 1을 더합니다. `do_twice` 함수는 `i32` 인수를 받는 함수와 `i32` 값을 두 개의 인수로 받습니다. `do_twice` 함수는 `f` 함수를 두 번 호출하여 `arg` 값을 전달한 다음 두 함수 호출 결과를 더합니다. `main` 함수는 `do_twice` 함수를 `add_one`과 `5`라는 인수로 호출합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-27/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 19-27: `fn` 유형을 사용하여 함수 포인터를 인수로 받는 함수</span>
+Listing 19-27: `fn` 유형을 사용하여 함수 포인터를 인수로 받는 함수
 
 이 코드는 "The answer is: 12"를 출력합니다. `do_twice` 함수의 `f` 인수가 `i32` 인수를 받고 `i32`를 반환하는 `fn`임을 명시합니다. `do_twice` 함수의 본문에서 `f`를 호출할 수 있습니다. `main` 함수에서는 `add_one` 함수를 `do_twice` 함수의 첫 번째 인수로 전달할 수 있습니다.
 

@@ -8,7 +8,7 @@
 
 `projects` 디렉토리에 *branches* 라는 이름의 새 프로젝트를 만들어 `if` 표현식을 탐색해 보세요. *src/main.rs* 파일에서 다음을 입력하세요.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-26-if-true/src/main.rs}}
@@ -40,7 +40,7 @@ ignore --> 섹션에서 논의한 `match` 표현식의 arm과 마찬가지입니
 
 이 코드의 조건은 *반드시* `bool`이어야 합니다. 조건이 `bool`이 아니면 오류가 발생합니다. 예를 들어 다음 코드를 실행해 보세요.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-28-if-condition-must-be-bool/src/main.rs}}
@@ -54,7 +54,7 @@ ignore --> 섹션에서 논의한 `match` 표현식의 arm과 마찬가지입니
 
 오류는 Rust가 `bool`을 기대했지만 정수를 받았음을 나타냅니다. Ruby나 JavaScript와 같은 언어와 달리 Rust는 비 논리형 타입을 자동으로 논리형으로 변환하려고 하지 않습니다. `if`에 항상 논리형을 명시적으로 제공해야 합니다. 예를 들어 `number`가 `0`이 아닐 때 `if` 코드 블록이 실행되도록 하려면 `if` 표현식을 다음과 같이 변경할 수 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-29-if-not-equal-0/src/main.rs}}
@@ -100,7 +100,7 @@ ignore --> 섹션에서 논의한 `match` 표현식의 arm과 마찬가지입니
 
 코드 블록은 그 안의 마지막 표현식을 평가하고, 숫자 자체도 표현식입니다. 이 경우, 전체 `if` 표현식의 값은 어느 코드 블록이 실행되는지에 따라 달라집니다. 즉, `if`의 각 팔에서 결과가 될 수 있는 값의 유형은 동일해야 합니다. Listing 3-2의 경우, `if` 팔과 `else` 팔의 결과 모두 `i32` 정수형입니다. 유형이 일치하지 않으면 다음과 같은 예에서 오류가 발생합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-31-arms-must-return-same-type/src/main.rs}}
@@ -120,7 +120,7 @@ Rust에는 `loop`, `while`, `for` 세 가지 종류의 반복문이 있습니다
 
 예를 들어, `loops` 디렉토리의 `src/main.rs` 파일을 다음과 같이 변경해 보세요.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-32-loop/src/main.rs}}
@@ -239,7 +239,7 @@ Rust에서 코드를 작성하는 방법을 배우셨습니다. `while` 루프�
 
 다음은 `for` 루프와 아직 배우지 않은 또 다른 방법인 `rev`를 사용하여 범위를 뒤집어 카운트다운을 표현하는 방법입니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-34-for-range/src/main.rs}}

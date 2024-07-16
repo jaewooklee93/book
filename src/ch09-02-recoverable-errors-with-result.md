@@ -19,13 +19,13 @@ enum Result<T, E> {
 
 `Result` 값을 반환하는 함수를 호출해 보겠습니다. 함수가 실패할 수 있기 때문입니다. 9-3번 목록에서 파일을 열려고 하는 함수를 살펴보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-03/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 9-3: 파일 열기</span>
+Listing 9-3: 파일 열기
 
 `File::open`의 반환 유형은 `Result<T, E>`입니다. `T` 일반 매개변수는 `File::open`의 구현에 의해 성공 값의 유형인 `std::fs::File` (파일 핸들)로 채워집니다. `E` 유형은 오류 값에 사용됩니다. 이 유형은 `std::io::Error`입니다. 이 반환 유형은 `File::open` 호출이 성공하여 읽거나 쓰기 위해 사용할 수 있는 파일 핸들을 반환할 수도 있고, 실패할 수도 있습니다. 예를 들어 파일이 존재하지 않거나 파일에 액세스할 권한이 없을 수 있습니다. `File::open` 함수는 성공했는지 실패했는지 알려주는 방법이 필요하며 동시에 파일 핸들 또는 오류 정보를 제공해야 합니다. 이 정보는 `Result` enum이 전달하는 것입니다.
 
@@ -33,13 +33,13 @@ enum Result<T, E> {
 
 9-3번 목록의 코드에 추가하여 `File::open`이 반환하는 값에 따라 다른 작업을 수행해야 합니다. 9-4번 목록은 `match` 표현식을 사용하여 `Result` 변형을 처리하는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,should_panic
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-04/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 9-4: `Result` 변형을 처리하는 데 `match` 표현식을 사용하기</span>
+Listing 9-4: `Result` 변형을 처리하는 데 `match` 표현식을 사용하기
 
 참고로 `Option` enum과 마찬가지로 `Result` enum과 그 변형은 prelude에 포함되어 있으므로 `match` 팔레트에서 `Result::`를 명시할 필요가 없습니다.
 
@@ -59,7 +59,7 @@ Listing 9-4의 코드는 `File::open`이 실패한 이유와 상관없이 `panic
 그러나 우리는 다양한 실패 이유에 대해 다른 조치를 취하고 싶습니다. 만약
 `File::open`이 파일이 존재하지 않기 때문에 실패했다면, 파일을 생성하고 새 파일의 핸들을 반환하고 싶습니다. `File::open`이 다른 이유로 실패했다면—예를 들어 파일을 열 권한이 없기 때문—Listing 9-4에서와 같이 코드가 `panic!`하도록 하고 싶습니다. 이를 위해 Listing 9-5에 보여진 내부 `match` 표현식을 추가합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 <!-- ignore this test because otherwise it creates hello.txt which causes other
 tests to fail lol -->
@@ -68,7 +68,7 @@ tests to fail lol -->
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-05/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 9-5: 다양한 방식으로 다양한 종류의 오류를 처리하기</span>
+Listing 9-5: 다양한 방식으로 다양한 종류의 오류를 처리하기
 
 `File::open`이 `Err` 변형체 안에서 반환하는 값의 유형은 `io::Error`입니다. `io::Error`는 표준 라이브러리에서 제공되는 구조체입니다. 이 구조체에는 `kind` 메서드가 있으며, 이를 통해 `io::ErrorKind` 값을 가져올 수 있습니다. `io::ErrorKind`은 표준 라이브러리에서 제공되는 열거형으로, `io` 작업에서 발생할 수 있는 다양한 종류의 오류를 나타내는 변형체를 가지고 있습니다. 우리가 사용하고 싶은 변형체는 `ErrorKind::NotFound`로, 우리가 열려고 하는 파일이 아직 존재하지 않는다는 것을 나타냅니다. 따라서 `greeting_file_result`에 대해 `match`를 수행하지만, `error.kind()`에도 내부 `match`가 있습니다.
 
@@ -105,7 +105,7 @@ tests to fail lol -->
 
 `match`를 사용하는 것은 충분히 잘 작동하지만, 때로는 너무 verbose하고 의도를 명확하게 전달하지 못할 수 있습니다. `Result<T, E>` 유형은 다양하고 더 구체적인 작업을 수행하기 위해 정의된 많은 도우미 메서드를 제공합니다. `unwrap` 메서드는 Listing 9-4에서 작성한 `match` 표현식과 같은 단축 메서드입니다. `Result` 값이 `Ok` 변형이라면 `unwrap`은 `Ok` 안의 값을 반환합니다. `Result`가 `Err` 변형이라면 `unwrap`은 `panic!` 매크로를 호출합니다. `unwrap`이 작동하는 예시는 다음과 같습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,should_panic
 {{#rustdoc_include ../listings/ch09-error-handling/no-listing-04-unwrap/src/main.rs}}
@@ -137,7 +137,7 @@ Rust에서 이러한 오류 전파 패턴은 매우 일반적이기 때문에 Ru
 
 Listing 9-7은 Listing 9-6과 동일한 기능을 가진 `read_username_from_file` 함수의 구현을 보여줍니다. 하지만 이 구현은 `?` 연산자를 사용합니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 <!-- Deliberately not using rustdoc_include here; the `main` function in the
 file panics. We do want to include it for reader experimentation purposes, but
@@ -147,7 +147,7 @@ don't want to include it for rustdoc testing purposes. -->
 {{#include ../listings/ch09-error-handling/listing-09-07/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 9-7: `?` 연산자를 사용하여 오류를 호출 코드로 전달하는 함수</span>
+Listing 9-7: `?` 연산자를 사용하여 오류를 호출 코드로 전달하는 함수
 
 `Result` 값 뒤에 놓인 `?`는 Listing 9-6에서 `match` 표현식으로 처리한 것과 거의 동일한 방식으로 작동합니다. `Result` 값이 `Ok`이면 `Ok` 안의 값이 계속 진행됩니다. `Err`이면 함수가 종료되고 오류 값이 호출 코드로 전달됩니다.
 
@@ -161,7 +161,7 @@ Listing 9-7의 맥락에서 `File::open` 호출의 끝에 있는 `?` 연산자�
 
 `?` 연산자는 많은 boilerplate 코드를 제거하여 함수의 구현을 간소화합니다. Listing 9-8과 같이 `?` 연산자 바로 뒤에 메서드 호출을 체인하여 코드를 더욱 간결하게 만들 수도 있습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 <!-- Deliberately not using rustdoc_include here; the `main` function in the
 file panics. We do want to include it for reader experimentation purposes, but
@@ -171,13 +171,13 @@ don't want to include it for rustdoc testing purposes. -->
 {{#include ../listings/ch09-error-handling/listing-09-08/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 9-8: `?` 연산자 뒤에 메서드 호출 체인</span>
+Listing 9-8: `?` 연산자 뒤에 메서드 호출 체인
 
 `username`에서 새로운 `String` 객체를 생성하는 부분은 변경되지 않았습니다. `username_file` 변수를 생성하는 대신 `File::open(\"hello.txt\")?`의 결과에 `read_to_string` 호출을 직접 체인했습니다. `read_to_string` 호출의 끝에도 여전히 `?`가 있고, `File::open`과 `read_to_string`이 모두 성공하면 `username`을 포함하는 `Ok` 값을 반환합니다. Listing 9-6과 Listing 9-7과 동일한 기능을 제공합니다. 이것은 단지 다른, 더 사용자 친화적인 방법으로 작성한 것입니다.
 
 Listing 9-9는 `fs::read_to_string`을 사용하여 이를 더욱 간결하게 만드는 방법을 보여줍니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 <!-- Deliberately not using rustdoc_include here; the `main` function in the
 file panics. We do want to include it for reader experimentation purposes, but
@@ -187,7 +187,7 @@ don't want to include it for rustdoc testing purposes. -->
 {{#include ../listings/ch09-error-handling/listing-09-09/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 9-9: `fs::read_to_string`을 사용하여 파일을 문자열로 읽기</span>
+Listing 9-9: `fs::read_to_string`을 사용하여 파일을 문자열로 읽기
 
 파일을 문자열로 읽는 것은 흔한 작업이므로 표준 라이브러리는 파일을 열고 새로운 `String` 객체를 생성하고 파일 내용을 읽어 `String`에 넣어 반환하는 편리한 `fs::read_to_string` 함수를 제공합니다. 물론 `fs::read_to_string`을 사용하면 모든 오류 처리를 설명할 기회가 없기 때문에 Listing 9-7과 같이 오류 처리를 설명했습니다.
 
@@ -199,13 +199,13 @@ don't want to include it for rustdoc testing purposes. -->
 
 Listing 9-10에서 `?` 연산자를 `Result`의 형태와 호환되지 않는 `main` 함수에서 사용하면 발생하는 오류를 살펴보겠습니다.
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-10/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 9-10: `()`를 반환하는 `main` 함수에서 `?`를 사용하려고 시도하면 컴파일되지 않습니다.</span>
+Listing 9-10: `()`를 반환하는 `main` 함수에서 `?`를 사용하려고 시도하면 컴파일되지 않습니다.
 
 이 코드는 파일을 열어서 오류가 발생할 수 있습니다. `?` 연산자는 `File::open`에서 반환되는 `Result` 값을 따릅니다. 하지만 이 `main` 함수는 `()`의 반환형을 가지고 있으며, `Result`와 호환되지 않습니다. 이 코드를 컴파일하면 다음과 같은 오류 메시지가 표시됩니다.
 
@@ -223,7 +223,7 @@ Listing 9-10에서 `?` 연산자를 `Result`의 형태와 호환되지 않는 `m
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-11/src/main.rs:here}}
 ```
 
-<span class=\"caption\">Listing 9-11: `Option<T>` 값에 `?` 연산자를 사용하는 예</span>
+Listing 9-11: `Option<T>` 값에 `?` 연산자를 사용하는 예
 
 이 함수는 `Option<char>`를 반환합니다. 왜냐하면 문자가 있을 수도 있지만 없을 수도 있기 때문입니다. 이 코드는 `text` 문자열 슬라이스 인자를 받아 `lines` 메서드를 호출합니다. `lines` 메서드는 문자열에서 줄을 나타내는 이터레이터를 반환합니다. 이 함수는 첫 번째 줄을 검토하려고 하므로 이터레이터에서 첫 번째 값을 가져오기 위해 `next`를 호출합니다. `text`가 비어 있는 경우, `next` 호출은 `None`을 반환합니다. 이 경우 `last_char_of_first_line`에서 `?`를 사용하여 `None`을 조기에 반환합니다. `text`가 비어 있지 않은 경우, `next`는 `text`의 첫 번째 줄을 나타내는 문자열 슬라이스를 포함하는 `Some` 값을 반환합니다.
 
@@ -237,13 +237,13 @@ hi\"`와 같이 있습니다. 그러나 첫 번째 줄에 마지막 문자가 �
 
 다행히 `main`은 `Result<(), E>`를 반환할 수도 있습니다. 9-12번 목록은 9-10번 목록의 코드를 가져왔지만, `main`의 반환 유형을 `Result<(), Box<dyn Error>>`로 변경하고 끝에 `Ok(())`을 반환했습니다. 이 코드는 이제 컴파일됩니다. 
 
-<span class=\"filename\">Filename: src/main.rs</span>
+Filename: src/main.rs
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-12/src/main.rs}}
 ```
 
-<span class=\"caption\">Listing 9-12: `main`을 `Result<(), E>`로 반환하도록 변경하면 `Result` 값에 `?` 연산자를 사용할 수 있습니다.</span>
+Listing 9-12: `main`을 `Result<(), E>`로 반환하도록 변경하면 `Result` 값에 `?` 연산자를 사용할 수 있습니다.
 
 `Box<dyn Error>` 유형은 *trait object*이며, 17장의 “다양한 유형의 값을 허용하는 Trait Object 사용” 부분에서 다룰 것입니다. 지금은 `Box<dyn Error>`를 “모든 종류의 오류”로 읽을 수 있습니다. `main` 함수에서 `Result` 값에 `?` 연산자를 사용하는 것은 `Box<dyn Error>` 오류 유형을 사용하는 경우 허용됩니다. 이것은 `main` 함수의 본문에서 `std::io::Error` 유형의 오류만 반환될 것이지만, `main` 함수의 본문에 더 많은 오류를 반환하는 코드가 추가되더라도 이 서명이 계속해서 올바른 이유입니다. 
 
