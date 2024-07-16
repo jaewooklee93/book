@@ -9,6 +9,7 @@ authors = ["Steve Klabnik", "Carol Nichols", "Contributions from the Rust Commun
 additional-css = ["ferris.css", "theme/2018-edition.css", "theme/semantic-notes.css", "theme/listing.css"]
 additional-js = ["ferris.js"]
 git-repository-url = "https://github.com/rust-lang/book"
+preferred-dark-theme = "ayu"
 
 # Do not sync this preprocessor; it is for the HTML renderer only.
 [preprocessor.trpl-note]
